@@ -37,7 +37,6 @@ export async function verifyAccessToken(
     algorithms: ["HS256"],
   });
 
-  console.log("Decoded payload:", payload);
   if (typeof payload.userId !== "number" || typeof payload.role !== "string") {
     throw new Error("Invalid token payload");
   }
