@@ -4,6 +4,7 @@ import { verifyAccessToken } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import CreateClassForm from "@/components/create-class-form";
 import AssingTeacherForm from "@/components/assign-teacher-form";
+import LogoutButton from "@/components/logout-button";
 export default async function DashboardPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
@@ -59,9 +60,9 @@ export default async function DashboardPage() {
     },
   });
 
-  console.dir(classData, { depth: null });
   return (
     <main>
+      <LogoutButton />
       <CreateClassForm />
 
       <ul>

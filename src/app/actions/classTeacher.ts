@@ -14,7 +14,12 @@ export async function AssignTeacher(
   const teacherId = Number(formData.get("teacherId"));
   const classId = Number(formData.get("classId"));
 
-  if (!Number.isInteger(teacherId) || !Number.isInteger(classId)) {
+  if (
+    !Number.isInteger(teacherId) ||
+    !Number.isInteger(classId) ||
+    teacherId <= 0 ||
+    classId <= 0
+  ) {
     return { error: "Invalid teacher or class ID" };
   }
 
