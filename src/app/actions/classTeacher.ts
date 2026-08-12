@@ -7,7 +7,7 @@ type PreviouseState = {
   error?: string;
 };
 
-export async function AssignTeacher(
+export async function AssignTeacherAction(
   _previousState: PreviousState,
   formData: FormData,
 ): Promise<PreviousState> {

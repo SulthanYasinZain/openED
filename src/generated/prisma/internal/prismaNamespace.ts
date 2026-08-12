@@ -399,7 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Class: 'Class',
-  ClassTeacher: 'ClassTeacher'
+  ClassTeacher: 'ClassTeacher',
+  StudentEnrollment: 'StudentEnrollment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "class" | "classTeacher"
+    modelProps: "user" | "class" | "classTeacher" | "studentEnrollment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -641,6 +642,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    StudentEnrollment: {
+      payload: Prisma.$StudentEnrollmentPayload<ExtArgs>
+      fields: Prisma.StudentEnrollmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StudentEnrollmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StudentEnrollmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>
+        }
+        findFirst: {
+          args: Prisma.StudentEnrollmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StudentEnrollmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>
+        }
+        findMany: {
+          args: Prisma.StudentEnrollmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>[]
+        }
+        create: {
+          args: Prisma.StudentEnrollmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>
+        }
+        createMany: {
+          args: Prisma.StudentEnrollmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StudentEnrollmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>[]
+        }
+        delete: {
+          args: Prisma.StudentEnrollmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>
+        }
+        update: {
+          args: Prisma.StudentEnrollmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.StudentEnrollmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StudentEnrollmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StudentEnrollmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.StudentEnrollmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentEnrollmentPayload>
+        }
+        aggregate: {
+          args: Prisma.StudentEnrollmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStudentEnrollment>
+        }
+        groupBy: {
+          args: Prisma.StudentEnrollmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentEnrollmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StudentEnrollmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentEnrollmentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -717,6 +792,17 @@ export const ClassTeacherScalarFieldEnum = {
 } as const
 
 export type ClassTeacherScalarFieldEnum = (typeof ClassTeacherScalarFieldEnum)[keyof typeof ClassTeacherScalarFieldEnum]
+
+
+export const StudentEnrollmentScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  studentId: 'studentId',
+  isDeleted: 'isDeleted',
+  assignedAt: 'assignedAt'
+} as const
+
+export type StudentEnrollmentScalarFieldEnum = (typeof StudentEnrollmentScalarFieldEnum)[keyof typeof StudentEnrollmentScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -993,6 +1079,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   class?: Prisma.ClassOmit
   classTeacher?: Prisma.ClassTeacherOmit
+  studentEnrollment?: Prisma.StudentEnrollmentOmit
 }
 
 /* Types for Logging */

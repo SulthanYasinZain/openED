@@ -29,6 +29,7 @@ export default async function DashboardPage() {
     select: {
       id: true,
       name: true,
+      code: true,
       teachers: {
         select: {
           teacher: {
@@ -45,6 +46,7 @@ export default async function DashboardPage() {
   classData = classData.map((item) => ({
     id: item.id,
     name: item.name,
+    code: item.code,
     teachers: item.teachers.map((item) => item.teacher),
   }));
 

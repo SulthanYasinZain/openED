@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { AssignTeacher } from "@/app/actions/classTeacher";
+import { AssignTeacherAction } from "@/app/actions/classTeacher";
 type TeacherData = {
   id: number;
   name: string | null;
@@ -28,7 +28,7 @@ const defaultState = {
 
 export default function AssignTeacherForm({ teacherList, classList }: props) {
   const [state, formAction, isPending] = useActionState(
-    AssignTeacher,
+    AssignTeacherAction,
     defaultState,
   );
 

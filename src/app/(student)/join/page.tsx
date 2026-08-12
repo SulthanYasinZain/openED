@@ -1,16 +1,20 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyAccessToken } from "@/lib/session";
-
+import { prisma } from "@/lib/prisma";
+import JoinClassForm from "@/components/join-class-form";
 interface PageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: Promise<{
+    code?: string;
+  }>;
 }
 
-export default async function JoinPage({searchParams} : PageProps) {
- 
-    
-  const params = await searchParams;
-    
+export default async function JoinPage({ searchParams }: PageProps) {
+  const { code } = await searchParams;
+
+  if (!code || code.length !== 6) {
+    return <InvalidPage />;
+  }
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
   if (!token) {
@@ -28,5 +32,22 @@ export default async function JoinPage({searchParams} : PageProps) {
   if (payload.role !== "STUDENT") {
     return redirect("/");
   }
-  return <p>{params.code}</p>;
+
+  const classData = await prisma.class.findUnique({
+    where: {
+      code,
+    },
+  });
+
+  if (!classData) {
+    return <InvalidPage />;
+  }
+
+  return (
+    <JoinClassForm classId={classData.id}/>
+  );
+}
+
+function InvalidPage() {
+  return <p>the class code is invalid make sure you add the correct one </p>;
 }

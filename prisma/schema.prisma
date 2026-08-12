@@ -5,7 +5,7 @@
 
 generator client {
   provider = "prisma-client"
-  output = "../src/generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -19,30 +19,32 @@ enum Role {
 }
 
 model User {
-    id           Int      @id @default(autoincrement())
-    email        String   @unique
-    password     String
-    role         Role     @default(STUDENT)
-    name         String?
-    isDeleted    Boolean  @default(false)
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    
-    classTeachers ClassTeacher[]
-    
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT)
+  name      String?
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classTeachers ClassTeacher[]
+
+  studentEnrollments StudentEnrollment[]
 }
 
 model Class {
-    id           Int      @id @default(autoincrement())
-    code         String   @unique
-    name         String    
-    imageUrl     String?
-    isDeleted    Boolean  @default(false)
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    
-    teachers ClassTeacher[]
-    
+  id        Int      @id @default(autoincrement())
+  code      String   @unique
+  name      String
+  imageUrl  String?
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teachers ClassTeacher[]
+
+  studentEnrollments StudentEnrollment[]
 }
 
 enum TeacherType {
@@ -51,17 +53,30 @@ enum TeacherType {
 }
 
 model ClassTeacher {
-    id            Int          @id @default(autoincrement())
-    classId       Int
-    teacherId     Int          
-    type          TeacherType  @default(PRIMARY)
-    isDeleted     Boolean      @default(false)
-    assignedAt    DateTime     @default(now())  
-    
-    class Class @relation(fields: [classId], references: [id])
-    teacher User @relation(fields: [teacherId], references: [id])
-    
-    @@unique([classId, teacherId])
-    @@index([teacherId])
-    
+  id         Int         @id @default(autoincrement())
+  classId    Int
+  teacherId  Int
+  type       TeacherType @default(PRIMARY)
+  isDeleted  Boolean     @default(false)
+  assignedAt DateTime    @default(now())
+
+  class   Class @relation(fields: [classId], references: [id])
+  teacher User  @relation(fields: [teacherId], references: [id])
+
+  @@unique([classId, teacherId])
+  @@index([teacherId])
+}
+
+model StudentEnrollment {
+  id         Int      @id @default(autoincrement())
+  classId    Int
+  studentId  Int
+  isDeleted  Boolean  @default(false)
+  assignedAt DateTime @default(now())
+
+  class   Class @relation(fields: [classId], references: [id])
+  student User  @relation(fields: [studentId], references: [id])
+
+  @@unique([classId, studentId])
+  @@index([studentId])
 }

@@ -56,3 +56,8 @@ export type Class = Prisma.ClassModel
  * 
  */
 export type ClassTeacher = Prisma.ClassTeacherModel
+/**
+ * Model StudentEnrollment
+ * 
+ */
+export type StudentEnrollment = Prisma.StudentEnrollmentModel
