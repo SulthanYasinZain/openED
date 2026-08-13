@@ -34,9 +34,8 @@ export async function StudentJoinClassAction(
       error: "Invalid class ID",
     };
   }
-  
- const isStudentAlreadyEnroll =
-  await prisma.studentEnrollment.findUnique({
+
+  const isStudentAlreadyEnroll = await prisma.studentEnrollment.findUnique({
     where: {
       classId_studentId: {
         classId,
@@ -45,9 +44,9 @@ export async function StudentJoinClassAction(
     },
   });
 
-  if(isStudentAlreadyEnroll) {
-   redirect(`/class/${classId}`);
-   return {
+  if (isStudentAlreadyEnroll) {
+    redirect(`/class/${classId}`);
+    return {
       error: "User Already Join",
     };
   }
@@ -66,10 +65,10 @@ export async function StudentJoinClassAction(
       error: "Failed to join class",
     };
   }
-  
-  revalidatePath("/class");    
-    redirect(`/class/${classId}`);
-    return {
-      error: "",
-    };
+
+  revalidatePath("/class");
+  redirect(`/class/${classId}`);
+  return {
+    error: "",
+  };
 }

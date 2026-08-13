@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyAccessToken } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
+import { checkSession } from "@/lib/session";
 import JoinClassForm from "@/components/join-class-form";
 interface PageProps {
   searchParams: Promise<{
@@ -15,23 +16,8 @@ export default async function JoinPage({ searchParams }: PageProps) {
   if (!code || code.length !== 6) {
     return <InvalidPage />;
   }
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
-  if (!token) {
-    return redirect("/login");
-  }
 
-  let payload;
-
-  try {
-    payload = await verifyAccessToken(token);
-  } catch {
-    redirect("/login");
-  }
-
-  if (payload.role !== "STUDENT") {
-    return redirect("/");
-  }
+  const sessionData = await checkSession("STUDENT");
 
   const classData = await prisma.class.findUnique({
     where: {
@@ -42,27 +28,24 @@ export default async function JoinPage({ searchParams }: PageProps) {
   if (!classData) {
     return <InvalidPage />;
   }
-  
-  const isStudentAlreadyEnroll =
-  await prisma.studentEnrollment.findUnique({
+
+  const isStudentAlreadyEnroll = await prisma.studentEnrollment.findUnique({
     where: {
       classId_studentId: {
-        classId : classData.id,
+        classId: classData.id,
         studentId: payload.userId,
       },
     },
   });
 
-  if(isStudentAlreadyEnroll) {
-   redirect(`/class/${isStudentAlreadyEnroll}`);
-   return {
+  if (isStudentAlreadyEnroll) {
+    redirect(`/class/${isStudentAlreadyEnroll}`);
+    return {
       error: "User Already Join",
     };
   }
 
-  return (
-    <JoinClassForm classId={classData.id}/>
-  );
+  return <JoinClassForm classId={classData.id} />;
 }
 
 function InvalidPage() {

@@ -2,7 +2,6 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-
 export type AuthTokenPayload = {
   userId: string;
   role: "student" | "admin" | "school";
@@ -58,7 +57,7 @@ export async function verifyAccessToken(
   };
 }
 
-export async function checkSession(allowedRole : string){
+export async function checkSession(allowedRole: string) {
   const cookieStore = await cookies();
   const token = cookieStore.get("access_token")?.value;
   if (!token) {
@@ -76,6 +75,6 @@ export async function checkSession(allowedRole : string){
   if (payload.role !== allowedRole) {
     return redirect("/");
   }
-  
+
   return payload;
 }

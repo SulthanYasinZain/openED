@@ -2,14 +2,13 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyAccessToken } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import {checkSession} from "@/lib/session";
+import { checkSession } from "@/lib/session";
 import CreateClassForm from "@/components/create-class-form";
 import AssingTeacherForm from "@/components/assign-teacher-form";
 import LogoutButton from "@/components/logout-button";
 export default async function DashboardPage() {
- 
   const sessionData = await checkSession("ADMIN");
-  
+
   let classData = await prisma.class.findMany({
     select: {
       id: true,
