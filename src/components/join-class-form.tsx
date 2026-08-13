@@ -1,6 +1,6 @@
 "use client";
 
-import { AssignStudentAction } from "@/app/actions/studentPlacement";
+import { StudentJoinClassAction } from "@/app/actions/studentPlacement";
 
 export default function JoinClassForm({
   classId,
@@ -11,11 +11,11 @@ export default function JoinClassForm({
   if(!classId) {
   return <p>ClassId is Not entered</p>
   }
-  const actionWithClassId = AssignStudentAction.bind(null, classId);
+  const actionWithClassId = StudentJoinClassAction.bind(null, classId);
 
   return (
     <form action={actionWithClassId}>
-      <button type="submit" className="btn-primary">
+      <button type="submit" className="bg-black text-white">
         Gabung Kelas
       </button>
     </form>

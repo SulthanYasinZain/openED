@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { verifyAccessToken } from "@/lib/session";
 
-export async function AssignStudentAction(
+export async function StudentJoinClassAction(
   classId: number,
   _formData: FormData,
 ) {
@@ -34,6 +34,23 @@ export async function AssignStudentAction(
       error: "Invalid class ID",
     };
   }
+  
+ const isStudentAlreadyEnroll =
+  await prisma.studentEnrollment.findUnique({
+    where: {
+      classId_studentId: {
+        classId,
+        studentId: payload.userId,
+      },
+    },
+  });
+
+  if(isStudentAlreadyEnroll) {
+   redirect(`/class/${classId}`);
+   return {
+      error: "User Already Join",
+    };
+  }
 
   try {
     await prisma.studentEnrollment.create({
@@ -42,12 +59,6 @@ export async function AssignStudentAction(
         studentId: payload.userId,
       },
     });
-
-    revalidatePath("/class");
-
-    return {
-      error: "",
-    };
   } catch (error) {
     console.error("Enrollment error:", error);
 
@@ -55,4 +66,10 @@ export async function AssignStudentAction(
       error: "Failed to join class",
     };
   }
+  
+  revalidatePath("/class");    
+    redirect(`/class/${classId}`);
+    return {
+      error: "",
+    };
 }

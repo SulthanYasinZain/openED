@@ -42,6 +42,23 @@ export default async function JoinPage({ searchParams }: PageProps) {
   if (!classData) {
     return <InvalidPage />;
   }
+  
+  const isStudentAlreadyEnroll =
+  await prisma.studentEnrollment.findUnique({
+    where: {
+      classId_studentId: {
+        classId : classData.id,
+        studentId: payload.userId,
+      },
+    },
+  });
+
+  if(isStudentAlreadyEnroll) {
+   redirect(`/class/${isStudentAlreadyEnroll}`);
+   return {
+      error: "User Already Join",
+    };
+  }
 
   return (
     <JoinClassForm classId={classData.id}/>

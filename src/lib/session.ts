@@ -1,4 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
 
 export type AuthTokenPayload = {
   userId: string;
@@ -53,4 +56,26 @@ export async function verifyAccessToken(
     userId: payload.userId,
     role: payload.role,
   };
+}
+
+export async function checkSession(allowedRole : string){
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+  if (!token) {
+    return redirect("/login");
+  }
+
+  let payload;
+
+  try {
+    payload = await verifyAccessToken(token);
+  } catch {
+    redirect("/login");
+  }
+
+  if (payload.role !== allowedRole) {
+    return redirect("/");
+  }
+  
+  return payload;
 }
