@@ -4,30 +4,17 @@ import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { verifyAccessToken } from "@/lib/session";
+import { verifyAccessToken, checkSession } from "@/lib/session";
+
+export async function StudentJoinClassByCodeAction() {
+  const sessionData = await checkSession();
+}
 
 export async function StudentJoinClassAction(
   classId: number,
   _formData: FormData,
 ) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
-
-  if (!token) {
-    redirect("/login");
-  }
-
-  let payload;
-
-  try {
-    payload = await verifyAccessToken(token);
-  } catch {
-    redirect("/login");
-  }
-
-  if (payload.role !== "STUDENT") {
-    redirect("/");
-  }
+  const sessionData = await checkSession();
 
   if (!Number.isInteger(classId) || classId <= 0) {
     return {
@@ -39,7 +26,7 @@ export async function StudentJoinClassAction(
     where: {
       classId_studentId: {
         classId,
-        studentId: payload.userId,
+        studentId: sessionData.userId,
       },
     },
   });
@@ -55,7 +42,7 @@ export async function StudentJoinClassAction(
     await prisma.studentEnrollment.create({
       data: {
         classId,
-        studentId: payload.userId,
+        studentId: sessionData.userId,
       },
     });
   } catch (error) {

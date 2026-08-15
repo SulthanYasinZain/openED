@@ -19,7 +19,7 @@ export async function loginAction(
   const password = formData.get("password");
 
   if (typeof email !== "string" || typeof password !== "string") {
-    return { error: "Type must be String" };
+    return { error: "Invalid input type" };
   }
 
   if (!email.trim() || !password) {
@@ -27,19 +27,19 @@ export async function loginAction(
   }
 
   if (password.lenght < 8) {
-    return { error: "Password must be 8 characters long" };
+    return { error: "Password must be at least 8 characters long" };
   }
 
-  const user = await prisma.user.findUnique({
+  const isUserAlreadyExist = await prisma.user.findUnique({
     where: { email: email.trim().toLowerCase() },
   });
 
-  if (!user) {
-    return { error: "Invalid email or password" };
+  if (!isUserAlreadyExist) {
+    return { error: "Email already registered" };
   }
 
-  const passwordsMatch = await bcrypt.compare(password, user.password);
-  if (!passwordsMatch) {
+  const isPasswordsMatch = await bcrypt.compare(password, user.password);
+  if (!isPasswordsMatch) {
     return { error: "Invalid email or password" };
   }
 
@@ -79,18 +79,18 @@ export async function registerAction(
   const password = formData.get("password");
 
   if (typeof email !== "string" || typeof password !== "string") {
-    return { error: "Type must be String" };
+    return { error: "Invalid input type" };
   }
 
   if (!email.trim() || !password) {
     return { error: "All fields must be filled" };
   }
 
-  const existingUser = await prisma.user.findUnique({
+  const isUserAlreadyExist = await prisma.user.findUnique({
     where: { email: email.trim().toLowerCase() },
   });
 
-  if (existingUser) {
+  if (isUserAlreadyExist) {
     return { error: "Email already registered" };
   }
 
@@ -103,11 +103,11 @@ export async function registerAction(
     },
   });
 
-  redirect("/login");
+  return redirect("/login");
 }
 
 export async function logoutAction() {
   const cookieStore = await cookies();
   cookieStore.delete("access_token");
-  redirect("/login");
+  return redirect("/login");
 }

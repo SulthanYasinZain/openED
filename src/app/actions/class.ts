@@ -3,23 +3,23 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import crypto from "node:crypto";
-
+import { checkSession } from "@/lib/session";
 type PreviousState = {
   error?: string;
 };
 
-function generateCode(length = 6) {
+export async function generateUniqueClassCode(length = 6) {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const values = new Uint32Array(length);
 
-  crypto.getRandomValues(values);
+  const generateCode = () => {
+    const values = new Uint32Array(length);
+    crypto.getRandomValues(values);
 
-  return Array.from(values, (value) => {
-    return characters[value % characters.length];
-  }).join("");
-}
+    return Array.from(values, (value) => {
+      return characters[value % characters.length];
+    }).join("");
+  };
 
-async function generateUniqueClassCode() {
   let code = generateCode();
 
   while (
@@ -37,6 +37,8 @@ export async function createClassAction(
   _previousState: PreviousState,
   formData: FormData,
 ): Promise<PreviousState> {
+  await checkSession();
+
   const name = formData.get("name");
   const imageUrl = formData.get("imageUrl");
 
