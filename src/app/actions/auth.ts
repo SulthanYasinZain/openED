@@ -30,11 +30,11 @@ export async function loginAction(
     return { error: "Password must be at least 8 characters long" };
   }
 
-  const isUserAlreadyExist = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { email: email.trim().toLowerCase() },
   });
 
-  if (!isUserAlreadyExist) {
+  if (!user) {
     return { error: "Email already registered" };
   }
 

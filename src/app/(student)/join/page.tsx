@@ -33,7 +33,7 @@ export default async function JoinPage({ searchParams }: PageProps) {
     where: {
       classId_studentId: {
         classId: classData.id,
-        studentId: payload.userId,
+        studentId: sessionData.userId,
       },
     },
   });

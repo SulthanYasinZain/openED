@@ -6,15 +6,49 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { verifyAccessToken, checkSession } from "@/lib/session";
 
-export async function StudentJoinClassByCodeAction() {
-  const sessionData = await checkSession();
+type PreviouseState = {
+  error?: string;
+};
+
+
+export async function StudentJoinClassByCodeAction(
+ _previousState: PreviousState,
+  formData: FormData,
+): Promise<PreviousState> {
+  const sessionData = await checkSession("STUDENT");
+  
+  const code = formData.get("code");
+  
+  if(typeof code !== "string" || !code.trim()){
+      return {error : "Field Must be fill"}
+  }
+  
+  const classData = await prisma.class.findUnique({
+      where : {
+          code,
+      },
+      select : {
+          id : true,
+      },
+      
+          
+  });
+
+  if (!classData) {
+  return {
+    error: "Class not found",
+  };
+}
+     await enrollStudentToClass(classData.id,sessionData.userId);
+     
+     return redirect("/class");
 }
 
 export async function StudentJoinClassAction(
   classId: number,
   _formData: FormData,
 ) {
-  const sessionData = await checkSession();
+  const sessionData = await checkSession('STUDENT');
 
   if (!Number.isInteger(classId) || classId <= 0) {
     return {
@@ -22,27 +56,32 @@ export async function StudentJoinClassAction(
     };
   }
 
-  const isStudentAlreadyEnroll = await prisma.studentEnrollment.findUnique({
-    where: {
-      classId_studentId: {
-        classId,
-        studentId: sessionData.userId,
-      },
-    },
-  });
+ await enrollStudentToClass(classId,sessionData.userId);
+
+}
+
+
+async function enrollStudentToClass(classId : number, studentId : number) {
+     const isStudentAlreadyEnroll = await prisma.studentEnrollment.findUnique({
+        where: {
+          classId_studentId: {
+            classId,
+            studentId,
+          },
+        },
+      });
 
   if (isStudentAlreadyEnroll) {
-    redirect(`/class/${classId}`);
     return {
-      error: "User Already Join",
+      error: "You had already join this class",
     };
   }
-
+  
   try {
     await prisma.studentEnrollment.create({
       data: {
         classId,
-        studentId: sessionData.userId,
+        studentId,
       },
     });
   } catch (error) {
@@ -54,8 +93,7 @@ export async function StudentJoinClassAction(
   }
 
   revalidatePath("/class");
-  redirect(`/class/${classId}`);
   return {
-    error: "",
-  };
+      error : "",
+  }
 }

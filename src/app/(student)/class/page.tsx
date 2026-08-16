@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { verifyAccessToken, checkSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-
+import JoinClassByCode from "@/components/join-class-by-code"
 export default async function ClassPage() {
   const sessionData = await checkSession("STUDENT");
 
@@ -17,6 +17,7 @@ export default async function ClassPage() {
   });
 
   return (
+   <>
     <ul>
       {classData.map((classItem) => (
         <li key={classItem.id}>
@@ -25,5 +26,9 @@ export default async function ClassPage() {
         </li>
       ))}
     </ul>
+    
+   <JoinClassByCode/>
+    
+   </>
   );
 }
