@@ -9,7 +9,9 @@ export default function LogoutButton() {
 
   return (
     <form action={logoutAction}>
-      <button className="bg-black text-white p-2" type="submit">Logout</button>
+      <button className="bg-black text-white p-2" type="submit">
+        Logout
+      </button>
     </form>
   );
 }

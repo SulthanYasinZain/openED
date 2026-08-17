@@ -13,7 +13,10 @@ export default function CreateClassForm() {
     defaultState,
   );
   return (
-    <form action={formAction} className=" p-2 space-x-2  rounded border border-stone-200">
+    <form
+      action={formAction}
+      className=" p-2 space-x-2  rounded border border-stone-200"
+    >
       <p>Fill the field to add a class </p>
       <input
         placeholder="class name"

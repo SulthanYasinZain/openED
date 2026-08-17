@@ -33,8 +33,11 @@ export default function AssignTeacherForm({ teacherList, classList }: props) {
   );
 
   return (
-    <form action={formAction} className="p-2 space-x-2 rounded border border-stone-200">
-    <p>fill the field to add teacher to class</p>
+    <form
+      action={formAction}
+      className="p-2 space-x-2 rounded border border-stone-200"
+    >
+      <p>fill the field to add teacher to class</p>
       <select name="teacherId" required>
         {teacherList.map((teacher) => (
           <option key={teacher.id} value={teacher.id}>

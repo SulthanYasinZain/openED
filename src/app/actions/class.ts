@@ -37,7 +37,7 @@ export async function createClassAction(
   _previousState: PreviousState,
   formData: FormData,
 ): Promise<PreviousState> {
-  await checkSession();
+  await checkSession("ADMIN");
 
   const name = formData.get("name");
   const imageUrl = formData.get("imageUrl");
@@ -75,4 +75,30 @@ export async function createClassAction(
       error: "Failed to create class",
     };
   }
+}
+
+export async function deleteClassAction(classId : number, _formData: FormData,){
+    await checkSession("ADMIN");
+    
+    try {
+
+    await prisma.class.update({
+     where : {
+         id : classId,
+     },
+     data : {
+         isDeleted : true,
+     },
+    });
+
+    revalidatePath("/dashboard");
+    return { error: "" };
+  } catch (error) {
+    console.error("delete class error:", error);
+
+    return {
+      error: "Failed to delete class",
+    };
+  }
+    
 }
