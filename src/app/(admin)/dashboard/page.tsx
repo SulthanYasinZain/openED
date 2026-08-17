@@ -6,12 +6,13 @@ import CreateClassForm from "@/components/create-class-form";
 import AssingTeacherForm from "@/components/assign-teacher-form";
 import LogoutButton from "@/components/logout-button";
 import DeleteClassButton from "@/components/class-delete-button";
+import AssignTeacherButton from "@/components/test-dialog-assign-teacher";
 export default async function DashboardPage() {
   const sessionData = await checkSession("ADMIN");
 
   let classData = await prisma.class.findMany({
-    where : {
-        isDeleted : false,
+    where: {
+      isDeleted: false,
     },
     select: {
       id: true,
@@ -58,11 +59,12 @@ export default async function DashboardPage() {
         {classData.map((classItem) => (
           <li
             key={classItem.id}
-            className="p-2 border border-stone-200 rounded"
+            className="p-2 border border-stone-200 rounded flex"
           >
             {classItem.name} - {classItem.code} -{" "}
             {classItem.teachers[0]?.name ?? "No teacher"}
-           <DeleteClassButton classId={classItem.id}/>
+            <DeleteClassButton classId={classItem.id} />
+            <AssignTeacherButton/>
           </li>
         ))}
       </ul>

@@ -77,18 +77,17 @@ export async function createClassAction(
   }
 }
 
-export async function deleteClassAction(classId : number, _formData: FormData,){
-    await checkSession("ADMIN");
-    
-    try {
+export async function deleteClassAction(classId: number, _formData: FormData) {
+  await checkSession("ADMIN");
 
+  try {
     await prisma.class.update({
-     where : {
-         id : classId,
-     },
-     data : {
-         isDeleted : true,
-     },
+      where: {
+        id: classId,
+      },
+      data: {
+        isDeleted: true,
+      },
     });
 
     revalidatePath("/dashboard");
@@ -100,5 +99,4 @@ export async function deleteClassAction(classId : number, _formData: FormData,){
       error: "Failed to delete class",
     };
   }
-    
 }
