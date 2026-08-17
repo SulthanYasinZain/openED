@@ -13,7 +13,8 @@ export default function CreateClassForm() {
     defaultState,
   );
   return (
-    <form action={formAction} className="flex flex-col gap-4">
+    <form action={formAction} className=" p-2 space-x-2  rounded border border-stone-200">
+      <p>Fill the field to add a class </p>
       <input
         placeholder="class name"
         name="name"
@@ -21,7 +22,7 @@ export default function CreateClassForm() {
       />
       <input
         name="imageUrl"
-        plaecholder="asdad"
+        plaecholder="image"
         className="border border-neutral-200"
       />
       {state.error && <p>{state.error}</p>}

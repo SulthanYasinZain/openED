@@ -46,13 +46,13 @@ export default async function DashboardPage() {
   });
 
   return (
-    <main>
+    <main className="p-4 space-y-2">
       <LogoutButton />
       <CreateClassForm />
 
-      <ul>
+      <ul className="space-y-2">
         {classData.map((classItem) => (
-          <li key={classItem.id}>
+          <li key={classItem.id} className="p-2 border border-stone-200 rounded">
             {classItem.name} - {classItem.code} -{" "}
             {classItem.teachers[0]?.name ?? "No teacher"}
           </li>
