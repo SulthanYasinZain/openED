@@ -64,7 +64,7 @@ export default async function DashboardPage() {
             {classItem.name} - {classItem.code} -{" "}
             {classItem.teachers[0]?.name ?? "No teacher"}
             <DeleteClassButton classId={classItem.id} />
-            <AssignTeacherButton/>
+            <AssignTeacherButton teacherList={teacherData}/>
           </li>
         ))}
       </ul>
