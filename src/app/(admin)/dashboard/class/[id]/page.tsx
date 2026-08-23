@@ -18,6 +18,12 @@ export default async function ClassDetailPage({ params }: PageProps) {
       </Link>
 
 <div className="flex">
+ <Link 
+        href={`/dashboard/class/${id}/create`} 
+    
+      >
+       Buat Kelas
+      </Link>
 <ul className="space-y-3">
   <li className="flex items-center justify-between rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
     <div className="space-y-1">
