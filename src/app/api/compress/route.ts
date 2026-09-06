@@ -2,5 +2,13 @@ import { compress } from '@quicktoolsone/pdf-compress';
 
 export async function POST(req: Reqeust) {
 
-    cons
+    const file = await req.file;
+    
+    const result = await compress(file, {
+      preset: 'balanced
+    });
+    
+    
+
+    return
 }
