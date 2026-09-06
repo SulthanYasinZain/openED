@@ -14,21 +14,36 @@ type UploadStatus =
   | "done"
   | "error";
 
+type UploadResult = {
+  key: string;
+  file: Blob;
+};
+
 type UploadContextType = {
   status: UploadStatus;
   progress: number;
   objectKey: string | null;
   error: string | null;
-  uploadFile: (file: File) => Promise<string | null>;
+  uploadFile: (file: File) => Promise<UploadResult | null>;
 };
 
 const UploadContext = createContext<UploadContextType | null>(null);
 
-export function UploadProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<UploadStatus>("idle");
+export function UploadProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const [status, setStatus] =
+    useState<UploadStatus>("idle");
+
   const [progress, setProgress] = useState(0);
-  const [objectKey, setObjectKey] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+
+  const [objectKey, setObjectKey] =
+    useState<string | null>(null);
+
+  const [error, setError] =
+    useState<string | null>(null);
 
   async function uploadFile(file: File) {
     try {
@@ -37,8 +52,8 @@ export function UploadProvider({ children }: { children: ReactNode }) {
       setObjectKey(null);
       setError(null);
 
-      // Lazy-load the compressor
-      const { compress } = await import("@quicktoolsone/pdf-compress");
+      const { compress } =
+        await import("@quicktoolsone/pdf-compress");
 
       const buffer = await file.arrayBuffer();
 
@@ -48,7 +63,9 @@ export function UploadProvider({ children }: { children: ReactNode }) {
         onProgress: (event) => {
           setProgress(event.progress);
 
-          console.log(`${event.phase}: ${event.progress}%`);
+          console.log(
+            `${event.phase}: ${event.progress}%`
+          );
 
           if (event.message) {
             console.log(event.message);
@@ -56,13 +73,13 @@ export function UploadProvider({ children }: { children: ReactNode }) {
         },
       });
 
+      // This is the compressed PDF
       const blob = new Blob([result.pdf], {
         type: "application/pdf",
       });
 
       setStatus("uploading");
 
-      // Get presigned URL
       const res = await fetch("/api/presign", {
         method: "POST",
         headers: {
@@ -75,12 +92,13 @@ export function UploadProvider({ children }: { children: ReactNode }) {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to create presigned URL");
+        throw new Error(
+          "Failed to create presigned URL"
+        );
       }
 
       const { url, key } = await res.json();
 
-      // Upload directly to R2
       const uploadRes = await fetch(url, {
         method: "PUT",
         headers: {
@@ -97,7 +115,11 @@ export function UploadProvider({ children }: { children: ReactNode }) {
       setStatus("done");
       setProgress(100);
 
-      return key;
+      // Return BOTH the R2 key and compressed PDF
+      return {
+        key,
+        file: blob,
+      };
     } catch (error) {
       console.error("Upload error:", error);
 
