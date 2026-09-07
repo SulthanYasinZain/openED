@@ -18,7 +18,7 @@ export async function POST(req: Request) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -29,13 +29,11 @@ export async function POST(req: Request) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
-    console.log(
-      `Summarizing ${file.name} (${file.size} bytes)`
-    );
+    console.log(`Summarizing ${file.name} (${file.size} bytes)`);
 
     const buffer = await file.arrayBuffer();
 
@@ -90,13 +88,11 @@ Rules:
     return NextResponse.json(
       {
         error:
-          error instanceof Error
-            ? error.message
-            : "Failed to summarize PDF",
+          error instanceof Error ? error.message : "Failed to summarize PDF",
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

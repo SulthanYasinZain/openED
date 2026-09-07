@@ -52,32 +52,31 @@ export default async function DashboardPage() {
   });
 
   return (
-   <main className="p-4 space-y-2">
-  <LogoutButton />
-  <CreateClassForm />
+    <main className="p-4 space-y-2">
+      <LogoutButton />
+      <CreateClassForm />
 
-  <ul className="space-y-2">
-    {classData.map((classItem) => (
-      <li
-        key={classItem.id}
-        className="p-2 border border-stone-200 rounded flex items-center justify-between"
-      >
-        <div>
-          {classItem.name} - {classItem.code} -{" "}
-          {classItem.teachers[0]?.name ?? "No teacher"}
-        </div>
-        
-        <div className="flex gap-2">
-          <DeleteClassButton classId={classItem.id} />
-          <AssignTeacherButton teacherList={teacherData}/>
-          <Link href={`/dashboard/class/${classItem.code}`}>View</Link>
-        </div>
-      </li>
-    ))}
-  </ul>
+      <ul className="space-y-2">
+        {classData.map((classItem) => (
+          <li
+            key={classItem.id}
+            className="p-2 border border-stone-200 rounded flex items-center justify-between"
+          >
+            <div>
+              {classItem.name} - {classItem.code} -{" "}
+              {classItem.teachers[0]?.name ?? "No teacher"}
+            </div>
 
-  <AssingTeacherForm teacherList={teacherData} classList={classData} />
-</main>
+            <div className="flex gap-2">
+              <DeleteClassButton classId={classItem.id} />
+              <AssignTeacherButton teacherList={teacherData} />
+              <Link href={`/dashboard/class/${classItem.code}`}>View</Link>
+            </div>
+          </li>
+        ))}
+      </ul>
 
+      <AssingTeacherForm teacherList={teacherData} classList={classData} />
+    </main>
   );
 }

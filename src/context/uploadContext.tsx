@@ -1,55 +1,54 @@
-import { createContext, useContext, useMemo, useReducer, type ReactNode } from "react";
+"use client";
 
-type UploadCustomization = {
-  compression: "off" | "lossless" | "balanced" | "max";
-  summarization: boolean;
-};}
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useReducer,
+  type ReactNode,
+} from "react";
+import compressPdf from "@/lib/compress-pdf";
+
+type CompressionLevel = "off" | "lossless" | "balanced" | "max";
+
+type Status = "idle" | "compressing" | "done" | "error";
 
 type State = {
-  status: ...;
+  status: Status;
   progress: number;
-  objectKey: string | null;
+  compression: CompressionLevel;
   error: string | null;
-  customization: UploadCustomization;
 };
 
 type Action =
-  | { type: "START" }
-  | { type: "PROGRESS"; progress: number; status: "compressing" | "uploading" }
-  | { type: "SUCCESS"; objectKey: string }
+  | { type: "START"; compression: CompressionLevel }
+  | { type: "PROGRESS"; progress: number }
+  | { type: "SUCCESS" }
   | { type: "FAILURE"; error: string }
   | { type: "RESET" };
 
 const initialState: State = {
-  status: "idle", progress: 0, objectKey: null, error: null,
-  customization: { compression: "balanced", summarization: true },
+  status: "idle",
+  progress: 0,
+  compression: "balanced",
+  error: null,
 };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "START":
       return {
-        ...state,
-        status:
-          state.customization.compression === "off"
-            ? "uploading"
-            : "compressing",
-        progress: 0,
-        objectKey: null,
-        error: null,
+        ...initialState,
+        status: "compressing",
+        compression: action.compression,
       };
 
     case "PROGRESS":
-      return { ...state, status: action.status, progress: action.progress };
+      return { ...state, progress: action.progress };
 
     case "SUCCESS":
-      return {
-        ...state,
-        status: "done",
-        progress: 100,
-        objectKey: action.objectKey,
-        error: null,
-      };
+      return { ...state, status: "done", progress: 100, error: null };
 
     case "FAILURE":
       return { ...state, status: "error", error: action.error };
@@ -63,9 +62,10 @@ function reducer(state: State, action: Action): State {
 }
 
 type UploadContextType = State & {
-  
-  uploadFile: (file: File) => Promise<void>;
-  cancel: () => void;
+  uploadFile: (
+    file: File,
+    opts?: { compression?: CompressionLevel }
+  ) => Promise<Blob | null>;
   reset: () => void;
 };
 
@@ -73,8 +73,59 @@ const UploadContext = createContext<UploadContextType | null>(null);
 
 export function UploadProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  // ... uploadFile (useCallback, dispatch START/PROGRESS/SUCCESS/FAILURE)
-  // ... cancel, reset
-  // const value = useMemo(() => ({ ...state, uploadFile, cancel, reset }), [...]);
-  // return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;
+
+  const reset = useCallback(() => {
+    dispatch({ type: "RESET" });
+  }, []);
+
+  const uploadFile = useCallback(
+    async (file: File, opts?: { compression?: CompressionLevel }) => {
+      const compression = opts?.compression ?? "balanced";
+
+      dispatch({ type: "START", compression });
+
+      try {
+        if (compression === "off") {
+          dispatch({ type: "SUCCESS" });
+          return file;
+        }
+
+        const blob = await compressPdf(file, {
+          preset: compression,
+          onProgress: (progress) => {
+            dispatch({ type: "PROGRESS", progress });
+          },
+        });
+
+        dispatch({ type: "SUCCESS" });
+        return blob;
+      } catch (error) {
+        // Compression is best-effort: on failure fall back to the
+        // original file so the flow can continue uninterrupted.
+        console.warn("PDF compression failed, using original file:", error);
+        dispatch({ type: "SUCCESS" });
+        return file;
+      }
+    },
+    []
+  );
+
+  const value = useMemo<UploadContextType>(
+    () => ({ ...state, uploadFile, reset }),
+    [state, uploadFile, reset]
+  );
+
+  return (
+    <UploadContext.Provider value={value}>{children}</UploadContext.Provider>
+  );
+}
+
+export function useUpload() {
+  const context = useContext(UploadContext);
+
+  if (!context) {
+    throw new Error("useUpload must be used inside UploadProvider");
+  }
+
+  return context;
 }

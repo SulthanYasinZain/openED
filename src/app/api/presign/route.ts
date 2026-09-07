@@ -14,7 +14,10 @@ export async function POST(req: Request) {
   const { filename, contentType } = await req.json();
 
   if (!filename || !contentType) {
-    return Response.json({ error: "filename and contentType required" }, { status: 400 });
+    return Response.json(
+      { error: "filename and contentType required" },
+      { status: 400 },
+    );
   }
 
   const key = `${Date.now()}-${filename}`;
@@ -26,7 +29,7 @@ export async function POST(req: Request) {
       Key: key,
       ContentType: contentType,
     }),
-    { expiresIn: 60 } 
+    { expiresIn: 60 },
   );
 
   return Response.json({ url, key });

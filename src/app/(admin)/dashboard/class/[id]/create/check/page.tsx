@@ -1,30 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useUpload } from "@/context/upload-context";
+import { useUpload } from "@/context/uploadContext";
 import Link from "next/link";
 
 export default function CreateAssignment() {
-  const {
-    uploadFile,
-    status,
-    progress,
-    error,
-  } = useUpload();
+  const { uploadFile, status, progress, error } = useUpload();
 
-  const [summary, setSummary] = useState<string | null>(
-    null
-  );
+  const [summary, setSummary] = useState<string | null>(null);
 
-  const [summarizing, setSummarizing] =
-    useState(false);
+  const [summarizing, setSummarizing] = useState(false);
 
-  const [summaryError, setSummaryError] =
-    useState<string | null>(null);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
 
-  async function handleFileChange(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -33,10 +22,9 @@ export default function CreateAssignment() {
     setSummaryError(null);
 
     // 1. Compress PDF
-    // 2. Upload compressed PDF to R2
-    const result = await uploadFile(file);
+    const blob = await uploadFile(file);
 
-    if (!result) return;
+    if (!blob) return;
 
     // 3. Send COMPRESSED PDF to Gemini
     try {
@@ -46,29 +34,20 @@ export default function CreateAssignment() {
 
       formData.append(
         "file",
-        new File(
-          [result.file],
-          file.name,
-          {
-            type: "application/pdf",
-          }
-        )
+        new File([blob], file.name, {
+          type: "application/pdf",
+        }),
       );
 
-      const response = await fetch(
-        "/api/summarize",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
         const data = await response.json();
 
-        throw new Error(
-          data.error || "Failed to summarize PDF"
-        );
+        throw new Error(data.error || "Failed to summarize PDF");
       }
 
       const data = await response.json();
@@ -76,9 +55,7 @@ export default function CreateAssignment() {
       setSummary(data.summary);
     } catch (err) {
       setSummaryError(
-        err instanceof Error
-          ? err.message
-          : "Failed to summarize PDF"
+        err instanceof Error ? err.message : "Failed to summarize PDF",
       );
     } finally {
       setSummarizing(false);
@@ -89,51 +66,25 @@ export default function CreateAssignment() {
     <div>
       <h1>Create Assignment</h1>
 
-      <input
-        type="file"
-        accept="application/pdf"
-        onChange={handleFileChange}
-      />
+      <input type="file" accept="application/pdf" onChange={handleFileChange} />
 
-      {status === "compressing" && (
-        <p>
-          Compressing PDF... {progress}%
-        </p>
-      )}
+      {status === "compressing" && <p>Compressing PDF... {progress}%</p>}
 
-      {status === "uploading" && (
-        <p>Uploading compressed PDF...</p>
-      )}
+      {error && <p>Error: {error}</p>}
 
-      {error && (
-        <p>Error: {error}</p>
-      )}
+      {summarizing && <p>Gemini sedang membuat rangkuman...</p>}
 
-      {summarizing && (
-        <p>
-          Gemini sedang membuat rangkuman...
-        </p>
-      )}
-
-      {summaryError && (
-        <p>
-          Summary error: {summaryError}
-        </p>
-      )}
+      {summaryError && <p>Summary error: {summaryError}</p>}
 
       {summary && (
         <div>
           <h2>PDF Summary</h2>
 
-          <div>
-            {summary}
-          </div>
+          <div>{summary}</div>
         </div>
       )}
 
-      <Link href="/dashboard">
-        View
-      </Link>
+      <Link href="/dashboard">View</Link>
     </div>
   );
 }

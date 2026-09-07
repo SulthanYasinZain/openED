@@ -1,9 +1,9 @@
 "use client";
 
-import { useUpload } from "@/context/upload-context";
+import { useUpload } from "@/context/uploadContext";
 
 export default function UploadDialog() {
-  const { status, progress, objectKey, error } = useUpload();
+  const { status, progress, error } = useUpload();
 
   if (status === "idle") return null;
 
@@ -19,9 +19,7 @@ export default function UploadDialog() {
 
       {status === "compressing" && (
         <>
-          <p className="text-sm text-muted-foreground">
-            Compressing PDF...
-          </p>
+          <p className="text-sm text-muted-foreground">Compressing PDF...</p>
 
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
             <div
@@ -36,22 +34,14 @@ export default function UploadDialog() {
         </>
       )}
 
-      {status === "uploading" && (
-        <p className="text-sm text-muted-foreground">
-          Uploading file...
-        </p>
-      )}
-
       {status === "done" && (
         <p className="text-sm text-muted-foreground">
-          File uploaded successfully.
+          PDF compressed successfully.
         </p>
       )}
 
       {status === "error" && (
-        <p className="text-sm text-destructive">
-          {error}
-        </p>
+        <p className="text-sm text-destructive">{error}</p>
       )}
     </div>
   );
