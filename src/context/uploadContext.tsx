@@ -64,7 +64,7 @@ function reducer(state: State, action: Action): State {
 type UploadContextType = State & {
   uploadFile: (
     file: File,
-    opts?: { compression?: CompressionLevel }
+    opts?: { compression?: CompressionLevel },
   ) => Promise<Blob | null>;
   reset: () => void;
 };
@@ -107,12 +107,12 @@ export function UploadProvider({ children }: { children: ReactNode }) {
         return file;
       }
     },
-    []
+    [],
   );
 
   const value = useMemo<UploadContextType>(
     () => ({ ...state, uploadFile, reset }),
-    [state, uploadFile, reset]
+    [state, uploadFile, reset],
   );
 
   return (

@@ -6,7 +6,7 @@ export default async function compressPdf(
     preset?: CompressionPreset;
     signal?: AbortSignal;
     onProgress?: (progress: number) => void;
-  }
+  },
 ): Promise<Blob> {
   try {
     const { compress } = await import("@quicktoolsone/pdf-compress");
@@ -34,7 +34,7 @@ export default async function compressPdf(
 
     throw new Error(
       error instanceof Error ? error.message : "PDF compression failed",
-      { cause: error }
+      { cause: error },
     );
   }
 }
