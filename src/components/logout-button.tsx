@@ -1,4 +1,3 @@
-// app/components/LogoutButton.tsx
 "use client";
 
 import { useActionState } from "react";

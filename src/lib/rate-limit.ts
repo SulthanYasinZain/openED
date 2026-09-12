@@ -1,16 +1,13 @@
-import { headers } from "next/headers";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { headers } from "next/headers";
 
 export type RateLimitResult =
   | { limited: false }
   | { limited: true; retryAfterSec: number };
 
-// Presets: sliding windows shared across all serverless isolates/instances.
 export const RATE_LIMITS = {
-  // 5 login attempts per 10 minutes, per IP + email
   login: { requests: 5, window: "10 m" },
-  // 10 registrations per hour, per IP
   register: { requests: 10, window: "1 h" },
 } as const;
 
@@ -38,15 +35,13 @@ function windowToMs(window: string): number {
   return value * multipliers[unit];
 }
 
-// --- In-memory fallback (local dev without Upstash credentials only).
-// NOT shared across serverless isolates — never rely on it in production.
 type Entry = { count: number; resetAt: number };
 const memoryStore = new Map<string, Entry>();
 
 function checkMemoryRateLimit(
   key: string,
   requests: number,
-  window: string
+  window: string,
 ): RateLimitResult {
   const now = Date.now();
   const windowMs = windowToMs(window);
@@ -76,7 +71,7 @@ function checkMemoryRateLimit(
 
 export async function checkRateLimit(
   key: string,
-  preset: keyof typeof RATE_LIMITS
+  preset: keyof typeof RATE_LIMITS,
 ): Promise<RateLimitResult> {
   const { requests, window } = RATE_LIMITS[preset];
   const client = getRedis();
@@ -84,7 +79,7 @@ export async function checkRateLimit(
   if (!client) {
     if (process.env.NODE_ENV === "production") {
       console.error(
-        "Upstash Redis is not configured — rate limiting is per-instance only."
+        "Upstash Redis is not configured — rate limiting is per-instance only.",
       );
     }
 
@@ -108,7 +103,6 @@ export async function checkRateLimit(
       retryAfterSec: Math.max(1, Math.ceil((reset - Date.now()) / 1000)),
     };
   } catch (error) {
-    // Fail open so an Upstash outage can't lock every user out of login.
     console.error("Rate limiter error, allowing request:", error);
     return { limited: false };
   }

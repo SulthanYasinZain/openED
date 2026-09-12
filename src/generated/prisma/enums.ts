@@ -24,3 +24,13 @@ export const TeacherType = {
 } as const
 
 export type TeacherType = (typeof TeacherType)[keyof typeof TeacherType]
+
+
+export const MeetingStatus = {
+  UPCOMING: 'UPCOMING',
+  ONGOING: 'ONGOING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type MeetingStatus = (typeof MeetingStatus)[keyof typeof MeetingStatus]

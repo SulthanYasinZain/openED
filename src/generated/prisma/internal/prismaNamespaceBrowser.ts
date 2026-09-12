@@ -54,7 +54,8 @@ export const ModelName = {
   User: 'User',
   Class: 'Class',
   ClassTeacher: 'ClassTeacher',
-  StudentEnrollment: 'StudentEnrollment'
+  StudentEnrollment: 'StudentEnrollment',
+  ClassMeeting: 'ClassMeeting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -121,6 +122,21 @@ export const StudentEnrollmentScalarFieldEnum = {
 } as const
 
 export type StudentEnrollmentScalarFieldEnum = (typeof StudentEnrollmentScalarFieldEnum)[keyof typeof StudentEnrollmentScalarFieldEnum]
+
+
+export const ClassMeetingScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  topic: 'topic',
+  description: 'description',
+  fileKey: 'fileKey',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClassMeetingScalarFieldEnum = (typeof ClassMeetingScalarFieldEnum)[keyof typeof ClassMeetingScalarFieldEnum]
 
 
 export const SortOrder = {

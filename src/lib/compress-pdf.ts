@@ -30,8 +30,6 @@ export default async function compressPdf(
       throw error;
     }
 
-    console.warn("PDF compression failed:", error);
-
     throw new Error(
       error instanceof Error ? error.message : "PDF compression failed",
       { cause: error },

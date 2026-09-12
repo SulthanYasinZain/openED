@@ -2,17 +2,37 @@
 
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
-  type ReactNode,
+  useRef,
 } from "react";
 import compressPdf from "@/lib/compress-pdf";
 
 type CompressionLevel = "off" | "lossless" | "balanced" | "max";
 
-type Status = "idle" | "compressing" | "done" | "error";
+type Status =
+  | "idle"
+  | "compressing"
+  | "uploading"
+  | "summarizing"
+  | "saving"
+  | "done"
+  | "error";
+
+type Phase = "uploading" | "summarizing" | "saving";
+
+const PHASE_WAYPOINTS: Record<
+  Phase,
+  { entry: number; cap: number; everyMs: number }
+> = {
+  uploading: { entry: 40, cap: 58, everyMs: 400 },
+  summarizing: { entry: 60, cap: 78, everyMs: 500 },
+  saving: { entry: 80, cap: 94, everyMs: 400 },
+};
 
 type State = {
   status: Status;
@@ -24,6 +44,8 @@ type State = {
 type Action =
   | { type: "START"; compression: CompressionLevel }
   | { type: "PROGRESS"; progress: number }
+  | { type: "PHASE"; status: Phase; progress: number }
+  | { type: "CREEP"; cap: number }
   | { type: "SUCCESS" }
   | { type: "FAILURE"; error: string }
   | { type: "RESET" };
@@ -45,7 +67,13 @@ function reducer(state: State, action: Action): State {
       };
 
     case "PROGRESS":
-      return { ...state, progress: action.progress };
+      return { ...state, progress: Math.min(action.progress, 40) };
+
+    case "PHASE":
+      return { ...state, status: action.status, progress: action.progress };
+
+    case "CREEP":
+      return { ...state, progress: Math.min(state.progress + 1, action.cap) };
 
     case "SUCCESS":
       return { ...state, status: "done", progress: 100, error: null };
@@ -66,6 +94,9 @@ type UploadContextType = State & {
     file: File,
     opts?: { compression?: CompressionLevel },
   ) => Promise<Blob | null>;
+  setPhase: (phase: Phase) => void;
+  succeed: () => void;
+  fail: (error: string) => void;
   reset: () => void;
 };
 
@@ -73,46 +104,90 @@ const UploadContext = createContext<UploadContextType | null>(null);
 
 export function UploadProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const creepRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopCreep = useCallback(() => {
+    if (creepRef.current !== null) {
+      clearInterval(creepRef.current);
+      creepRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (creepRef.current !== null) {
+        clearInterval(creepRef.current);
+        creepRef.current = null;
+      }
+    };
+  }, []);
 
   const reset = useCallback(() => {
+    stopCreep();
     dispatch({ type: "RESET" });
-  }, []);
+  }, [stopCreep]);
+
+  const setPhase = useCallback(
+    (phase: Phase) => {
+      const { entry, cap, everyMs } = PHASE_WAYPOINTS[phase];
+      stopCreep();
+      dispatch({ type: "PHASE", status: phase, progress: entry });
+      creepRef.current = setInterval(() => {
+        dispatch({ type: "CREEP", cap });
+      }, everyMs);
+    },
+    [stopCreep],
+  );
+
+  const succeed = useCallback(() => {
+    stopCreep();
+    dispatch({ type: "SUCCESS" });
+  }, [stopCreep]);
+
+  const fail = useCallback(
+    (error: string) => {
+      stopCreep();
+      dispatch({ type: "FAILURE", error });
+    },
+    [stopCreep],
+  );
 
   const uploadFile = useCallback(
     async (file: File, opts?: { compression?: CompressionLevel }) => {
       const compression = opts?.compression ?? "balanced";
 
+      stopCreep();
       dispatch({ type: "START", compression });
 
       try {
         if (compression === "off") {
-          dispatch({ type: "SUCCESS" });
+          dispatch({ type: "PROGRESS", progress: 40 });
           return file;
         }
 
         const blob = await compressPdf(file, {
           preset: compression,
           onProgress: (progress) => {
-            dispatch({ type: "PROGRESS", progress });
+            dispatch({
+              type: "PROGRESS",
+              progress: Math.round(progress * 0.4),
+            });
           },
         });
 
-        dispatch({ type: "SUCCESS" });
+        dispatch({ type: "PROGRESS", progress: 40 });
         return blob;
-      } catch (error) {
-        // Compression is best-effort: on failure fall back to the
-        // original file so the flow can continue uninterrupted.
-        console.warn("PDF compression failed, using original file:", error);
-        dispatch({ type: "SUCCESS" });
+      } catch {
+        dispatch({ type: "PROGRESS", progress: 40 });
         return file;
       }
     },
-    [],
+    [stopCreep],
   );
 
   const value = useMemo<UploadContextType>(
-    () => ({ ...state, uploadFile, reset }),
-    [state, uploadFile, reset],
+    () => ({ ...state, uploadFile, setPhase, succeed, fail, reset }),
+    [state, uploadFile, setPhase, succeed, fail, reset],
   );
 
   return (

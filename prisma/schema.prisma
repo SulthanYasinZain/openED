@@ -45,6 +45,8 @@ model Class {
   teachers ClassTeacher[]
 
   studentEnrollments StudentEnrollment[]
+
+  meetings ClassMeeting[]
 }
 
 enum TeacherType {
@@ -92,6 +94,8 @@ model ClassMeeting {
   id          Int           @id @default(autoincrement())
   classId     Int
   topic       String
+  description String?
+  fileKey     String?
   scheduledAt DateTime
   status      MeetingStatus @default(UPCOMING)
   createdAt   DateTime      @default(now())
@@ -100,4 +104,4 @@ model ClassMeeting {
   class Class @relation(fields: [classId], references: [id])
 
   @@index([classId])
-}}
+}
