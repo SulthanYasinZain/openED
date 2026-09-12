@@ -1,11 +1,24 @@
 "use client";
 
-import { useUpload } from "@/context/upload-context";
+import { useUpload } from "@/context/uploadContext";
+
+const PHASE_LABELS = {
+  compressing: "Compressing PDF...",
+  uploading: "Uploading file...",
+  summarizing: "Generating class description...",
+  saving: "Saving meeting...",
+} as const;
 
 export default function UploadDialog() {
-  const { status, progress, objectKey, error } = useUpload();
+  const { status, progress, error, reset } = useUpload();
 
   if (status === "idle") return null;
+
+  const isActive =
+    status === "compressing" ||
+    status === "uploading" ||
+    status === "summarizing" ||
+    status === "saving";
 
   return (
     <div className="fixed bottom-5 right-5 z-50 w-80 rounded-lg border bg-background p-4 shadow-lg">
@@ -17,10 +30,10 @@ export default function UploadDialog() {
         )}
       </div>
 
-      {status === "compressing" && (
+      {isActive && (
         <>
           <p className="text-sm text-muted-foreground">
-            Compressing PDF...
+            {PHASE_LABELS[status]}
           </p>
 
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
@@ -36,22 +49,34 @@ export default function UploadDialog() {
         </>
       )}
 
-      {status === "uploading" && (
-        <p className="text-sm text-muted-foreground">
-          Uploading file...
-        </p>
-      )}
-
       {status === "done" && (
-        <p className="text-sm text-muted-foreground">
-          File uploaded successfully.
-        </p>
+        <>
+          <p className="text-sm text-muted-foreground">
+            Meeting created successfully.
+          </p>
+
+          <button
+            className="mt-3 rounded border px-3 py-1 text-sm"
+            type="button"
+            onClick={reset}
+          >
+            Close
+          </button>
+        </>
       )}
 
       {status === "error" && (
-        <p className="text-sm text-destructive">
-          {error}
-        </p>
+        <>
+          <p className="text-sm text-destructive">{error}</p>
+
+          <button
+            className="mt-3 rounded border px-3 py-1 text-sm"
+            type="button"
+            onClick={reset}
+          >
+            Close
+          </button>
+        </>
       )}
     </div>
   );

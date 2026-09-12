@@ -400,7 +400,8 @@ export const ModelName = {
   User: 'User',
   Class: 'Class',
   ClassTeacher: 'ClassTeacher',
-  StudentEnrollment: 'StudentEnrollment'
+  StudentEnrollment: 'StudentEnrollment',
+  ClassMeeting: 'ClassMeeting'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -416,7 +417,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "class" | "classTeacher" | "studentEnrollment"
+    modelProps: "user" | "class" | "classTeacher" | "studentEnrollment" | "classMeeting"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -716,6 +717,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ClassMeeting: {
+      payload: Prisma.$ClassMeetingPayload<ExtArgs>
+      fields: Prisma.ClassMeetingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClassMeetingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClassMeetingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>
+        }
+        findFirst: {
+          args: Prisma.ClassMeetingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClassMeetingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>
+        }
+        findMany: {
+          args: Prisma.ClassMeetingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>[]
+        }
+        create: {
+          args: Prisma.ClassMeetingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>
+        }
+        createMany: {
+          args: Prisma.ClassMeetingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClassMeetingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>[]
+        }
+        delete: {
+          args: Prisma.ClassMeetingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>
+        }
+        update: {
+          args: Prisma.ClassMeetingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClassMeetingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClassMeetingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClassMeetingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClassMeetingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClassMeetingPayload>
+        }
+        aggregate: {
+          args: Prisma.ClassMeetingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClassMeeting>
+        }
+        groupBy: {
+          args: Prisma.ClassMeetingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClassMeetingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClassMeetingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClassMeetingCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -803,6 +878,21 @@ export const StudentEnrollmentScalarFieldEnum = {
 } as const
 
 export type StudentEnrollmentScalarFieldEnum = (typeof StudentEnrollmentScalarFieldEnum)[keyof typeof StudentEnrollmentScalarFieldEnum]
+
+
+export const ClassMeetingScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  topic: 'topic',
+  description: 'description',
+  fileKey: 'fileKey',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClassMeetingScalarFieldEnum = (typeof ClassMeetingScalarFieldEnum)[keyof typeof ClassMeetingScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -909,6 +999,20 @@ export type EnumTeacherTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'TeacherType[]'
  */
 export type ListEnumTeacherTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TeacherType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetingStatus'
+ */
+export type EnumMeetingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'MeetingStatus[]'
+ */
+export type ListEnumMeetingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MeetingStatus[]'>
     
 
 
@@ -1080,6 +1184,7 @@ export type GlobalOmitConfig = {
   class?: Prisma.ClassOmit
   classTeacher?: Prisma.ClassTeacherOmit
   studentEnrollment?: Prisma.StudentEnrollmentOmit
+  classMeeting?: Prisma.ClassMeetingOmit
 }
 
 /* Types for Logging */

@@ -8,7 +8,7 @@ type PreviousState = {
   error?: string;
 };
 
-export async function generateUniqueClassCode(length = 6) {
+async function generateUniqueClassCode(length = 6) {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
   const generateCode = () => {

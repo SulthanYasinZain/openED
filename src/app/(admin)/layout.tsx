@@ -1,4 +1,4 @@
-import { UploadProvider } from "@/context/upload-context";
+import { UploadProvider } from "@/context/uploadContext";
 import UploadDialog from "@/components/UploadDialog";
 
 export default function AdminLayout({

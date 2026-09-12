@@ -2,8 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { checkSession } from "@/lib/session";
 
-type PreviouseState = {
+type PreviousState = {
   error?: string;
 };
 
@@ -11,6 +12,8 @@ export async function AssignTeacherAction(
   _previousState: PreviousState,
   formData: FormData,
 ): Promise<PreviousState> {
+  await checkSession("ADMIN");
+
   const teacherId = Number(formData.get("teacherId"));
   const classId = Number(formData.get("classId"));
 
