@@ -1,11 +1,32 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { GoogleGenAI } from "@google/genai";
+import { verifyAccessToken } from "@/lib/session";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
 export async function POST(req: Request) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let session;
+
+  try {
+    session = await verifyAccessToken(token);
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (session.role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   try {
     const formData = await req.formData();
 

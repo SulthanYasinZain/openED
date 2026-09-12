@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createAccessToken } from "@/lib/session";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
@@ -26,7 +27,19 @@ export async function loginAction(
     return { error: "All fields must be filled" };
   }
 
-  if (password.lenght < 8) {
+  const ip = await getClientIp();
+  const loginLimit = await checkRateLimit(
+    `login:${ip}:${email.trim().toLowerCase()}`,
+    "login"
+  );
+
+  if (loginLimit.limited) {
+    return {
+      error: `Too many login attempts, try again in ${loginLimit.retryAfterSec} seconds`,
+    };
+  }
+
+  if (password.length < 8) {
     return { error: "Password must be at least 8 characters long" };
   }
 
@@ -84,6 +97,15 @@ export async function registerAction(
 
   if (!email.trim() || !password) {
     return { error: "All fields must be filled" };
+  }
+
+  const ip = await getClientIp();
+  const registerLimit = await checkRateLimit(`register:${ip}`, "register");
+
+  if (registerLimit.limited) {
+    return {
+      error: `Too many registrations, try again in ${registerLimit.retryAfterSec} seconds`,
+    };
   }
 
   const isUserAlreadyExist = await prisma.user.findUnique({

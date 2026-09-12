@@ -3,8 +3,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export type AuthTokenPayload = {
-  userId: string;
-  role: "student" | "admin" | "school";
+  userId: number;
+  role: "STUDENT" | "ADMIN" | "TEACHER";
 };
 
 function getJwtSecret() {

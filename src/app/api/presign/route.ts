@@ -1,5 +1,8 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { verifyAccessToken } from "@/lib/session";
 
 const s3 = new S3Client({
   region: "auto",
@@ -11,6 +14,25 @@ const s3 = new S3Client({
 });
 
 export async function POST(req: Request) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("access_token")?.value;
+
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let session;
+
+  try {
+    session = await verifyAccessToken(token);
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (session.role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const { filename, contentType } = await req.json();
 
   if (!filename || !contentType) {
