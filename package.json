@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "@create-ui/cli": "^0.8.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/pg": "^8.20.3",

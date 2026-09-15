@@ -1,0 +1,5 @@
+interface:
+  display_name: "Create UI"
+  short_description: "Create UI component library: per-component API references, composition rules, semantic tokens, and design recipes for building UI with the @createui registry."
+  icon_small: "./assets/createui-small.png"
+  icon_large: "./assets/createui.png"
