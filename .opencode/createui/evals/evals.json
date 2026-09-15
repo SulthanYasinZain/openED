@@ -1,0 +1,200 @@
+{
+  "skill_name": "createui",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm building a Next.js app with Create UI. Create a settings form component with fields for: full name, email address, and notification preferences (email, SMS, push notifications as on/off toggles). Add validation states for required fields.",
+      "expected_output": "A React component using FieldGroup, Field, Switch, data-invalid/aria-invalid validation, gap-* spacing, and Create UI semantic tokens.",
+      "files": [],
+      "expectations": [
+        "Uses FieldGroup and Field components for form layout instead of a raw div with space-y",
+        "Uses Switch for independent on/off notification toggles (not looping Button with manual active state)",
+        "Uses data-invalid on Field and aria-invalid on the input control for validation states",
+        "Uses gap-* (e.g. gap-4, gap-6) instead of space-y-* or space-x-* for spacing",
+        "Uses Create UI semantic tokens (e.g. bg-static, text-body, text-placeholder, text-error-base) - never foreign tokens like bg-background/text-muted-foreground or raw colors like bg-red-500",
+        "No manual dark: color overrides (tokens swap via the .dark class)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Create an account menu component for the app header. The trigger is the user's avatar; the menu shows Profile, Billing, and Settings items with appropriate icons, then a separated Sign out item. Below the menu component, also add a Save changes button that shows a pending state while saving. Using Create UI.",
+      "expected_output": "A React component with Dropdown (the trigger is its first non-Popover child: a Button + Avatar with AvatarText initials), a Dropdown.Popover > Dropdown.Menu with Dropdown.Item rows whose icons go through the leading prop, a Dropdown.Separator before Sign out, icons from @create-ui/assets/icons without sizing classes, and a Button using the loading prop.",
+      "files": [],
+      "expectations": [
+        "Uses Dropdown with the trigger as its first non-Popover child - Dropdown is React Aria Components, not Radix, so there is no DropdownMenuTrigger and no asChild - instead of hand-rolling a menu",
+        "Avatar uses AvatarText for the initials fallback (AvatarFallback does not exist in Create UI)",
+        "Menu rows are Dropdown.Item inside Dropdown.Menu with a Dropdown.Separator before Sign out; item icons go through the leading prop, never as a child beside the text",
+        "Icons are imported from @create-ui/assets/icons (Remix Ri*), never from lucide-react or another icon package",
+        "No sizing classes on icons inside components (no size-4, w-4, h-4, etc.) - the component sizes icons via CVA",
+        "Uses the Button loading prop for the pending Save state instead of manually composing a Spinner",
+        "Button icons (if any) are composed as children alongside <ButtonLabel> (Button takes no leading/trailing props), never via a data-icon attribute"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create a dashboard stats section that shows 4 stat tiles in a grid. Each tile has a label, a large number, and a percentage-change indicator, plus a loading state while the data is being fetched. Using Create UI.",
+      "expected_output": "A React component with stat tiles built from semantic-token markup (bg-static/border-light surfaces, text-placeholder label, text-strongest number), a Badge for the percentage change, a Spinner for the loading state, and gap-* spacing.",
+      "files": [],
+      "expectations": [
+        "Builds the stat tiles from semantic-token markup (e.g. bg-static or bg-weakest surface, border-light, text-placeholder for the label, text-strongest for the number) - there is no Card component in Create UI",
+        "Uses the Spinner component for the loading state instead of a skeleton placeholder (no skeleton component exists in Create UI) or custom animate-pulse/animate-spin divs",
+        "Uses a Badge (e.g. variant=\"success\" / \"danger\") for the percentage change instead of custom styled spans",
+        "Uses Create UI semantic tokens (e.g. text-body, text-strongest, text-success-base) instead of foreign tokens or raw colors like bg-green-500",
+        "Uses gap-* instead of space-y-* or space-x-* for spacing",
+        "Uses size-* when width and height are equal instead of separate w-* h-*"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Create a hero section for a product landing page: an eyebrow badge that says 'Now shipping - v1 components' with a sparkle icon, a large heading, a short description, and two CTA buttons (primary with a trailing arrow icon, secondary ghost). Using Create UI.",
+      "expected_output": "A hero section where the Badge gets its icon via the leading prop, buttons compose icons as children with ButtonLabel, headings/body use semantic text tokens, and the badge does not stretch.",
+      "files": [],
+      "expectations": [
+        "Badge icon is passed via the leading prop (never as an icon child next to the text, e.g. <Badge><RiSparkling2Line />text</Badge> is wrong)",
+        "Button icons are composed as children alongside <ButtonLabel> (Button takes no leading/trailing props)",
+        "Icons are imported from @create-ui/assets/icons (Remix Ri*), never lucide-react",
+        "No sizing classes on icons inside Badge or Button",
+        "Text uses semantic tokens (text-strongest for the heading, text-body/text-placeholder for the description), never raw palette colors",
+        "There is no variant=\"outline\"/\"secondary\"/\"destructive\" anywhere - outline looks come from appearance=\"outline\""
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Create a settings page section with three tabs: Profile, Billing, and Notifications. Each tab shows its own panel of content. Using Create UI.",
+      "expected_output": "Tabs + TabsList + TabsTrigger + TabsContent, with each panel in its own TabsContent paired to its trigger by value; selection via defaultValue (or controlled value/onValueChange).",
+      "files": [],
+      "expectations": [
+        "Uses the Tabs + TabsList + TabsTrigger + TabsContent set (the content-panel tabs) - never a hand-rolled row of styled buttons; the panels swap in place because each lives in its own TabsContent",
+        "Each TabsTrigger value is paired to a TabsContent with the same value - panels are NOT hand-keyed off a useState value (that is the TabMenu pattern, which has no content component)",
+        "Tab icons (if any) are passed via the leading prop on TabsTrigger",
+        "Selection is driven by defaultValue (or value/onValueChange), not by manual className toggling"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Add a monthly/yearly billing toggle to a pricing section. The active option's background should slide smoothly between the options. Show a '-20%' badge next to the yearly label. Using Create UI.",
+      "expected_output": "A SegmentedControl with appearance=\"grouped\" driven by value/onValueChange, plus a Badge for the discount.",
+      "files": [],
+      "expectations": [
+        "Uses SegmentedControl + SegmentedControlItem with value/onValueChange (or defaultValue) - never a row of Buttons with manual active state",
+        "Uses appearance=\"grouped\" for the classic padded pricing-toggle container (the active pill slides in both appearances)",
+        "The discount indicator is a Badge, not a custom styled span",
+        "An initial value is set (value or defaultValue) so one option is active on mount"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Create a notification preferences panel that feels premium for a marketing showcase: rows for Email, SMS, and Push notifications, each with a label, a description, and a toggle. Make the toggles feel rich, not bare. Using Create UI.",
+      "expected_output": "Field/SwitchGroup rows with Switch components that exercise the richer API (thumbIcon, ioTrigger, thumbType, or a deliberate variant), not bare <Switch /> defaults.",
+      "files": [],
+      "expectations": [
+        "Uses Switch (or SwitchGroup labelled rows - there is no SwitchGroupItem) - never a hand-rolled toggle",
+        "At least one richer Switch option is exercised: thumbIcon, ioTrigger, thumbType=\"long\", or a non-default variant - bare <Switch /> everywhere fails the 'premium' ask",
+        "Rows are laid out with Field orientation=\"horizontal\" + FieldLabel/FieldDescription (or SwitchGroup), not raw flex divs with hand-styled labels",
+        "Switch state is controlled via checked/onCheckedChange or defaultChecked"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "Create a marketing site footer: brand column with a short description, three link columns (Product, Resources, Company), a newsletter signup, and a bottom bar with the copyright. Using Create UI.",
+      "expected_output": "A footer on neutral semantic surfaces (bg-static/bg-weak, border-light dividers) with TextLink columns, a Field + Input + Button newsletter form, and no raw palette colors.",
+      "files": [],
+      "expectations": [
+        "Footer surfaces use neutral semantic tokens (bg-static or bg-weak, border-light dividers) - never saturated raw palette colors (bg-blue-500, text-indigo-400) or hex values",
+        "Link columns use TextLink (or styled anchors with semantic text tokens like text-body/text-strongest), never primary-colored link soup",
+        "Newsletter form is FieldGroup/Field + Input + Button, not raw inputs",
+        "Spacing uses flex/grid + gap-*, never space-y-*",
+        "Column titles use text-strongest with body links in text-body/text-placeholder"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Build a 'plan limits' summary block: a row that says the account is over its seat limit (an error), a row showing storage is healthy (success), and a neutral row for the current region. Use Create UI semantic tokens.",
+      "expected_output": "Status communicated with semantic status tokens and/or StatusBadge plus text labels - error family is error-*, neutral is stable-*, no raw palette or danger-* color tokens.",
+      "files": [],
+      "expectations": [
+        "Error/negative state uses the error-* token family (e.g. text-error-base, bg-error-weak) - never a danger-* color token (there is no danger-* color; danger is only a component variant) and never bg-red-500/hex",
+        "Positive state uses success-* tokens (e.g. text-success-base) and informational/neutral uses stable-* or neutral surface tokens - not raw emerald/green/gray palette classes",
+        "Status is not conveyed by color alone: each row pairs the color with a text label (or a StatusBadge dot plus an adjacent label)",
+        "Surfaces and text use semantic tokens (bg-static/bg-weak, text-body/text-placeholder/text-strongest), never foreign tokens or hex"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Create a checkout details form with: cardholder name, card number, card expiry, a one-time verification code field, the customer's phone number, and their date of birth. Using Create UI.",
+      "expected_output": "Each field uses the purpose-built control - CreditCardInput, InputOTP, PhoneInput, DateInput - inside FieldGroup/Field, never a plain Input with hand-rolled masking.",
+      "files": [],
+      "expectations": [
+        "Card number uses CreditCardInput (not a raw Input with manual formatting)",
+        "The verification code uses InputOTP",
+        "Phone number uses PhoneInput and date of birth uses DateInput - not plain Inputs",
+        "Fields are laid out with FieldGroup + Field (size/state cascade from Field), with FieldLabel wired via htmlFor",
+        "No invented or shadcn-style components (no DatePicker, no PhoneNumberInput) - only the registry's actual control names"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Create a billing page with a table of recent invoices (date, amount, status, and a row action menu), an empty state for when there are no invoices, and a 'Cancel subscription' action that asks the user to confirm before proceeding. Using Create UI.",
+      "expected_output": "A semantic <table> (no Table primitive) with Badge status cells and a DropdownMenu row action, a semantic empty-state surface, and a confirmation handled inline (expanding section, dedicated step, or InlineAlert) or with a note that Modal is Pro - not an invented Dialog/Card/Table component.",
+      "files": [],
+      "expectations": [
+        "The table is built from semantic markup (a real <table> with bg-weak header, border-light row separators) - there is no Table/DataTable component; cell content uses primitives (Badge for status, DropdownMenu or an iconOnly Button for the row action) rather than styled spans",
+        "No Card primitive is used or imported - surfaces are bg-static/bg-weakest panels with border-light and an elevation shadow",
+        "At the free tier there is no Dialog/Modal primitive: the cancel confirmation is surfaced inline (expanding section, dedicated step, or InlineAlert), or the answer notes Modal is Pro - it does not invent a Dialog/AlertDialog component",
+        "The empty state reuses the same surface with text-placeholder copy and a primary Button, not a bare 'No data' string or a fixed-height box with only a Spinner",
+        "Spacing uses gap-*/padding utilities, not space-y-*, and status colors use semantic tokens"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Create a compact toolbar: an icon-only search button, an icon-only filter button, an icon-only overflow menu, and a view toggle between Grid and List shown as two icons. Make it accessible. Using Create UI.",
+      "expected_output": "Icon-only Buttons each with an aria-label, the overflow opening a DropdownMenu, and the view toggle a SegmentedControl with iconOnly items that each carry an aria-label - icons from @create-ui/assets/icons, no sizing classes.",
+      "files": [],
+      "expectations": [
+        "Every icon-only control has an aria-label (icon-only Buttons and iconOnly SegmentedControlItems) so it has an accessible name",
+        "Icon-only buttons set iconOnly and pass the icon as the child (Button has no leading/trailing prop)",
+        "The Grid/List toggle is a SegmentedControl with value/onValueChange (or defaultValue), not two manually-toggled Buttons",
+        "The overflow menu uses Dropdown with the icon Button as its first non-Popover child (there is no DropdownMenuTrigger / asChild)",
+        "Icons come from @create-ui/assets/icons (Ri*), with no size-4/w-4/h-4 sizing classes on icons inside components"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "Build a profile photo row for a settings page: the user's avatar on the left, and to its right a 'Profile photo' label with a 'Change' link under it. Make the avatar and the text/link sizes feel balanced and aligned. Using Create UI.",
+      "expected_output": "An items-center flex row with an Avatar (AvatarImage + AvatarText) as the visual anchor and a stacked label + TextLink whose sizes track one coherent scale (e.g. Avatar lg with text-body-sm + TextLink size=\"sm\"), spaced with gap-*.",
+      "files": [],
+      "expectations": [
+        "The row uses flex items-center so the avatar aligns to the optical center of the text block, with a gap-* between them (not margins)",
+        "The avatar is the Avatar component with AvatarText for initials (not AvatarFallback) and is the visual anchor of the cluster",
+        "The label text token and the TextLink size sit on one coherent scale (e.g. text-body-sm paired with TextLink size=\"sm\"), rather than mismatched sizes - and the answer does not assume Avatar and TextLink share the same size name to align",
+        "The change affordance is a TextLink (with a variant/size), not a styled <a> or a Button",
+        "Sizes are harmonized by optical height, not by blindly matching size prop names across the Avatar and TextLink"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Create the action bar for an account settings form (a plain app screen, not a marketing page): a 'Save changes' button, a 'Cancel' button, and a 'Delete account' button. Using Create UI.",
+      "expected_output": "Buttons whose props reflect their distinct roles - one solid primary Save, a non-solid secondary Cancel, and a danger Delete - not three identical default buttons.",
+      "files": [],
+      "expectations": [
+        "Save is the single primary action: variant=\"primary\" appearance=\"solid\" - and it is the only solid button in the bar",
+        "Cancel is visually secondary (appearance=\"outline\" / \"soft\" / \"ghost\"), never a second solid button",
+        "Delete account uses variant=\"danger\" (not a default neutral button, and not variant=\"destructive\" which does not exist)",
+        "The three buttons are NOT all left at the same default size+variant - their props differ to express primary vs secondary vs destructive roles, even though this is plain app UI rather than a showcase",
+        "Sizes are deliberate and consistent for the cluster (not a mix of unrelated sizes), and any icons are composed as children with ButtonLabel (Button has no leading/trailing)"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "Build the section navigation for a settings page: a horizontal tab bar with Overview, Members, and Billing that links to /settings, /settings/members, and /settings/billing. The active tab follows the current route. Using Create UI.",
+      "expected_output": "TabMenu + TabMenuItem with asChild link tabs (each wrapping a next/link or anchor), with the active item driven by the current pathname - not the Tabs content-panel set, since these navigate rather than swap a panel in place.",
+      "files": [],
+      "expectations": [
+        "Uses TabMenu + TabMenuItem with asChild so each item renders a link (next/link or <a>) - never a hand-rolled row of styled <a>/<button> elements",
+        "Does NOT use the Tabs/TabsList/TabsTrigger/TabsContent set: these tabs navigate to routes, there is no in-place content panel to render",
+        "The active tab reflects the current route (e.g. selected via pathname), not a local useState toggle",
+        "Tab icons (if any) go through leading/trailing on TabMenuItem, never as children next to text"
+      ]
+    }
+  ]
+}

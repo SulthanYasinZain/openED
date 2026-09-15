@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "createui": {
+      "type": "local",
+      "command": [
+        "npx",
+        "@create-ui/cli",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  }
+}
