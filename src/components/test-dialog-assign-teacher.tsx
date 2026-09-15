@@ -1,29 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { MentorIcon } from "@hugeicons/core-free-icons";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
 
 type TeacherData = {
   id: number;
@@ -31,53 +10,90 @@ type TeacherData = {
   email: string;
 };
 
-export default function AssignTeacherButton({ teacherList }: TeacherData[]) {
-  const teacherItems = teacherList.map((teacher) => ({
-    value: teacher.id.toString(),
-    label: teacher.name ?? teacher.email,
-  }));
+export default function AssignTeacherButton({
+  teacherList,
+}: {
+  teacherList: TeacherData[];
+}) {
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
 
   return (
-    <Dialog modal={false}>
-      <form>
-        <DialogTrigger
-          render={
-            <Button variant="ghost">
-              <HugeiconsIcon icon={MentorIcon} strokeWidth={2} /> Add Teacher
-            </Button>
-          }
-        />
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Add Teacher To Class</DialogTitle>
-            <DialogDescription>
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
+      >
+        <HugeiconsIcon icon={MentorIcon} strokeWidth={2} /> Add Teacher
+      </button>
+      {open && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setOpen(false)}
+          role="presentation"
+        >
+          <div
+            className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="assign-teacher-title"
+          >
+            <h2 id="assign-teacher-title" className="text-lg font-semibold">
+              Add Teacher To Class
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
               Add Teacher Here. Click save when you&apos;re done.
-            </DialogDescription>
-          </DialogHeader>
-          <Field>
-            <Label htmlFor="teacher">Teacher</Label>
-            <Combobox items={teacherItems}>
-              <ComboboxInput placeholder="Select teachers" />
-
-              <ComboboxContent>
-                <ComboboxEmpty>No items found.</ComboboxEmpty>
-
-                <ComboboxList>
-                  {(item) => (
-                    <ComboboxItem key={item.value} value={item}>
-                      {item.label}
-                    </ComboboxItem>
-                  )}
-                </ComboboxList>
-              </ComboboxContent>
-            </Combobox>
-          </Field>
-          <DialogFooter>
-            <DialogClose render={<Button variant="outline">Cancel</Button>} />
-            <Button type="submit">Save</Button>
-          </DialogFooter>
-        </DialogContent>
-      </form>
-    </Dialog>
+            </p>
+            <form
+              className="mt-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                setOpen(false);
+              }}
+            >
+              <label
+                htmlFor="teacher"
+                className="mb-1 block text-sm font-medium"
+              >
+                Teacher
+              </label>
+              <select
+                id="teacher"
+                value={selectedId}
+                onChange={(e) => setSelectedId(e.target.value)}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              >
+                <option value="">Select teachers</option>
+                {teacherList.map((teacher) => (
+                  <option
+                    key={teacher.id}
+                    value={teacher.id.toString()}
+                  >
+                    {teacher.name ?? teacher.email}
+                  </option>
+                ))}
+              </select>
+              <div className="mt-6 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+                >
+                  Save
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
