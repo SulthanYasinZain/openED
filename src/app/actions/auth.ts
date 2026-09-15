@@ -30,7 +30,7 @@ export async function loginAction(
   const ip = await getClientIp();
   const loginLimit = await checkRateLimit(
     `login:${ip}:${email.trim().toLowerCase()}`,
-    "login"
+    "login",
   );
 
   if (loginLimit.limited) {

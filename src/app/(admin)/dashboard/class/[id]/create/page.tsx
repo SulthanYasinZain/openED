@@ -2,10 +2,34 @@
 
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
+import { toast } from "sonner";
 import { createMeetingAction } from "@/app/actions/meeting";
-import { useUpload } from "@/context/uploadContext";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+  FieldTitle,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import compressPdf from "@/lib/compress-pdf";
 import summarizePdf from "@/lib/summarize-service";
 import uploadToR2 from "@/lib/upload-to-r2";
+
+const COMPRESSION_OPTIONS = [
+  { value: "off", title: "Off", hint: "Upload as-is" },
+  { value: "lossless", title: "Lossless", hint: "Smaller, same quality" },
+  { value: "balanced", title: "Balanced", hint: "Size / quality mix" },
+  { value: "max", title: "Max", hint: "Smallest file size" },
+] as const;
+
+type InvalidField = "topic" | "date" | "file" | null;
 
 export default function CreatePage({
   params,
@@ -14,12 +38,12 @@ export default function CreatePage({
 }) {
   const { id: classCode } = use(params);
   const router = useRouter();
-  const { uploadFile, setPhase, succeed, fail, status, progress, error } =
-    useUpload();
 
   const [description, setDescription] = useState("");
   const [aiEnabled, setAiEnabled] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [invalidField, setInvalidField] = useState<InvalidField>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,20 +53,19 @@ export default function CreatePage({
     const topic = data.get("topic");
     const date = data.get("date");
     const compressionValue = data.get("compression");
-    const summarizeChecked = data.get("summarize") === "on";
 
     if (typeof topic !== "string" || !topic.trim()) {
-      setFormError("Topic name must be filled");
+      setInvalidField("topic");
       return;
     }
 
     if (typeof date !== "string" || !date) {
-      setFormError("Date must be filled");
+      setInvalidField("date");
       return;
     }
 
     if (!(file instanceof File) || file.size === 0) {
-      setFormError("PDF file is required");
+      setInvalidField("file");
       return;
     }
 
@@ -54,20 +77,22 @@ export default function CreatePage({
         ? compressionValue
         : "balanced";
 
-    setFormError(null);
-
-    const blob = await uploadFile(file, { compression });
-
-    if (!blob) return;
+    setInvalidField(null);
+    setLoading(true);
+    const toastId = toast.loading("Compressing PDF...");
 
     try {
-      setPhase("uploading");
+      const blob = await compressPdf(file, { preset: compression }).catch(
+        () => file,
+      );
+
+      toast.loading("Uploading file...", { id: toastId });
       const fileKey = await uploadToR2(blob, file.name);
 
       let finalDescription = description;
 
-      if (summarizeChecked) {
-        setPhase("summarizing");
+      if (aiEnabled) {
+        toast.loading("Generating class description...", { id: toastId });
 
         const summary = await summarizePdf(blob, file.name).catch(() => null);
 
@@ -77,7 +102,7 @@ export default function CreatePage({
         }
       }
 
-      setPhase("saving");
+      toast.loading("Saving meeting...", { id: toastId });
       const result = await createMeetingAction({
         classCode,
         topic: topic.trim(),
@@ -87,82 +112,197 @@ export default function CreatePage({
       });
 
       if (result.error) {
-        fail(result.error);
-        setFormError(result.error);
+        toast.error(result.error, { id: toastId });
+        setLoading(false);
         return;
       }
 
-      succeed();
+      toast.success("Meeting created", { id: toastId });
       router.push(`/dashboard/class/${classCode}`);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to create meeting";
-      fail(message);
-      setFormError(message);
+      toast.error(message, { id: toastId });
+      setLoading(false);
     }
   }
 
-  const busy = status !== "idle" && status !== "done" && status !== "error";
-
   return (
-    <main className="flex justify-center items-center h-screen">
-      <form className="flex flex-col gap-4 max-w-sm" onSubmit={handleSubmit}>
-        <label>Topic Name</label>
-        <input
-          className="rounded border p-1"
-          name="topic"
-          placeholder="Introduction To Scratch"
-        />
-        <input
-          className="rounded border p-1 disabled:opacity-50"
-          placeholder="class Description"
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          disabled={aiEnabled}
-        />
-        <label>Date</label>
-        <input className="rounded border p-1" type="date" name="date" />
-        <label>File</label>
-        <input
-          className="rounded border p-1"
-          type="file"
-          name="pdf"
-          accept="application/pdf"
-        />
-        {status === "compressing" && <p>Compressing PDF... {progress}%</p>}
-        {status === "uploading" && <p>Uploading file...</p>}
-        {status === "summarizing" && <p>Generating class description...</p>}
-        {status === "saving" && <p>Saving meeting...</p>}
-        {error && <p>Error: {error}</p>}
-        {formError && <p>Error: {formError}</p>}
-        <label>Compression</label>
-        <select
-          className="rounded border p-1"
-          name="compression"
-          defaultValue="balanced"
-        >
-          <option value="off">Off</option>
-          <option value="lossless">Lossless</option>
-          <option value="balanced">Balanced</option>
-          <option value="max">Max</option>
-        </select>
-        <button className="rounded border p-1" type="submit" disabled={busy}>
-          Submit
-        </button>
-        <span>
-          <p>use AI to generated class description </p>
-          <input
-            className="rounded border p-1"
-            type="checkbox"
-            name="summarize"
-            checked={aiEnabled}
-            onChange={(event) => {
-              const checked = event.target.checked;
-              setAiEnabled(checked);
-              if (checked) setDescription("");
-            }}
-          />
-        </span>
+    <main className="mx-auto w-full max-w-3xl px-6 py-10">
+      <h1 className="text-2xl font-semibold tracking-tight">Create meeting</h1>
+      <p className="text-muted-foreground mt-1 text-sm">
+        Upload the meeting material and set when it takes place.
+      </p>
+
+      <form onSubmit={handleSubmit}>
+        <FieldGroup className="mt-8">
+          <Field
+            orientation="horizontal"
+            data-invalid={invalidField === "topic" || undefined}
+          >
+            <FieldContent className="sm:basis-[220px] sm:grow-0">
+              <FieldLabel htmlFor="topic">Meeting topic</FieldLabel>
+              <FieldDescription>
+                Give the meeting a clear title.
+              </FieldDescription>
+            </FieldContent>
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <Input
+                id="topic"
+                name="topic"
+                placeholder="e.g. Introduction to fractions"
+                aria-invalid={invalidField === "topic" || undefined}
+                onChange={() => setInvalidField(null)}
+              />
+              {invalidField === "topic" && (
+                <FieldError>Topic name must be filled.</FieldError>
+              )}
+            </div>
+          </Field>
+
+          <FieldSeparator />
+
+          <Field orientation="horizontal">
+            <FieldContent className="sm:basis-[220px] sm:grow-0">
+              <FieldLabel htmlFor="description">Class description</FieldLabel>
+              <FieldDescription>
+                Shown to students, or generated by AI from the PDF.
+              </FieldDescription>
+            </FieldContent>
+            <div className="flex min-w-0 flex-1 flex-col gap-3">
+              <Textarea
+                id="description"
+                placeholder="Write a short description..."
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                disabled={aiEnabled}
+                rows={3}
+              />
+              <Label
+                htmlFor="summarize"
+                className="flex cursor-pointer items-center gap-3 font-normal"
+              >
+                <input
+                  id="summarize"
+                  type="checkbox"
+                  name="summarize"
+                  checked={aiEnabled}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    setAiEnabled(checked);
+                    if (checked) setDescription("");
+                  }}
+                  className="accent-primary h-4 w-4"
+                />
+                <span className="text-sm">
+                  Use AI to generate class description
+                </span>
+              </Label>
+            </div>
+          </Field>
+
+          <FieldSeparator />
+
+          <Field
+            orientation="horizontal"
+            data-invalid={invalidField === "date" || undefined}
+          >
+            <FieldContent className="sm:basis-[220px] sm:grow-0">
+              <FieldLabel htmlFor="date">Schedule</FieldLabel>
+              <FieldDescription>Pick the meeting date.</FieldDescription>
+            </FieldContent>
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <Input
+                id="date"
+                name="date"
+                type="date"
+                aria-invalid={invalidField === "date" || undefined}
+                onChange={() => setInvalidField(null)}
+              />
+              {invalidField === "date" && (
+                <FieldError>Date must be filled.</FieldError>
+              )}
+            </div>
+          </Field>
+
+          <FieldSeparator />
+
+          <Field
+            orientation="horizontal"
+            data-invalid={invalidField === "file" || undefined}
+          >
+            <FieldContent className="sm:basis-[220px] sm:grow-0">
+              <FieldTitle>Material</FieldTitle>
+              <FieldDescription>PDF file students will read.</FieldDescription>
+            </FieldContent>
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <Label
+                htmlFor="pdf"
+                className="border-border flex cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-2.5 font-normal"
+              >
+                <span className="text-muted-foreground truncate text-sm">
+                  {fileName ?? "Choose a PDF file..."}
+                </span>
+                <span className="bg-primary text-white shrink-0 rounded-md px-3 py-1.5 text-sm font-medium">
+                  Browse
+                </span>
+              </Label>
+              <Input
+                id="pdf"
+                type="file"
+                name="pdf"
+                accept="application/pdf"
+                className="hidden"
+                onChange={(event) => {
+                  setFileName(event.target.files?.[0]?.name ?? null);
+                  setInvalidField(null);
+                }}
+              />
+              {invalidField === "file" && (
+                <FieldError>PDF file is required.</FieldError>
+              )}
+            </div>
+          </Field>
+
+          <FieldSeparator />
+
+          <Field orientation="horizontal">
+            <FieldContent className="sm:basis-[220px] sm:grow-0">
+              <FieldTitle>Compression</FieldTitle>
+              <FieldDescription>
+                Pick one option to shrink the PDF.
+              </FieldDescription>
+            </FieldContent>
+            <div className="grid min-w-0 flex-1 grid-cols-2 gap-3">
+              {COMPRESSION_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className="border-border has-checked:border-primary cursor-pointer rounded-lg border px-3 py-2.5"
+                >
+                  <span className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="compression"
+                      value={option.value}
+                      defaultChecked={option.value === "balanced"}
+                      className="accent-primary h-4 w-4"
+                    />
+                    <span className="text-sm font-medium">{option.title}</span>
+                  </span>
+                  <span className="text-muted-foreground mt-0.5 block pl-6 text-sm">
+                    {option.hint}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </Field>
+
+          <div className="flex justify-end">
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Working..." : "Create meeting"}
+            </Button>
+          </div>
+        </FieldGroup>
       </form>
     </main>
   );
