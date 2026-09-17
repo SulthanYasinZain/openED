@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { checkSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
+import { checkSession } from "@/lib/session";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -24,13 +24,15 @@ export default async function ClassDetailPage({ params }: PageProps) {
           id: true,
           topic: true,
           description: true,
-          fileKey: true,
+          fileUrl: true,
           scheduledAt: true,
           status: true,
         },
       },
     },
   });
+
+  console.log(classData);
 
   if (!classData) {
     notFound();
@@ -65,6 +67,16 @@ export default async function ClassDetailPage({ params }: PageProps) {
             >
               <div className="space-y-1">
                 <p className="font-medium text-stone-900">{meeting.topic}</p>
+                {meeting.fileUrl && (
+                  <a
+                    href={meeting.fileUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm text-stone-500 hover:underline"
+                  >
+                    View material
+                  </a>
+                )}
                 <p className="text-sm text-stone-500">
                   {meeting.scheduledAt.toLocaleDateString("id-ID", {
                     weekday: "long",

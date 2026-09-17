@@ -3,7 +3,10 @@
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { toast } from "sonner";
-import { createMeetingAction } from "@/app/actions/meeting";
+import {
+  createMeetingAction,
+  findFileByHashAction,
+} from "@/app/actions/meeting";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -19,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import compressPdf from "@/lib/compress-pdf";
+import generateFileHash from "@/lib/hash-file";
 import summarizePdf from "@/lib/summarize-service";
 import uploadToR2 from "@/lib/upload-to-r2";
 
@@ -78,16 +82,36 @@ export default function CreatePage({
         : "balanced";
 
     setInvalidField(null);
-    setLoading(true);
-    const toastId = toast.loading("Compressing PDF...");
+    setIsLoading(true);
+    const toastId = toast.loading("Checking for duplicates...");
+    const contentHash = await generateFileHash(file);
+    const fileHash = `${compression}:${contentHash}`;
 
     try {
-      const blob = await compressPdf(file, { preset: compression }).catch(
-        () => file,
-      );
+      const { fileUrl: existingUrl } = await findFileByHashAction(fileHash);
 
-      toast.loading("Uploading file...", { id: toastId });
-      const fileKey = await uploadToR2(blob, file.name);
+      let blob: Blob;
+      let fileUrl: string;
+
+      if (existingUrl) {
+        blob = file;
+        fileUrl = existingUrl;
+        toast.loading("Duplicate found, reusing uploaded file", {
+          id: toastId,
+        });
+      } else if (compression === "off") {
+        blob = file;
+        toast.loading("Uploading file...", { id: toastId });
+        fileUrl = await uploadToR2(blob, file.name);
+      } else {
+        toast.loading("Compressing PDF...", { id: toastId });
+        blob = await compressPdf(file, { preset: compression }).catch(
+          () => file,
+        );
+
+        toast.loading("Uploading file...", { id: toastId });
+        fileUrl = await uploadToR2(blob, file.name);
+      }
 
       let finalDescription = description;
 
@@ -108,12 +132,13 @@ export default function CreatePage({
         topic: topic.trim(),
         description: finalDescription || null,
         scheduledAt: date,
-        fileKey,
+        fileUrl,
+        fileHash,
       });
 
       if (result.error) {
         toast.error(result.error, { id: toastId });
-        setLoading(false);
+        setIsLoading(false);
         return;
       }
 
@@ -123,7 +148,7 @@ export default function CreatePage({
       const message =
         err instanceof Error ? err.message : "Failed to create meeting";
       toast.error(message, { id: toastId });
-      setLoading(false);
+      setIsLoading(false);
     }
   }
 

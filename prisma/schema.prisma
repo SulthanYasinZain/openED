@@ -95,7 +95,8 @@ model ClassMeeting {
   classId     Int
   topic       String
   description String?
-  fileKey     String?
+  fileUrl     String?
+  fileHash    String?
   scheduledAt DateTime
   status      MeetingStatus @default(UPCOMING)
   createdAt   DateTime      @default(now())

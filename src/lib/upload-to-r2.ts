@@ -16,9 +16,9 @@ export default async function uploadToR2(
     throw new Error(data?.error || "Failed to create presigned URL");
   }
 
-  const { url, key } = await res.json();
+  const { url, publicUrl } = await res.json();
 
-  if (typeof url !== "string" || typeof key !== "string") {
+  if (typeof url !== "string" || typeof publicUrl !== "string") {
     throw new Error("Failed to create presigned URL");
   }
 
@@ -32,5 +32,5 @@ export default async function uploadToR2(
     throw new Error("Upload failed");
   }
 
-  return key;
+  return publicUrl;
 }

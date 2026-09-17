@@ -41,7 +41,8 @@ export type ClassMeetingMinAggregateOutputType = {
   classId: number | null
   topic: string | null
   description: string | null
-  fileKey: string | null
+  fileUrl: string | null
+  fileHash: string | null
   scheduledAt: Date | null
   status: $Enums.MeetingStatus | null
   createdAt: Date | null
@@ -53,7 +54,8 @@ export type ClassMeetingMaxAggregateOutputType = {
   classId: number | null
   topic: string | null
   description: string | null
-  fileKey: string | null
+  fileUrl: string | null
+  fileHash: string | null
   scheduledAt: Date | null
   status: $Enums.MeetingStatus | null
   createdAt: Date | null
@@ -65,7 +67,8 @@ export type ClassMeetingCountAggregateOutputType = {
   classId: number
   topic: number
   description: number
-  fileKey: number
+  fileUrl: number
+  fileHash: number
   scheduledAt: number
   status: number
   createdAt: number
@@ -89,7 +92,8 @@ export type ClassMeetingMinAggregateInputType = {
   classId?: true
   topic?: true
   description?: true
-  fileKey?: true
+  fileUrl?: true
+  fileHash?: true
   scheduledAt?: true
   status?: true
   createdAt?: true
@@ -101,7 +105,8 @@ export type ClassMeetingMaxAggregateInputType = {
   classId?: true
   topic?: true
   description?: true
-  fileKey?: true
+  fileUrl?: true
+  fileHash?: true
   scheduledAt?: true
   status?: true
   createdAt?: true
@@ -113,7 +118,8 @@ export type ClassMeetingCountAggregateInputType = {
   classId?: true
   topic?: true
   description?: true
-  fileKey?: true
+  fileUrl?: true
+  fileHash?: true
   scheduledAt?: true
   status?: true
   createdAt?: true
@@ -212,7 +218,8 @@ export type ClassMeetingGroupByOutputType = {
   classId: number
   topic: string
   description: string | null
-  fileKey: string | null
+  fileUrl: string | null
+  fileHash: string | null
   scheduledAt: Date
   status: $Enums.MeetingStatus
   createdAt: Date
@@ -247,7 +254,8 @@ export type ClassMeetingWhereInput = {
   classId?: Prisma.IntFilter<"ClassMeeting"> | number
   topic?: Prisma.StringFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileKey?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
+  fileUrl?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
+  fileHash?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusFilter<"ClassMeeting"> | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
@@ -260,7 +268,8 @@ export type ClassMeetingOrderByWithRelationInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  fileKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileHash?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -276,7 +285,8 @@ export type ClassMeetingWhereUniqueInput = Prisma.AtLeast<{
   classId?: Prisma.IntFilter<"ClassMeeting"> | number
   topic?: Prisma.StringFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileKey?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
+  fileUrl?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
+  fileHash?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusFilter<"ClassMeeting"> | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
@@ -289,7 +299,8 @@ export type ClassMeetingOrderByWithAggregationInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  fileKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  fileHash?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -309,7 +320,8 @@ export type ClassMeetingScalarWhereWithAggregatesInput = {
   classId?: Prisma.IntWithAggregatesFilter<"ClassMeeting"> | number
   topic?: Prisma.StringWithAggregatesFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"ClassMeeting"> | string | null
-  fileKey?: Prisma.StringNullableWithAggregatesFilter<"ClassMeeting"> | string | null
+  fileUrl?: Prisma.StringNullableWithAggregatesFilter<"ClassMeeting"> | string | null
+  fileHash?: Prisma.StringNullableWithAggregatesFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeWithAggregatesFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusWithAggregatesFilter<"ClassMeeting"> | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClassMeeting"> | Date | string
@@ -319,7 +331,8 @@ export type ClassMeetingScalarWhereWithAggregatesInput = {
 export type ClassMeetingCreateInput = {
   topic: string
   description?: string | null
-  fileKey?: string | null
+  fileUrl?: string | null
+  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
   createdAt?: Date | string
@@ -332,7 +345,8 @@ export type ClassMeetingUncheckedCreateInput = {
   classId: number
   topic: string
   description?: string | null
-  fileKey?: string | null
+  fileUrl?: string | null
+  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
   createdAt?: Date | string
@@ -342,7 +356,8 @@ export type ClassMeetingUncheckedCreateInput = {
 export type ClassMeetingUpdateInput = {
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -355,7 +370,8 @@ export type ClassMeetingUncheckedUpdateInput = {
   classId?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -367,7 +383,8 @@ export type ClassMeetingCreateManyInput = {
   classId: number
   topic: string
   description?: string | null
-  fileKey?: string | null
+  fileUrl?: string | null
+  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
   createdAt?: Date | string
@@ -377,7 +394,8 @@ export type ClassMeetingCreateManyInput = {
 export type ClassMeetingUpdateManyMutationInput = {
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -389,7 +407,8 @@ export type ClassMeetingUncheckedUpdateManyInput = {
   classId?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -411,7 +430,8 @@ export type ClassMeetingCountOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  fileKey?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileHash?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -428,7 +448,8 @@ export type ClassMeetingMaxOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  fileKey?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileHash?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -440,7 +461,8 @@ export type ClassMeetingMinOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  fileKey?: Prisma.SortOrder
+  fileUrl?: Prisma.SortOrder
+  fileHash?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -501,7 +523,8 @@ export type EnumMeetingStatusFieldUpdateOperationsInput = {
 export type ClassMeetingCreateWithoutClassInput = {
   topic: string
   description?: string | null
-  fileKey?: string | null
+  fileUrl?: string | null
+  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
   createdAt?: Date | string
@@ -512,7 +535,8 @@ export type ClassMeetingUncheckedCreateWithoutClassInput = {
   id?: number
   topic: string
   description?: string | null
-  fileKey?: string | null
+  fileUrl?: string | null
+  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
   createdAt?: Date | string
@@ -553,7 +577,8 @@ export type ClassMeetingScalarWhereInput = {
   classId?: Prisma.IntFilter<"ClassMeeting"> | number
   topic?: Prisma.StringFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileKey?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
+  fileUrl?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
+  fileHash?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusFilter<"ClassMeeting"> | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
@@ -564,7 +589,8 @@ export type ClassMeetingCreateManyClassInput = {
   id?: number
   topic: string
   description?: string | null
-  fileKey?: string | null
+  fileUrl?: string | null
+  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
   createdAt?: Date | string
@@ -574,7 +600,8 @@ export type ClassMeetingCreateManyClassInput = {
 export type ClassMeetingUpdateWithoutClassInput = {
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -585,7 +612,8 @@ export type ClassMeetingUncheckedUpdateWithoutClassInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -596,7 +624,8 @@ export type ClassMeetingUncheckedUpdateManyWithoutClassInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -610,7 +639,8 @@ export type ClassMeetingSelect<ExtArgs extends runtime.Types.Extensions.Internal
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileKey?: boolean
+  fileUrl?: boolean
+  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
   createdAt?: boolean
@@ -623,7 +653,8 @@ export type ClassMeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileKey?: boolean
+  fileUrl?: boolean
+  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
   createdAt?: boolean
@@ -636,7 +667,8 @@ export type ClassMeetingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileKey?: boolean
+  fileUrl?: boolean
+  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
   createdAt?: boolean
@@ -649,14 +681,15 @@ export type ClassMeetingSelectScalar = {
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileKey?: boolean
+  fileUrl?: boolean
+  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClassMeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "topic" | "description" | "fileKey" | "scheduledAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["classMeeting"]>
+export type ClassMeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "topic" | "description" | "fileUrl" | "fileHash" | "scheduledAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["classMeeting"]>
 export type ClassMeetingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
 }
@@ -677,7 +710,8 @@ export type $ClassMeetingPayload<ExtArgs extends runtime.Types.Extensions.Intern
     classId: number
     topic: string
     description: string | null
-    fileKey: string | null
+    fileUrl: string | null
+    fileHash: string | null
     scheduledAt: Date
     status: $Enums.MeetingStatus
     createdAt: Date
@@ -1110,7 +1144,8 @@ export interface ClassMeetingFieldRefs {
   readonly classId: Prisma.FieldRef<"ClassMeeting", 'Int'>
   readonly topic: Prisma.FieldRef<"ClassMeeting", 'String'>
   readonly description: Prisma.FieldRef<"ClassMeeting", 'String'>
-  readonly fileKey: Prisma.FieldRef<"ClassMeeting", 'String'>
+  readonly fileUrl: Prisma.FieldRef<"ClassMeeting", 'String'>
+  readonly fileHash: Prisma.FieldRef<"ClassMeeting", 'String'>
   readonly scheduledAt: Prisma.FieldRef<"ClassMeeting", 'DateTime'>
   readonly status: Prisma.FieldRef<"ClassMeeting", 'MeetingStatus'>
   readonly createdAt: Prisma.FieldRef<"ClassMeeting", 'DateTime'>

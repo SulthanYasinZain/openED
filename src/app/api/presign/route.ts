@@ -1,7 +1,7 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 import { verifyAccessToken } from "@/lib/session";
 
 const s3 = new S3Client({
@@ -44,6 +44,15 @@ export async function POST(req: Request) {
 
   const key = `${Date.now()}-${filename}`;
 
+  const publicBase = process.env.R2_PUBLIC_URL?.replace(/\/$/, "");
+
+  if (!publicBase) {
+    return Response.json(
+      { error: "R2_PUBLIC_URL is not configured" },
+      { status: 500 },
+    );
+  }
+
   const url = await getSignedUrl(
     s3,
     new PutObjectCommand({
@@ -54,5 +63,5 @@ export async function POST(req: Request) {
     { expiresIn: 60 },
   );
 
-  return Response.json({ url, key });
+  return Response.json({ url, key, publicUrl: `${publicBase}/${key}` });
 }

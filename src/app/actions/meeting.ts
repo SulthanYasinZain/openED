@@ -9,7 +9,8 @@ type CreateMeetingInput = {
   topic: string;
   description: string | null;
   scheduledAt: string;
-  fileKey: string;
+  fileUrl: string;
+  fileHash: string | null;
 };
 
 type CreateMeetingResult = {
@@ -36,7 +37,7 @@ export async function createMeetingAction(
     return { error: "Invalid date" };
   }
 
-  if (!input.fileKey.trim()) {
+  if (!input.fileUrl.trim()) {
     return { error: "File is required" };
   }
 
@@ -55,7 +56,8 @@ export async function createMeetingAction(
         classId: classData.id,
         topic,
         description: input.description?.trim() || null,
-        fileKey: input.fileKey.trim(),
+        fileUrl: input.fileUrl.trim(),
+        fileHash: input.fileHash?.trim() || null,
         scheduledAt,
       },
     });
@@ -68,5 +70,33 @@ export async function createMeetingAction(
     console.error("Create meeting error:", error);
 
     return { error: "Failed to save meeting" };
+  }
+}
+
+type FindFileResult = {
+  fileUrl: string | null;
+  error?: string;
+};
+
+export async function findFileByHashAction(
+  fileHash: string,
+): Promise<FindFileResult> {
+  await checkSession("ADMIN");
+
+  if (!fileHash.trim()) {
+    return { fileUrl: null };
+  }
+
+  try {
+    const meeting = await prisma.classMeeting.findFirst({
+      where: { fileHash: fileHash.trim() },
+      select: { fileUrl: true },
+    });
+
+    return { fileUrl: meeting?.fileUrl ?? null };
+  } catch (error) {
+    console.error("Find file by hash error:", error);
+
+    return { fileUrl: null, error: "Failed to check for duplicates" };
   }
 }
