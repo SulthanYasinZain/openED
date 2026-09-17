@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from "jose";
+import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -64,7 +64,7 @@ export async function checkSession(allowedRole: string) {
     return redirect("/login");
   }
 
-  let payload;
+  let payload: AuthTokenPayload;
 
   try {
     payload = await verifyAccessToken(token);

@@ -1,12 +1,11 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { verifyAccessToken, checkSession } from "@/lib/session";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import { checkSession } from "@/lib/session";
 
-type PreviouseState = {
+type PreviousState = {
   error?: string;
 };
 

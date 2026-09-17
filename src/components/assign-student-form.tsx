@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { AssignTeacherAction } from "@/app/actions/classTeacher";
+
 type TeacherData = {
   id: number;
   name: string | null;
@@ -10,11 +11,8 @@ type TeacherData = {
 
 type ClassData = {
   id: number;
+  name: string;
   code: string;
-  imageUrl: string;
-  isDeleted: boolean;
-  createdAt: string;
-  updateAt: string;
 };
 
 interface props {
@@ -51,7 +49,11 @@ export default function AssignStudentForm({ teacherList, classList }: props) {
       </select>
 
       {state.error && <p>{state.error}</p>}
-      <button className="text-white bg-stone-800 " disabled={isPending}>
+      <button
+        type="submit"
+        className="text-white bg-stone-800 "
+        disabled={isPending}
+      >
         {isPending ? "Submitting" : "Submit"}
       </button>
     </form>

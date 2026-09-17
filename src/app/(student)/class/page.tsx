@@ -1,8 +1,6 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { verifyAccessToken, checkSession } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
 import JoinClassByCode from "@/components/join-class-by-code";
+import { prisma } from "@/lib/prisma";
+import { checkSession } from "@/lib/session";
 export default async function ClassPage() {
   const sessionData = await checkSession("STUDENT");
 
@@ -22,7 +20,9 @@ export default async function ClassPage() {
         {classData.map((classItem) => (
           <li key={classItem.id}>
             {classItem.name}{" "}
-            <button className="bg-black text-white">See Class </button>
+            <button type="button" className="bg-black text-white">
+              See Class{" "}
+            </button>
           </li>
         ))}
       </ul>

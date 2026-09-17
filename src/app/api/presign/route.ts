@@ -2,16 +2,23 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { verifyAccessToken } from "@/lib/session";
+import { type AuthTokenPayload, verifyAccessToken } from "@/lib/session";
 
-const s3 = new S3Client({
-  region: "auto",
-  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
-  },
-});
+function getS3Client() {
+  const accountId = process.env.R2_ACCOUNT_ID;
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+
+  if (!accountId || !accessKeyId || !secretAccessKey) {
+    throw new Error("R2 credentials are not configured");
+  }
+
+  return new S3Client({
+    region: "auto",
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: { accessKeyId, secretAccessKey },
+  });
+}
 
 export async function POST(req: Request) {
   const cookieStore = await cookies();
@@ -21,7 +28,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let session;
+  let session: AuthTokenPayload;
 
   try {
     session = await verifyAccessToken(token);
@@ -53,10 +60,30 @@ export async function POST(req: Request) {
     );
   }
 
+  const bucket = process.env.R2_BUCKET_NAME;
+
+  if (!bucket) {
+    return Response.json(
+      { error: "R2_BUCKET_NAME is not configured" },
+      { status: 500 },
+    );
+  }
+
+  let s3: S3Client;
+
+  try {
+    s3 = getS3Client();
+  } catch {
+    return Response.json(
+      { error: "R2 credentials are not configured" },
+      { status: 500 },
+    );
+  }
+
   const url = await getSignedUrl(
     s3,
     new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
+      Bucket: bucket,
       Key: key,
       ContentType: contentType,
     }),

@@ -88,15 +88,24 @@ export default async function ClassDetailPage({ params }: PageProps) {
               </div>
 
               <div className="flex items-center gap-2">
-                <button className="rounded-md border border-stone-200 px-3 py-2 text-sm hover:bg-stone-50">
+                <button
+                  type="button"
+                  className="rounded-md border border-stone-200 px-3 py-2 text-sm hover:bg-stone-50"
+                >
                   View
                 </button>
 
-                <button className="rounded-md border border-stone-200 px-3 py-2 text-sm hover:bg-stone-50">
+                <button
+                  type="button"
+                  className="rounded-md border border-stone-200 px-3 py-2 text-sm hover:bg-stone-50"
+                >
                   Grade
                 </button>
 
-                <button className="rounded-md bg-stone-900 px-3 py-2 text-sm text-white hover:bg-stone-800">
+                <button
+                  type="button"
+                  className="rounded-md bg-stone-900 px-3 py-2 text-sm text-white hover:bg-stone-800"
+                >
                   Presence
                 </button>
               </div>

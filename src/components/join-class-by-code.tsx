@@ -21,7 +21,11 @@ export default function JoinClassByCode() {
       />
 
       {state.error && <p>{state.error}</p>}
-      <button className="text-white bg-stone-800 " disabled={isPending}>
+      <button
+        type="submit"
+        className="text-white bg-stone-800 "
+        disabled={isPending}
+      >
         {isPending ? "Submitting" : "Submit"}
       </button>
     </form>

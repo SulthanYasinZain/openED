@@ -9,7 +9,11 @@ export default function JoinClassForm({ classId }: { classId: number }) {
   const actionWithClassId = StudentJoinClassAction.bind(null, classId);
 
   return (
-    <form action={actionWithClassId}>
+    <form
+      action={async (formData) => {
+        await actionWithClassId(formData);
+      }}
+    >
       <button type="submit" className="bg-black text-white">
         Gabung Kelas
       </button>

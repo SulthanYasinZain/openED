@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { GoogleGenAI } from "@google/genai";
-import { verifyAccessToken } from "@/lib/session";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import { type AuthTokenPayload, verifyAccessToken } from "@/lib/session";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let session;
+  let session: AuthTokenPayload;
 
   try {
     session = await verifyAccessToken(token);

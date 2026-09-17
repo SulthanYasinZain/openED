@@ -25,11 +25,15 @@ export default function CreateClassForm() {
       />
       <input
         name="imageUrl"
-        plaecholder="image"
+        placeholder="image"
         className="border border-neutral-200"
       />
       {state.error && <p>{state.error}</p>}
-      <button className="text-white bg-stone-800 " disabled={isPending}>
+      <button
+        type="submit"
+        className="text-white bg-stone-800 "
+        disabled={isPending}
+      >
         {isPending ? "Submitting" : "Submit"}
       </button>
     </form>

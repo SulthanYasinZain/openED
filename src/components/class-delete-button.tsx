@@ -1,8 +1,8 @@
 "use client";
 
-import { deleteClassAction } from "@/app/actions/class";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { deleteClassAction } from "@/app/actions/class";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,7 +40,11 @@ export default function DeleteClassButton({ classId }: { classId: number }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <form action={actionWithClassId}>
+          <form
+            action={async (formData) => {
+              await actionWithClassId(formData);
+            }}
+          >
             <AlertDialogAction type="submit">I Understand</AlertDialogAction>
           </form>
         </AlertDialogFooter>

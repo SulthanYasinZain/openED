@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { logoutAction } from "@/app/actions/auth";
 
 export default function LogoutButton() {
-  const [state, action] = useActionState(logoutAction, null);
+  const [_state, _action] = useActionState(logoutAction, null);
 
   return (
     <form action={logoutAction}>

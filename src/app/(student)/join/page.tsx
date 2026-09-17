@@ -1,9 +1,8 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { verifyAccessToken } from "@/lib/session";
+import JoinClassForm from "@/components/join-class-form";
 import { prisma } from "@/lib/prisma";
 import { checkSession } from "@/lib/session";
-import JoinClassForm from "@/components/join-class-form";
+
 interface PageProps {
   searchParams: Promise<{
     code?: string;
@@ -40,9 +39,6 @@ export default async function JoinPage({ searchParams }: PageProps) {
 
   if (isStudentAlreadyEnroll) {
     redirect(`/class/${isStudentAlreadyEnroll}`);
-    return {
-      error: "User Already Join",
-    };
   }
 
   return <JoinClassForm classId={classData.id} />;

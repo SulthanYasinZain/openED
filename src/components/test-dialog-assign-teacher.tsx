@@ -1,6 +1,16 @@
 "use client";
 
+import { MentorIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
 import {
   Dialog,
   DialogClose,
@@ -11,19 +21,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { MentorIcon } from "@hugeicons/core-free-icons";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
 
 type TeacherData = {
   id: number;
@@ -31,7 +30,11 @@ type TeacherData = {
   email: string;
 };
 
-export default function AssignTeacherButton({ teacherList }: TeacherData[]) {
+export default function AssignTeacherButton({
+  teacherList,
+}: {
+  teacherList: TeacherData[];
+}) {
   const teacherItems = teacherList.map((teacher) => ({
     value: teacher.id.toString(),
     label: teacher.name ?? teacher.email,

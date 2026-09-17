@@ -1,17 +1,15 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { verifyAccessToken, checkSession } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
-import CreateClassForm from "@/components/create-class-form";
-import AssingTeacherForm from "@/components/assign-teacher-form";
-import LogoutButton from "@/components/logout-button";
-import DeleteClassButton from "@/components/class-delete-button";
-import AssignTeacherButton from "@/components/test-dialog-assign-teacher";
 import Link from "next/link";
+import AssingTeacherForm from "@/components/assign-teacher-form";
+import DeleteClassButton from "@/components/class-delete-button";
+import CreateClassForm from "@/components/create-class-form";
+import LogoutButton from "@/components/logout-button";
+import AssignTeacherButton from "@/components/test-dialog-assign-teacher";
+import { prisma } from "@/lib/prisma";
+import { checkSession } from "@/lib/session";
 export default async function DashboardPage() {
-  const sessionData = await checkSession("ADMIN");
+  const _sessionData = await checkSession("ADMIN");
 
-  let classData = await prisma.class.findMany({
+  const classData = await prisma.class.findMany({
     where: {
       isDeleted: false,
     },
@@ -32,7 +30,7 @@ export default async function DashboardPage() {
     },
   });
 
-  classData = classData.map((item) => ({
+  const classes = classData.map((item) => ({
     id: item.id,
     name: item.name,
     code: item.code,
@@ -57,7 +55,7 @@ export default async function DashboardPage() {
       <CreateClassForm />
 
       <ul className="space-y-2">
-        {classData.map((classItem) => (
+        {classes.map((classItem) => (
           <li
             key={classItem.id}
             className="p-2 border border-stone-200 rounded flex items-center justify-between"
@@ -76,7 +74,7 @@ export default async function DashboardPage() {
         ))}
       </ul>
 
-      <AssingTeacherForm teacherList={teacherData} classList={classData} />
+      <AssingTeacherForm teacherList={teacherData} classList={classes} />
     </main>
   );
 }
