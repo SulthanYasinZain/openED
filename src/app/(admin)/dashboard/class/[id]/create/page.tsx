@@ -49,7 +49,7 @@ export default function CreatePage({
   const [invalidField, setInvalidField] = useState<InvalidField>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
@@ -57,6 +57,14 @@ export default function CreatePage({
     const topic = data.get("topic");
     const date = data.get("date");
     const compressionValue = data.get("compression");
+
+    const compression =
+      compressionValue === "off" ||
+      compressionValue === "lossless" ||
+      compressionValue === "balanced" ||
+      compressionValue === "max"
+        ? compressionValue
+        : "balanced";
 
     if (typeof topic !== "string" || !topic.trim()) {
       setInvalidField("topic");
@@ -73,17 +81,8 @@ export default function CreatePage({
       return;
     }
 
-    const compression =
-      compressionValue === "off" ||
-      compressionValue === "lossless" ||
-      compressionValue === "balanced" ||
-      compressionValue === "max"
-        ? compressionValue
-        : "balanced";
-
     setInvalidField(null);
     setIsLoading(true);
-    const toastId = toast.loading("Checking for duplicates...");
     const contentHash = await generateFileHash(file);
     const fileHash = `${compression}:${contentHash}`;
 

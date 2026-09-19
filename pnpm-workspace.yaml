@@ -1,9 +1,11 @@
 allowBuilds:
   '@google/genai': true
+  '@parcel/watcher': false
   '@prisma/engines': false
   prisma: false
   protobufjs: true
   sharp: false
+  unrs-resolver: false
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
