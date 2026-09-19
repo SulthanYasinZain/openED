@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { loginAction } from "@/app/actions/auth";
-import LoginPage from "./page";
+import LoginForm from "./login-form";
 
 jest.mock("@/app/actions/auth", () => ({
   loginAction: jest.fn(),
@@ -8,14 +8,14 @@ jest.mock("@/app/actions/auth", () => ({
 
 const mockedLoginAction = loginAction as jest.Mock;
 
-describe("LoginPage", () => {
+describe("LoginForm", () => {
   beforeEach(() => {
     mockedLoginAction.mockReset();
     mockedLoginAction.mockResolvedValue({ error: "" });
   });
 
   it("renders the email field, password field, and submit button", () => {
-    render(<LoginPage />);
+    render(<LoginForm />);
 
     expect(screen.getByPlaceholderText("email")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("email")).toHaveAttribute(
@@ -29,7 +29,7 @@ describe("LoginPage", () => {
   });
 
   it("submits the entered credentials to loginAction", async () => {
-    render(<LoginPage />);
+    render(<LoginForm />);
 
     fireEvent.change(screen.getByPlaceholderText("email"), {
       target: { value: "admin@example.com" },
@@ -52,7 +52,7 @@ describe("LoginPage", () => {
   it("displays the error returned by loginAction", async () => {
     mockedLoginAction.mockResolvedValue({ error: "Invalid credentials" });
 
-    render(<LoginPage />);
+    render(<LoginForm />);
 
     fireEvent.change(screen.getByPlaceholderText("email"), {
       target: { value: "admin@example.com" },
