@@ -1,15 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { checkSession } from "@/lib/session";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function ClassDetailPage({ params }: PageProps) {
-  await checkSession("ADMIN");
-
   const { id: code } = await params;
 
   const classData = await prisma.class.findUnique({

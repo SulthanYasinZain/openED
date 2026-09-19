@@ -45,7 +45,14 @@
           "a11y": {
             "useSemanticElements": "off",
             "useKeyWithClickEvents": "off",
-            "noLabelWithoutControl": "off"
+            "noLabelWithoutControl": "off",
+            "useFocusableInteractive": "off"
+          },
+          "suspicious": {
+            "noDocumentCookie": "off"
+          },
+          "correctness": {
+            "useExhaustiveDependencies": "off"
           }
         }
       }

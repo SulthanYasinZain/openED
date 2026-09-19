@@ -1,5 +1,8 @@
 "use client";
 
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
 import { toast } from "sonner";
@@ -7,6 +10,14 @@ import {
   createMeetingAction,
   findFileByHashAction,
 } from "@/app/actions/meeting";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -153,7 +164,41 @@ export default function CreatePage({
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-10">
-      <h1 className="text-2xl font-semibold tracking-tight">Create meeting</h1>
+      <div className="flex items-center justify-between gap-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink render={<Link href="/dashboard" />}>
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                render={<Link href={`/dashboard/class/${classCode}`} />}
+              >
+                Class {classCode}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Create meeting</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => router.back()}
+        >
+          <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} />
+          Back
+        </Button>
+      </div>
+      <h1 className="mt-6 text-2xl font-semibold tracking-tight">
+        Create meeting
+      </h1>
       <p className="text-muted-foreground mt-1 text-sm">
         Upload the meeting material and set when it takes place.
       </p>

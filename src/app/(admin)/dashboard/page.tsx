@@ -5,10 +5,7 @@ import CreateClassForm from "@/components/create-class-form";
 import LogoutButton from "@/components/logout-button";
 import AssignTeacherButton from "@/components/test-dialog-assign-teacher";
 import { prisma } from "@/lib/prisma";
-import { checkSession } from "@/lib/session";
 export default async function DashboardPage() {
-  const _sessionData = await checkSession("ADMIN");
-
   const classData = await prisma.class.findMany({
     where: {
       isDeleted: false,
