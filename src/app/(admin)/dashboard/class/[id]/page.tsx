@@ -1,6 +1,18 @@
+import { ArrowLeft01Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
+import MeetingList from "./meeting-list";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -29,92 +41,63 @@ export default async function ClassDetailPage({ params }: PageProps) {
     },
   });
 
-  console.log(classData);
-
   if (!classData) {
     notFound();
   }
 
   return (
-    <main className="p-6   space-y-4">
-      <Link
-        href="/dashboard"
-        className="text-sm text-stone-500 hover:underline mb-4 inline-block"
-      >
-        ← Kembali ke Dashboard
-      </Link>
-
-      <div className="flex">
-        <Link href={`/dashboard/class/${classData.code}/create`}>
-          Buat Kelas
-        </Link>
-        <ul className="space-y-3">
-          {classData.meetings.length === 0 && (
-            <li className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
-              <p className="text-sm text-stone-500">
-                Belum ada pertemuan. Buat yang pertama.
-              </p>
-            </li>
-          )}
-
-          {classData.meetings.map((meeting) => (
-            <li
-              key={meeting.id}
-              className="flex items-center justify-between rounded-xl border border-stone-200 bg-white p-4 shadow-sm"
-            >
-              <div className="space-y-1">
-                <p className="font-medium text-stone-900">{meeting.topic}</p>
-                {meeting.fileUrl && (
-                  <a
-                    href={meeting.fileUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm text-stone-500 hover:underline"
-                  >
-                    View material
-                  </a>
-                )}
-                <p className="text-sm text-stone-500">
-                  {meeting.scheduledAt.toLocaleDateString("id-ID", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  className="rounded-md border border-stone-200 px-3 py-2 text-sm hover:bg-stone-50"
-                >
-                  View
-                </button>
-
-                <button
-                  type="button"
-                  className="rounded-md border border-stone-200 px-3 py-2 text-sm hover:bg-stone-50"
-                >
-                  Grade
-                </button>
-
-                <button
-                  type="button"
-                  className="rounded-md bg-stone-900 px-3 py-2 text-sm text-white hover:bg-stone-800"
-                >
-                  Presence
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-
-        <div>
-          <p>{classData.meetings.length} pertemuan</p>
-          <p>{classData.name}</p>
-        </div>
+    <main className="mx-auto w-full max-w-3xl px-6 py-10">
+      <div className="flex items-center justify-between gap-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink render={<Link href="/dashboard" />}>
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Class {classData.code}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          nativeButton={false}
+          render={<Link href="/dashboard" />}
+        >
+          <HugeiconsIcon icon={ArrowLeft01Icon} strokeWidth={2} />
+          Back
+        </Button>
       </div>
+
+      <div className="mt-6 flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {classData.name}
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm">
+            {classData.meetings.length} pertemuan
+          </p>
+        </div>
+        <Button
+          type="button"
+          nativeButton={false}
+          render={<Link href={`/dashboard/class/${classData.code}/create`} />}
+        >
+          <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
+          Create meeting
+        </Button>
+      </div>
+
+      <MeetingList
+        meetings={classData.meetings.map((meeting) => ({
+          ...meeting,
+          scheduledAt: meeting.scheduledAt.toISOString(),
+        }))}
+      />
     </main>
   );
 }
