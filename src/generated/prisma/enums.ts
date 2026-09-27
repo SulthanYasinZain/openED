@@ -10,9 +10,10 @@
 */
 
 export const Role = {
-  STUDENT: 'STUDENT',
   ADMIN: 'ADMIN',
-  TEACHER: 'TEACHER'
+  MENTOR: 'MENTOR',
+  STUDENT: 'STUDENT',
+  SCHOOL: 'SCHOOL'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
@@ -34,3 +35,40 @@ export const MeetingStatus = {
 } as const
 
 export type MeetingStatus = (typeof MeetingStatus)[keyof typeof MeetingStatus]
+
+
+export const MaterialType = {
+  FILE: 'FILE',
+  VIDEO: 'VIDEO',
+  LINK: 'LINK',
+  DOCUMENT: 'DOCUMENT'
+} as const
+
+export type MaterialType = (typeof MaterialType)[keyof typeof MaterialType]
+
+
+export const AttendanceStatus = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  LATE: 'LATE',
+  EXCUSED: 'EXCUSED'
+} as const
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const AuditAction = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  RESTORE: 'RESTORE',
+  RESET: 'RESET',
+  GRADE: 'GRADE',
+  SUBMIT: 'SUBMIT',
+  LOGIN: 'LOGIN',
+  LOGOUT: 'LOGOUT',
+  GENERATE: 'GENERATE',
+  OTHER: 'OTHER'
+} as const
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export type AuthTokenPayload = {
   userId: number;
-  role: "STUDENT" | "ADMIN" | "TEACHER";
+  role: "STUDENT" | "ADMIN" | "MENTOR" | "SCHOOL";
 };
 
 function getJwtSecret() {
@@ -46,7 +46,8 @@ export async function verifyAccessToken(
   if (
     payload.role !== "STUDENT" &&
     payload.role !== "ADMIN" &&
-    payload.role !== "TEACHER"
+    payload.role !== "MENTOR" &&
+    payload.role !== "SCHOOL"
   ) {
     throw new Error("Invalid user role");
   }

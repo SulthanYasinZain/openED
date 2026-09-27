@@ -13,74 +13,15 @@ datasource db {
 }
 
 enum Role {
-  STUDENT
   ADMIN
-  TEACHER
-}
-
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  role      Role     @default(STUDENT)
-  name      String?
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  classTeachers ClassTeacher[]
-
-  studentEnrollments StudentEnrollment[]
-}
-
-model Class {
-  id        Int      @id @default(autoincrement())
-  code      String   @unique
-  name      String
-  imageUrl  String?
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  teachers ClassTeacher[]
-
-  studentEnrollments StudentEnrollment[]
-
-  meetings ClassMeeting[]
+  MENTOR
+  STUDENT
+  SCHOOL
 }
 
 enum TeacherType {
   PRIMARY
   SUBSTITUTE
-}
-
-model ClassTeacher {
-  id         Int         @id @default(autoincrement())
-  classId    Int
-  teacherId  Int
-  type       TeacherType @default(PRIMARY)
-  isDeleted  Boolean     @default(false)
-  assignedAt DateTime    @default(now())
-
-  class   Class @relation(fields: [classId], references: [id])
-  teacher User  @relation(fields: [teacherId], references: [id])
-
-  @@unique([classId, teacherId])
-  @@index([teacherId])
-}
-
-model StudentEnrollment {
-  id         Int      @id @default(autoincrement())
-  classId    Int
-  studentId  Int
-  isDeleted  Boolean  @default(false)
-  assignedAt DateTime @default(now())
-
-  class   Class @relation(fields: [classId], references: [id])
-  student User  @relation(fields: [studentId], references: [id])
-
-  @@unique([classId, studentId])
-  @@index([studentId])
 }
 
 enum MeetingStatus {
@@ -90,19 +31,356 @@ enum MeetingStatus {
   CANCELLED
 }
 
+enum MaterialType {
+  FILE
+  VIDEO
+  LINK
+  DOCUMENT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  EXCUSED
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  RESET
+  GRADE
+  SUBMIT
+  LOGIN
+  LOGOUT
+  GENERATE
+  OTHER
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role
+  name      String?
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schoolMemberships SchoolUser[]
+
+  classTeachers ClassTeacher[]
+
+  studentEnrollments StudentEnrollment[]
+
+  homeworkSubmissions HomeworkSubmission[]
+
+  quizAttempts QuizAttempt[]
+
+  attendances Attendance[] @relation("StudentAttendance")
+
+  markedAttendances Attendance[] @relation("AttendanceMarker")
+
+  certificates Certificate[]
+
+  auditLogs AuditLog[]
+
+  @@index([role])
+  @@index([isDeleted])
+}
+
+model School {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String?
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users SchoolUser[]
+
+  classes Class[]
+
+  @@index([isDeleted])
+}
+
+model SchoolUser {
+  id        Int      @id @default(autoincrement())
+  schoolId  Int
+  userId    Int
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school School @relation(fields: [schoolId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([schoolId, userId])
+  @@index([userId])
+  @@index([schoolId])
+}
+
+model Class {
+  id        Int      @id @default(autoincrement())
+  schoolId  Int
+  code      String   @unique
+  name      String
+  imageUrl  String?
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school School @relation(fields: [schoolId], references: [id])
+
+  teachers ClassTeacher[]
+
+  studentEnrollments StudentEnrollment[]
+
+  meetings ClassMeeting[]
+
+  certificates Certificate[]
+
+  @@index([schoolId])
+  @@index([isDeleted])
+}
+
+model ClassTeacher {
+  id         Int         @id @default(autoincrement())
+  classId    Int
+  teacherId  Int
+  type       TeacherType @default(PRIMARY)
+  isDeleted  Boolean     @default(false)
+  assignedAt DateTime    @default(now())
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  class   Class @relation(fields: [classId], references: [id])
+  teacher User  @relation(fields: [teacherId], references: [id])
+
+  @@unique([classId, teacherId])
+  @@index([teacherId])
+  @@index([classId])
+  @@index([isDeleted])
+}
+
+model StudentEnrollment {
+  id         Int      @id @default(autoincrement())
+  classId    Int
+  studentId  Int
+  isDeleted  Boolean  @default(false)
+  assignedAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  class   Class @relation(fields: [classId], references: [id])
+  student User  @relation(fields: [studentId], references: [id])
+
+  @@unique([classId, studentId])
+  @@index([studentId])
+  @@index([classId])
+  @@index([isDeleted])
+}
+
 model ClassMeeting {
   id          Int           @id @default(autoincrement())
   classId     Int
   topic       String
   description String?
-  fileUrl     String?
-  fileHash    String?
   scheduledAt DateTime
   status      MeetingStatus @default(UPCOMING)
+  isDeleted   Boolean       @default(false)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
   class Class @relation(fields: [classId], references: [id])
 
+  materials LearningMaterial[]
+
+  homework Homework[]
+
+  quizzes Quiz[]
+
+  attendances Attendance[]
+
   @@index([classId])
+  @@index([scheduledAt])
+  @@index([status])
+  @@index([isDeleted])
+}
+
+model LearningMaterial {
+  id          Int          @id @default(autoincrement())
+  meetingId   Int
+  title       String
+  description String?
+  type        MaterialType
+  fileUrl     String?
+  fileHash    String?
+  isDeleted   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  meeting ClassMeeting @relation(fields: [meetingId], references: [id])
+
+  @@index([meetingId])
+  @@index([isDeleted])
+}
+
+model Homework {
+  id           Int      @id @default(autoincrement())
+  meetingId    Int
+  title        String
+  description  String?
+  instructions String?
+  dueDate      DateTime?
+  maxScore     Decimal  @db.Decimal(5, 2)
+  isDeleted    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  meeting ClassMeeting @relation(fields: [meetingId], references: [id])
+
+  submissions HomeworkSubmission[]
+
+  @@index([meetingId])
+  @@index([dueDate])
+  @@index([isDeleted])
+}
+
+model HomeworkSubmission {
+  id          Int       @id @default(autoincrement())
+  homeworkId  Int
+  studentId   Int
+  fileUrl     String?
+  submittedAt DateTime?
+  score       Decimal?  @db.Decimal(5, 2)
+  feedback    String?
+  isDeleted   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  homework Homework @relation(fields: [homeworkId], references: [id])
+  student User     @relation(fields: [studentId], references: [id])
+
+  @@unique([homeworkId, studentId])
+  @@index([studentId])
+  @@index([homeworkId])
+  @@index([isDeleted])
+}
+
+model Quiz {
+  id          Int      @id @default(autoincrement())
+  meetingId   Int
+  title       String
+  description String?
+
+  // PostgreSQL JSONB
+  questions Json
+
+  timeLimit Int?
+
+  maxScore  Decimal @db.Decimal(5, 2)
+
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  meeting ClassMeeting @relation(fields: [meetingId], references: [id])
+
+  attempts QuizAttempt[]
+
+  @@index([meetingId])
+  @@index([isDeleted])
+}
+
+model QuizAttempt {
+  id          Int       @id @default(autoincrement())
+  quizId      Int
+  studentId   Int
+
+  // PostgreSQL JSONB
+  answers Json
+
+  score       Decimal?  @db.Decimal(5, 2)
+  startedAt   DateTime
+  submittedAt DateTime?
+
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  quiz    Quiz @relation(fields: [quizId], references: [id])
+  student User @relation(fields: [studentId], references: [id])
+
+  @@index([quizId])
+  @@index([studentId])
+  @@index([isDeleted])
+}
+
+model Attendance {
+  id        Int              @id @default(autoincrement())
+  meetingId Int
+  studentId Int
+  status    AttendanceStatus
+  note      String?
+  markedBy  Int
+
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  meeting ClassMeeting @relation(fields: [meetingId], references: [id])
+
+  student User @relation("StudentAttendance", fields: [studentId], references: [id])
+
+  marker User @relation("AttendanceMarker", fields: [markedBy], references: [id])
+
+  @@unique([meetingId, studentId])
+  @@index([studentId])
+  @@index([markedBy])
+  @@index([meetingId])
+  @@index([isDeleted])
+}
+
+model Certificate {
+  id                Int      @id @default(autoincrement())
+  classId           Int
+  studentId         Int
+  certificateNumber String   @unique
+  issuedAt          DateTime
+  fileUrl           String?
+
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  class   Class @relation(fields: [classId], references: [id])
+  student User  @relation(fields: [studentId], references: [id])
+
+  @@unique([classId, studentId])
+  @@index([studentId])
+  @@index([classId])
+  @@index([isDeleted])
+}
+
+model AuditLog {
+  id          Int         @id @default(autoincrement())
+  actorId     Int
+  action      AuditAction
+  entityType  String
+  entityId    Int?
+  description String?
+
+  // PostgreSQL JSONB
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  actor User @relation(fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
 }

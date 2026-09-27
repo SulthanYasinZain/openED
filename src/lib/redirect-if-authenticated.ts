@@ -4,8 +4,9 @@ import { verifyAccessToken } from "@/lib/session";
 
 const ROLE_HOME = {
   ADMIN: "/dashboard",
-  TEACHER: "/course",
+  MENTOR: "/course",
   STUDENT: "/class",
+  SCHOOL: "/",
 } as const;
 
 export async function redirectIfAuthenticated(): Promise<void> {

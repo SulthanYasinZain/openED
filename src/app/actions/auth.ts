@@ -75,10 +75,12 @@ export async function loginAction(
   switch (user.role) {
     case "ADMIN":
       return redirect("/dashboard");
-    case "TEACHER":
+    case "MENTOR":
       return redirect("/course");
     case "STUDENT":
       return redirect("/class");
+    case "SCHOOL":
+      return redirect("/");
     default:
       return redirect("/login");
   }
@@ -122,6 +124,7 @@ export async function registerAction(
     data: {
       email: email.trim().toLowerCase(),
       password: hashedPassword,
+      role: "STUDENT",
     },
   });
 

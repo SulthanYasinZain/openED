@@ -56,9 +56,15 @@ export async function createMeetingAction(
         classId: classData.id,
         topic,
         description: input.description?.trim() || null,
-        fileUrl: input.fileUrl.trim(),
-        fileHash: input.fileHash?.trim() || null,
         scheduledAt,
+        materials: {
+          create: {
+            title: topic,
+            type: "FILE",
+            fileUrl: input.fileUrl.trim(),
+            fileHash: input.fileHash?.trim() || null,
+          },
+        },
       },
     });
 
@@ -88,12 +94,12 @@ export async function findFileByHashAction(
   }
 
   try {
-    const meeting = await prisma.classMeeting.findFirst({
-      where: { fileHash: fileHash.trim() },
+    const material = await prisma.learningMaterial.findFirst({
+      where: { fileHash: fileHash.trim(), isDeleted: false },
       select: { fileUrl: true },
     });
 
-    return { fileUrl: meeting?.fileUrl ?? null };
+    return { fileUrl: material?.fileUrl ?? null };
   } catch (error) {
     console.error("Find file by hash error:", error);
 

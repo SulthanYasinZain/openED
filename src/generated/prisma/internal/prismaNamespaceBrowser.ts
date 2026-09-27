@@ -52,10 +52,20 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  School: 'School',
+  SchoolUser: 'SchoolUser',
   Class: 'Class',
   ClassTeacher: 'ClassTeacher',
   StudentEnrollment: 'StudentEnrollment',
-  ClassMeeting: 'ClassMeeting'
+  ClassMeeting: 'ClassMeeting',
+  LearningMaterial: 'LearningMaterial',
+  Homework: 'Homework',
+  HomeworkSubmission: 'HomeworkSubmission',
+  Quiz: 'Quiz',
+  QuizAttempt: 'QuizAttempt',
+  Attendance: 'Attendance',
+  Certificate: 'Certificate',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -88,8 +98,33 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const SchoolScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  address: 'address',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SchoolScalarFieldEnum = (typeof SchoolScalarFieldEnum)[keyof typeof SchoolScalarFieldEnum]
+
+
+export const SchoolUserScalarFieldEnum = {
+  id: 'id',
+  schoolId: 'schoolId',
+  userId: 'userId',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SchoolUserScalarFieldEnum = (typeof SchoolUserScalarFieldEnum)[keyof typeof SchoolUserScalarFieldEnum]
+
+
 export const ClassScalarFieldEnum = {
   id: 'id',
+  schoolId: 'schoolId',
   code: 'code',
   name: 'name',
   imageUrl: 'imageUrl',
@@ -107,7 +142,9 @@ export const ClassTeacherScalarFieldEnum = {
   teacherId: 'teacherId',
   type: 'type',
   isDeleted: 'isDeleted',
-  assignedAt: 'assignedAt'
+  assignedAt: 'assignedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ClassTeacherScalarFieldEnum = (typeof ClassTeacherScalarFieldEnum)[keyof typeof ClassTeacherScalarFieldEnum]
@@ -118,7 +155,9 @@ export const StudentEnrollmentScalarFieldEnum = {
   classId: 'classId',
   studentId: 'studentId',
   isDeleted: 'isDeleted',
-  assignedAt: 'assignedAt'
+  assignedAt: 'assignedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type StudentEnrollmentScalarFieldEnum = (typeof StudentEnrollmentScalarFieldEnum)[keyof typeof StudentEnrollmentScalarFieldEnum]
@@ -129,15 +168,138 @@ export const ClassMeetingScalarFieldEnum = {
   classId: 'classId',
   topic: 'topic',
   description: 'description',
-  fileUrl: 'fileUrl',
-  fileHash: 'fileHash',
   scheduledAt: 'scheduledAt',
   status: 'status',
+  isDeleted: 'isDeleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ClassMeetingScalarFieldEnum = (typeof ClassMeetingScalarFieldEnum)[keyof typeof ClassMeetingScalarFieldEnum]
+
+
+export const LearningMaterialScalarFieldEnum = {
+  id: 'id',
+  meetingId: 'meetingId',
+  title: 'title',
+  description: 'description',
+  type: 'type',
+  fileUrl: 'fileUrl',
+  fileHash: 'fileHash',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LearningMaterialScalarFieldEnum = (typeof LearningMaterialScalarFieldEnum)[keyof typeof LearningMaterialScalarFieldEnum]
+
+
+export const HomeworkScalarFieldEnum = {
+  id: 'id',
+  meetingId: 'meetingId',
+  title: 'title',
+  description: 'description',
+  instructions: 'instructions',
+  dueDate: 'dueDate',
+  maxScore: 'maxScore',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeworkScalarFieldEnum = (typeof HomeworkScalarFieldEnum)[keyof typeof HomeworkScalarFieldEnum]
+
+
+export const HomeworkSubmissionScalarFieldEnum = {
+  id: 'id',
+  homeworkId: 'homeworkId',
+  studentId: 'studentId',
+  fileUrl: 'fileUrl',
+  submittedAt: 'submittedAt',
+  score: 'score',
+  feedback: 'feedback',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HomeworkSubmissionScalarFieldEnum = (typeof HomeworkSubmissionScalarFieldEnum)[keyof typeof HomeworkSubmissionScalarFieldEnum]
+
+
+export const QuizScalarFieldEnum = {
+  id: 'id',
+  meetingId: 'meetingId',
+  title: 'title',
+  description: 'description',
+  questions: 'questions',
+  timeLimit: 'timeLimit',
+  maxScore: 'maxScore',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QuizScalarFieldEnum = (typeof QuizScalarFieldEnum)[keyof typeof QuizScalarFieldEnum]
+
+
+export const QuizAttemptScalarFieldEnum = {
+  id: 'id',
+  quizId: 'quizId',
+  studentId: 'studentId',
+  answers: 'answers',
+  score: 'score',
+  startedAt: 'startedAt',
+  submittedAt: 'submittedAt',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type QuizAttemptScalarFieldEnum = (typeof QuizAttemptScalarFieldEnum)[keyof typeof QuizAttemptScalarFieldEnum]
+
+
+export const AttendanceScalarFieldEnum = {
+  id: 'id',
+  meetingId: 'meetingId',
+  studentId: 'studentId',
+  status: 'status',
+  note: 'note',
+  markedBy: 'markedBy',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AttendanceScalarFieldEnum = (typeof AttendanceScalarFieldEnum)[keyof typeof AttendanceScalarFieldEnum]
+
+
+export const CertificateScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  studentId: 'studentId',
+  certificateNumber: 'certificateNumber',
+  issuedAt: 'issuedAt',
+  fileUrl: 'fileUrl',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CertificateScalarFieldEnum = (typeof CertificateScalarFieldEnum)[keyof typeof CertificateScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorId: 'actorId',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  description: 'description',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -146,6 +308,21 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -162,4 +339,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

@@ -9,8 +9,18 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/School'
+export type * from './models/SchoolUser'
 export type * from './models/Class'
 export type * from './models/ClassTeacher'
 export type * from './models/StudentEnrollment'
 export type * from './models/ClassMeeting'
+export type * from './models/LearningMaterial'
+export type * from './models/Homework'
+export type * from './models/HomeworkSubmission'
+export type * from './models/Quiz'
+export type * from './models/QuizAttempt'
+export type * from './models/Attendance'
+export type * from './models/Certificate'
+export type * from './models/AuditLog'
 export type * from './commonInputTypes'

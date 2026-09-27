@@ -58,10 +58,23 @@ export async function createClassAction(
   try {
     const code = await generateUniqueClassCode();
 
+    const school = await prisma.school.findFirst({
+      where: { isDeleted: false },
+      orderBy: { id: "asc" },
+      select: { id: true },
+    });
+
+    if (!school) {
+      return {
+        error: "No school found",
+      };
+    }
+
     await prisma.class.create({
       data: {
         name: name.trim(),
         code,
+        schoolId: school.id,
         imageUrl: imageUrl?.trim() || null,
       },
     });

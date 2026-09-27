@@ -41,10 +41,9 @@ export type ClassMeetingMinAggregateOutputType = {
   classId: number | null
   topic: string | null
   description: string | null
-  fileUrl: string | null
-  fileHash: string | null
   scheduledAt: Date | null
   status: $Enums.MeetingStatus | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,10 +53,9 @@ export type ClassMeetingMaxAggregateOutputType = {
   classId: number | null
   topic: string | null
   description: string | null
-  fileUrl: string | null
-  fileHash: string | null
   scheduledAt: Date | null
   status: $Enums.MeetingStatus | null
+  isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -67,10 +65,9 @@ export type ClassMeetingCountAggregateOutputType = {
   classId: number
   topic: number
   description: number
-  fileUrl: number
-  fileHash: number
   scheduledAt: number
   status: number
+  isDeleted: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -92,10 +89,9 @@ export type ClassMeetingMinAggregateInputType = {
   classId?: true
   topic?: true
   description?: true
-  fileUrl?: true
-  fileHash?: true
   scheduledAt?: true
   status?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -105,10 +101,9 @@ export type ClassMeetingMaxAggregateInputType = {
   classId?: true
   topic?: true
   description?: true
-  fileUrl?: true
-  fileHash?: true
   scheduledAt?: true
   status?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,10 +113,9 @@ export type ClassMeetingCountAggregateInputType = {
   classId?: true
   topic?: true
   description?: true
-  fileUrl?: true
-  fileHash?: true
   scheduledAt?: true
   status?: true
+  isDeleted?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -218,10 +212,9 @@ export type ClassMeetingGroupByOutputType = {
   classId: number
   topic: string
   description: string | null
-  fileUrl: string | null
-  fileHash: string | null
   scheduledAt: Date
   status: $Enums.MeetingStatus
+  isDeleted: boolean
   createdAt: Date
   updatedAt: Date
   _count: ClassMeetingCountAggregateOutputType | null
@@ -254,13 +247,16 @@ export type ClassMeetingWhereInput = {
   classId?: Prisma.IntFilter<"ClassMeeting"> | number
   topic?: Prisma.StringFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileUrl?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileHash?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusFilter<"ClassMeeting"> | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFilter<"ClassMeeting"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
+  materials?: Prisma.LearningMaterialListRelationFilter
+  homework?: Prisma.HomeworkListRelationFilter
+  quizzes?: Prisma.QuizListRelationFilter
+  attendances?: Prisma.AttendanceListRelationFilter
 }
 
 export type ClassMeetingOrderByWithRelationInput = {
@@ -268,13 +264,16 @@ export type ClassMeetingOrderByWithRelationInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  fileHash?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   class?: Prisma.ClassOrderByWithRelationInput
+  materials?: Prisma.LearningMaterialOrderByRelationAggregateInput
+  homework?: Prisma.HomeworkOrderByRelationAggregateInput
+  quizzes?: Prisma.QuizOrderByRelationAggregateInput
+  attendances?: Prisma.AttendanceOrderByRelationAggregateInput
 }
 
 export type ClassMeetingWhereUniqueInput = Prisma.AtLeast<{
@@ -285,13 +284,16 @@ export type ClassMeetingWhereUniqueInput = Prisma.AtLeast<{
   classId?: Prisma.IntFilter<"ClassMeeting"> | number
   topic?: Prisma.StringFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileUrl?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileHash?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusFilter<"ClassMeeting"> | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFilter<"ClassMeeting"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
+  materials?: Prisma.LearningMaterialListRelationFilter
+  homework?: Prisma.HomeworkListRelationFilter
+  quizzes?: Prisma.QuizListRelationFilter
+  attendances?: Prisma.AttendanceListRelationFilter
 }, "id">
 
 export type ClassMeetingOrderByWithAggregationInput = {
@@ -299,10 +301,9 @@ export type ClassMeetingOrderByWithAggregationInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
-  fileUrl?: Prisma.SortOrderInput | Prisma.SortOrder
-  fileHash?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClassMeetingCountOrderByAggregateInput
@@ -320,10 +321,9 @@ export type ClassMeetingScalarWhereWithAggregatesInput = {
   classId?: Prisma.IntWithAggregatesFilter<"ClassMeeting"> | number
   topic?: Prisma.StringWithAggregatesFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"ClassMeeting"> | string | null
-  fileUrl?: Prisma.StringNullableWithAggregatesFilter<"ClassMeeting"> | string | null
-  fileHash?: Prisma.StringNullableWithAggregatesFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeWithAggregatesFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusWithAggregatesFilter<"ClassMeeting"> | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"ClassMeeting"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClassMeeting"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ClassMeeting"> | Date | string
 }
@@ -331,13 +331,16 @@ export type ClassMeetingScalarWhereWithAggregatesInput = {
 export type ClassMeetingCreateInput = {
   topic: string
   description?: string | null
-  fileUrl?: string | null
-  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutMeetingsInput
+  materials?: Prisma.LearningMaterialCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
 }
 
 export type ClassMeetingUncheckedCreateInput = {
@@ -345,24 +348,30 @@ export type ClassMeetingUncheckedCreateInput = {
   classId: number
   topic: string
   description?: string | null
-  fileUrl?: string | null
-  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  materials?: Prisma.LearningMaterialUncheckedCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkUncheckedCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizUncheckedCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMeetingInput
 }
 
 export type ClassMeetingUpdateInput = {
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutMeetingsNestedInput
+  materials?: Prisma.LearningMaterialUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
 }
 
 export type ClassMeetingUncheckedUpdateInput = {
@@ -370,12 +379,15 @@ export type ClassMeetingUncheckedUpdateInput = {
   classId?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.LearningMaterialUncheckedUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUncheckedUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUncheckedUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMeetingNestedInput
 }
 
 export type ClassMeetingCreateManyInput = {
@@ -383,10 +395,9 @@ export type ClassMeetingCreateManyInput = {
   classId: number
   topic: string
   description?: string | null
-  fileUrl?: string | null
-  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -394,10 +405,9 @@ export type ClassMeetingCreateManyInput = {
 export type ClassMeetingUpdateManyMutationInput = {
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -407,10 +417,9 @@ export type ClassMeetingUncheckedUpdateManyInput = {
   classId?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -430,10 +439,9 @@ export type ClassMeetingCountOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  fileHash?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -448,10 +456,9 @@ export type ClassMeetingMaxOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  fileHash?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -461,10 +468,9 @@ export type ClassMeetingMinOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   topic?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  fileHash?: Prisma.SortOrder
   scheduledAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -472,6 +478,11 @@ export type ClassMeetingMinOrderByAggregateInput = {
 export type ClassMeetingSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   classId?: Prisma.SortOrder
+}
+
+export type ClassMeetingScalarRelationFilter = {
+  is?: Prisma.ClassMeetingWhereInput
+  isNot?: Prisma.ClassMeetingWhereInput
 }
 
 export type ClassMeetingCreateNestedManyWithoutClassInput = {
@@ -520,27 +531,89 @@ export type EnumMeetingStatusFieldUpdateOperationsInput = {
   set?: $Enums.MeetingStatus
 }
 
+export type ClassMeetingCreateNestedOneWithoutMaterialsInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutMaterialsInput, Prisma.ClassMeetingUncheckedCreateWithoutMaterialsInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutMaterialsInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+}
+
+export type ClassMeetingUpdateOneRequiredWithoutMaterialsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutMaterialsInput, Prisma.ClassMeetingUncheckedCreateWithoutMaterialsInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutMaterialsInput
+  upsert?: Prisma.ClassMeetingUpsertWithoutMaterialsInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassMeetingUpdateToOneWithWhereWithoutMaterialsInput, Prisma.ClassMeetingUpdateWithoutMaterialsInput>, Prisma.ClassMeetingUncheckedUpdateWithoutMaterialsInput>
+}
+
+export type ClassMeetingCreateNestedOneWithoutHomeworkInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutHomeworkInput, Prisma.ClassMeetingUncheckedCreateWithoutHomeworkInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutHomeworkInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+}
+
+export type ClassMeetingUpdateOneRequiredWithoutHomeworkNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutHomeworkInput, Prisma.ClassMeetingUncheckedCreateWithoutHomeworkInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutHomeworkInput
+  upsert?: Prisma.ClassMeetingUpsertWithoutHomeworkInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassMeetingUpdateToOneWithWhereWithoutHomeworkInput, Prisma.ClassMeetingUpdateWithoutHomeworkInput>, Prisma.ClassMeetingUncheckedUpdateWithoutHomeworkInput>
+}
+
+export type ClassMeetingCreateNestedOneWithoutQuizzesInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutQuizzesInput, Prisma.ClassMeetingUncheckedCreateWithoutQuizzesInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutQuizzesInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+}
+
+export type ClassMeetingUpdateOneRequiredWithoutQuizzesNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutQuizzesInput, Prisma.ClassMeetingUncheckedCreateWithoutQuizzesInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutQuizzesInput
+  upsert?: Prisma.ClassMeetingUpsertWithoutQuizzesInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassMeetingUpdateToOneWithWhereWithoutQuizzesInput, Prisma.ClassMeetingUpdateWithoutQuizzesInput>, Prisma.ClassMeetingUncheckedUpdateWithoutQuizzesInput>
+}
+
+export type ClassMeetingCreateNestedOneWithoutAttendancesInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutAttendancesInput, Prisma.ClassMeetingUncheckedCreateWithoutAttendancesInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutAttendancesInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+}
+
+export type ClassMeetingUpdateOneRequiredWithoutAttendancesNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassMeetingCreateWithoutAttendancesInput, Prisma.ClassMeetingUncheckedCreateWithoutAttendancesInput>
+  connectOrCreate?: Prisma.ClassMeetingCreateOrConnectWithoutAttendancesInput
+  upsert?: Prisma.ClassMeetingUpsertWithoutAttendancesInput
+  connect?: Prisma.ClassMeetingWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClassMeetingUpdateToOneWithWhereWithoutAttendancesInput, Prisma.ClassMeetingUpdateWithoutAttendancesInput>, Prisma.ClassMeetingUncheckedUpdateWithoutAttendancesInput>
+}
+
 export type ClassMeetingCreateWithoutClassInput = {
   topic: string
   description?: string | null
-  fileUrl?: string | null
-  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  materials?: Prisma.LearningMaterialCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
 }
 
 export type ClassMeetingUncheckedCreateWithoutClassInput = {
   id?: number
   topic: string
   description?: string | null
-  fileUrl?: string | null
-  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  materials?: Prisma.LearningMaterialUncheckedCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkUncheckedCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizUncheckedCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMeetingInput
 }
 
 export type ClassMeetingCreateOrConnectWithoutClassInput = {
@@ -577,22 +650,316 @@ export type ClassMeetingScalarWhereInput = {
   classId?: Prisma.IntFilter<"ClassMeeting"> | number
   topic?: Prisma.StringFilter<"ClassMeeting"> | string
   description?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileUrl?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
-  fileHash?: Prisma.StringNullableFilter<"ClassMeeting"> | string | null
   scheduledAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   status?: Prisma.EnumMeetingStatusFilter<"ClassMeeting"> | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFilter<"ClassMeeting"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ClassMeeting"> | Date | string
+}
+
+export type ClassMeetingCreateWithoutMaterialsInput = {
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  class: Prisma.ClassCreateNestedOneWithoutMeetingsInput
+  homework?: Prisma.HomeworkCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingUncheckedCreateWithoutMaterialsInput = {
+  id?: number
+  classId: number
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  homework?: Prisma.HomeworkUncheckedCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizUncheckedCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingCreateOrConnectWithoutMaterialsInput = {
+  where: Prisma.ClassMeetingWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutMaterialsInput, Prisma.ClassMeetingUncheckedCreateWithoutMaterialsInput>
+}
+
+export type ClassMeetingUpsertWithoutMaterialsInput = {
+  update: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutMaterialsInput, Prisma.ClassMeetingUncheckedUpdateWithoutMaterialsInput>
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutMaterialsInput, Prisma.ClassMeetingUncheckedCreateWithoutMaterialsInput>
+  where?: Prisma.ClassMeetingWhereInput
+}
+
+export type ClassMeetingUpdateToOneWithWhereWithoutMaterialsInput = {
+  where?: Prisma.ClassMeetingWhereInput
+  data: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutMaterialsInput, Prisma.ClassMeetingUncheckedUpdateWithoutMaterialsInput>
+}
+
+export type ClassMeetingUpdateWithoutMaterialsInput = {
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneRequiredWithoutMeetingsNestedInput
+  homework?: Prisma.HomeworkUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
+}
+
+export type ClassMeetingUncheckedUpdateWithoutMaterialsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  homework?: Prisma.HomeworkUncheckedUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUncheckedUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMeetingNestedInput
+}
+
+export type ClassMeetingCreateWithoutHomeworkInput = {
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  class: Prisma.ClassCreateNestedOneWithoutMeetingsInput
+  materials?: Prisma.LearningMaterialCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingUncheckedCreateWithoutHomeworkInput = {
+  id?: number
+  classId: number
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  materials?: Prisma.LearningMaterialUncheckedCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizUncheckedCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingCreateOrConnectWithoutHomeworkInput = {
+  where: Prisma.ClassMeetingWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutHomeworkInput, Prisma.ClassMeetingUncheckedCreateWithoutHomeworkInput>
+}
+
+export type ClassMeetingUpsertWithoutHomeworkInput = {
+  update: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutHomeworkInput, Prisma.ClassMeetingUncheckedUpdateWithoutHomeworkInput>
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutHomeworkInput, Prisma.ClassMeetingUncheckedCreateWithoutHomeworkInput>
+  where?: Prisma.ClassMeetingWhereInput
+}
+
+export type ClassMeetingUpdateToOneWithWhereWithoutHomeworkInput = {
+  where?: Prisma.ClassMeetingWhereInput
+  data: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutHomeworkInput, Prisma.ClassMeetingUncheckedUpdateWithoutHomeworkInput>
+}
+
+export type ClassMeetingUpdateWithoutHomeworkInput = {
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneRequiredWithoutMeetingsNestedInput
+  materials?: Prisma.LearningMaterialUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
+}
+
+export type ClassMeetingUncheckedUpdateWithoutHomeworkInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.LearningMaterialUncheckedUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUncheckedUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMeetingNestedInput
+}
+
+export type ClassMeetingCreateWithoutQuizzesInput = {
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  class: Prisma.ClassCreateNestedOneWithoutMeetingsInput
+  materials?: Prisma.LearningMaterialCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingUncheckedCreateWithoutQuizzesInput = {
+  id?: number
+  classId: number
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  materials?: Prisma.LearningMaterialUncheckedCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkUncheckedCreateNestedManyWithoutMeetingInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingCreateOrConnectWithoutQuizzesInput = {
+  where: Prisma.ClassMeetingWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutQuizzesInput, Prisma.ClassMeetingUncheckedCreateWithoutQuizzesInput>
+}
+
+export type ClassMeetingUpsertWithoutQuizzesInput = {
+  update: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutQuizzesInput, Prisma.ClassMeetingUncheckedUpdateWithoutQuizzesInput>
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutQuizzesInput, Prisma.ClassMeetingUncheckedCreateWithoutQuizzesInput>
+  where?: Prisma.ClassMeetingWhereInput
+}
+
+export type ClassMeetingUpdateToOneWithWhereWithoutQuizzesInput = {
+  where?: Prisma.ClassMeetingWhereInput
+  data: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutQuizzesInput, Prisma.ClassMeetingUncheckedUpdateWithoutQuizzesInput>
+}
+
+export type ClassMeetingUpdateWithoutQuizzesInput = {
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneRequiredWithoutMeetingsNestedInput
+  materials?: Prisma.LearningMaterialUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
+}
+
+export type ClassMeetingUncheckedUpdateWithoutQuizzesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.LearningMaterialUncheckedUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUncheckedUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMeetingNestedInput
+}
+
+export type ClassMeetingCreateWithoutAttendancesInput = {
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  class: Prisma.ClassCreateNestedOneWithoutMeetingsInput
+  materials?: Prisma.LearningMaterialCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingUncheckedCreateWithoutAttendancesInput = {
+  id?: number
+  classId: number
+  topic: string
+  description?: string | null
+  scheduledAt: Date | string
+  status?: $Enums.MeetingStatus
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  materials?: Prisma.LearningMaterialUncheckedCreateNestedManyWithoutMeetingInput
+  homework?: Prisma.HomeworkUncheckedCreateNestedManyWithoutMeetingInput
+  quizzes?: Prisma.QuizUncheckedCreateNestedManyWithoutMeetingInput
+}
+
+export type ClassMeetingCreateOrConnectWithoutAttendancesInput = {
+  where: Prisma.ClassMeetingWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutAttendancesInput, Prisma.ClassMeetingUncheckedCreateWithoutAttendancesInput>
+}
+
+export type ClassMeetingUpsertWithoutAttendancesInput = {
+  update: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutAttendancesInput, Prisma.ClassMeetingUncheckedUpdateWithoutAttendancesInput>
+  create: Prisma.XOR<Prisma.ClassMeetingCreateWithoutAttendancesInput, Prisma.ClassMeetingUncheckedCreateWithoutAttendancesInput>
+  where?: Prisma.ClassMeetingWhereInput
+}
+
+export type ClassMeetingUpdateToOneWithWhereWithoutAttendancesInput = {
+  where?: Prisma.ClassMeetingWhereInput
+  data: Prisma.XOR<Prisma.ClassMeetingUpdateWithoutAttendancesInput, Prisma.ClassMeetingUncheckedUpdateWithoutAttendancesInput>
+}
+
+export type ClassMeetingUpdateWithoutAttendancesInput = {
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  class?: Prisma.ClassUpdateOneRequiredWithoutMeetingsNestedInput
+  materials?: Prisma.LearningMaterialUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUpdateManyWithoutMeetingNestedInput
+}
+
+export type ClassMeetingUncheckedUpdateWithoutAttendancesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  classId?: Prisma.IntFieldUpdateOperationsInput | number
+  topic?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.LearningMaterialUncheckedUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUncheckedUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUncheckedUpdateManyWithoutMeetingNestedInput
 }
 
 export type ClassMeetingCreateManyClassInput = {
   id?: number
   topic: string
   description?: string | null
-  fileUrl?: string | null
-  fileHash?: string | null
   scheduledAt: Date | string
   status?: $Enums.MeetingStatus
+  isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -600,38 +967,99 @@ export type ClassMeetingCreateManyClassInput = {
 export type ClassMeetingUpdateWithoutClassInput = {
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.LearningMaterialUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutMeetingNestedInput
 }
 
 export type ClassMeetingUncheckedUpdateWithoutClassInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  materials?: Prisma.LearningMaterialUncheckedUpdateManyWithoutMeetingNestedInput
+  homework?: Prisma.HomeworkUncheckedUpdateManyWithoutMeetingNestedInput
+  quizzes?: Prisma.QuizUncheckedUpdateManyWithoutMeetingNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMeetingNestedInput
 }
 
 export type ClassMeetingUncheckedUpdateManyWithoutClassInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   topic?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fileHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumMeetingStatusFieldUpdateOperationsInput | $Enums.MeetingStatus
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type ClassMeetingCountOutputType
+ */
+
+export type ClassMeetingCountOutputType = {
+  materials: number
+  homework: number
+  quizzes: number
+  attendances: number
+}
+
+export type ClassMeetingCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  materials?: boolean | ClassMeetingCountOutputTypeCountMaterialsArgs
+  homework?: boolean | ClassMeetingCountOutputTypeCountHomeworkArgs
+  quizzes?: boolean | ClassMeetingCountOutputTypeCountQuizzesArgs
+  attendances?: boolean | ClassMeetingCountOutputTypeCountAttendancesArgs
+}
+
+/**
+ * ClassMeetingCountOutputType without action
+ */
+export type ClassMeetingCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClassMeetingCountOutputType
+   */
+  select?: Prisma.ClassMeetingCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ClassMeetingCountOutputType without action
+ */
+export type ClassMeetingCountOutputTypeCountMaterialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LearningMaterialWhereInput
+}
+
+/**
+ * ClassMeetingCountOutputType without action
+ */
+export type ClassMeetingCountOutputTypeCountHomeworkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HomeworkWhereInput
+}
+
+/**
+ * ClassMeetingCountOutputType without action
+ */
+export type ClassMeetingCountOutputTypeCountQuizzesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.QuizWhereInput
+}
+
+/**
+ * ClassMeetingCountOutputType without action
+ */
+export type ClassMeetingCountOutputTypeCountAttendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AttendanceWhereInput
+}
 
 
 export type ClassMeetingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -639,13 +1067,17 @@ export type ClassMeetingSelect<ExtArgs extends runtime.Types.Extensions.Internal
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileUrl?: boolean
-  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
+  materials?: boolean | Prisma.ClassMeeting$materialsArgs<ExtArgs>
+  homework?: boolean | Prisma.ClassMeeting$homeworkArgs<ExtArgs>
+  quizzes?: boolean | Prisma.ClassMeeting$quizzesArgs<ExtArgs>
+  attendances?: boolean | Prisma.ClassMeeting$attendancesArgs<ExtArgs>
+  _count?: boolean | Prisma.ClassMeetingCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classMeeting"]>
 
 export type ClassMeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -653,10 +1085,9 @@ export type ClassMeetingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileUrl?: boolean
-  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
@@ -667,10 +1098,9 @@ export type ClassMeetingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileUrl?: boolean
-  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
@@ -681,17 +1111,21 @@ export type ClassMeetingSelectScalar = {
   classId?: boolean
   topic?: boolean
   description?: boolean
-  fileUrl?: boolean
-  fileHash?: boolean
   scheduledAt?: boolean
   status?: boolean
+  isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClassMeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "topic" | "description" | "fileUrl" | "fileHash" | "scheduledAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["classMeeting"]>
+export type ClassMeetingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "topic" | "description" | "scheduledAt" | "status" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["classMeeting"]>
 export type ClassMeetingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
+  materials?: boolean | Prisma.ClassMeeting$materialsArgs<ExtArgs>
+  homework?: boolean | Prisma.ClassMeeting$homeworkArgs<ExtArgs>
+  quizzes?: boolean | Prisma.ClassMeeting$quizzesArgs<ExtArgs>
+  attendances?: boolean | Prisma.ClassMeeting$attendancesArgs<ExtArgs>
+  _count?: boolean | Prisma.ClassMeetingCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ClassMeetingIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
@@ -704,16 +1138,19 @@ export type $ClassMeetingPayload<ExtArgs extends runtime.Types.Extensions.Intern
   name: "ClassMeeting"
   objects: {
     class: Prisma.$ClassPayload<ExtArgs>
+    materials: Prisma.$LearningMaterialPayload<ExtArgs>[]
+    homework: Prisma.$HomeworkPayload<ExtArgs>[]
+    quizzes: Prisma.$QuizPayload<ExtArgs>[]
+    attendances: Prisma.$AttendancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     classId: number
     topic: string
     description: string | null
-    fileUrl: string | null
-    fileHash: string | null
     scheduledAt: Date
     status: $Enums.MeetingStatus
+    isDeleted: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["classMeeting"]>
@@ -1111,6 +1548,10 @@ readonly fields: ClassMeetingFieldRefs;
 export interface Prisma__ClassMeetingClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   class<T extends Prisma.ClassDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassDefaultArgs<ExtArgs>>): Prisma.Prisma__ClassClient<runtime.Types.Result.GetResult<Prisma.$ClassPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  materials<T extends Prisma.ClassMeeting$materialsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassMeeting$materialsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LearningMaterialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  homework<T extends Prisma.ClassMeeting$homeworkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassMeeting$homeworkArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HomeworkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  quizzes<T extends Prisma.ClassMeeting$quizzesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassMeeting$quizzesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QuizPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attendances<T extends Prisma.ClassMeeting$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClassMeeting$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1144,10 +1585,9 @@ export interface ClassMeetingFieldRefs {
   readonly classId: Prisma.FieldRef<"ClassMeeting", 'Int'>
   readonly topic: Prisma.FieldRef<"ClassMeeting", 'String'>
   readonly description: Prisma.FieldRef<"ClassMeeting", 'String'>
-  readonly fileUrl: Prisma.FieldRef<"ClassMeeting", 'String'>
-  readonly fileHash: Prisma.FieldRef<"ClassMeeting", 'String'>
   readonly scheduledAt: Prisma.FieldRef<"ClassMeeting", 'DateTime'>
   readonly status: Prisma.FieldRef<"ClassMeeting", 'MeetingStatus'>
+  readonly isDeleted: Prisma.FieldRef<"ClassMeeting", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"ClassMeeting", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ClassMeeting", 'DateTime'>
 }
@@ -1548,6 +1988,102 @@ export type ClassMeetingDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many ClassMeetings to delete.
    */
   limit?: number
+}
+
+/**
+ * ClassMeeting.materials
+ */
+export type ClassMeeting$materialsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LearningMaterial
+   */
+  select?: Prisma.LearningMaterialSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LearningMaterial
+   */
+  omit?: Prisma.LearningMaterialOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LearningMaterialInclude<ExtArgs> | null
+  where?: Prisma.LearningMaterialWhereInput
+  orderBy?: Prisma.LearningMaterialOrderByWithRelationInput | Prisma.LearningMaterialOrderByWithRelationInput[]
+  cursor?: Prisma.LearningMaterialWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LearningMaterialScalarFieldEnum | Prisma.LearningMaterialScalarFieldEnum[]
+}
+
+/**
+ * ClassMeeting.homework
+ */
+export type ClassMeeting$homeworkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Homework
+   */
+  select?: Prisma.HomeworkSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Homework
+   */
+  omit?: Prisma.HomeworkOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HomeworkInclude<ExtArgs> | null
+  where?: Prisma.HomeworkWhereInput
+  orderBy?: Prisma.HomeworkOrderByWithRelationInput | Prisma.HomeworkOrderByWithRelationInput[]
+  cursor?: Prisma.HomeworkWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HomeworkScalarFieldEnum | Prisma.HomeworkScalarFieldEnum[]
+}
+
+/**
+ * ClassMeeting.quizzes
+ */
+export type ClassMeeting$quizzesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Quiz
+   */
+  select?: Prisma.QuizSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Quiz
+   */
+  omit?: Prisma.QuizOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.QuizInclude<ExtArgs> | null
+  where?: Prisma.QuizWhereInput
+  orderBy?: Prisma.QuizOrderByWithRelationInput | Prisma.QuizOrderByWithRelationInput[]
+  cursor?: Prisma.QuizWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.QuizScalarFieldEnum | Prisma.QuizScalarFieldEnum[]
+}
+
+/**
+ * ClassMeeting.attendances
+ */
+export type ClassMeeting$attendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Attendance
+   */
+  select?: Prisma.AttendanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Attendance
+   */
+  omit?: Prisma.AttendanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AttendanceInclude<ExtArgs> | null
+  where?: Prisma.AttendanceWhereInput
+  orderBy?: Prisma.AttendanceOrderByWithRelationInput | Prisma.AttendanceOrderByWithRelationInput[]
+  cursor?: Prisma.AttendanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AttendanceScalarFieldEnum | Prisma.AttendanceScalarFieldEnum[]
 }
 
 /**

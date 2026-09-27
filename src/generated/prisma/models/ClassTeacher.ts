@@ -45,6 +45,8 @@ export type ClassTeacherMinAggregateOutputType = {
   type: $Enums.TeacherType | null
   isDeleted: boolean | null
   assignedAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ClassTeacherMaxAggregateOutputType = {
@@ -54,6 +56,8 @@ export type ClassTeacherMaxAggregateOutputType = {
   type: $Enums.TeacherType | null
   isDeleted: boolean | null
   assignedAt: Date | null
+  createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ClassTeacherCountAggregateOutputType = {
@@ -63,6 +67,8 @@ export type ClassTeacherCountAggregateOutputType = {
   type: number
   isDeleted: number
   assignedAt: number
+  createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -86,6 +92,8 @@ export type ClassTeacherMinAggregateInputType = {
   type?: true
   isDeleted?: true
   assignedAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ClassTeacherMaxAggregateInputType = {
@@ -95,6 +103,8 @@ export type ClassTeacherMaxAggregateInputType = {
   type?: true
   isDeleted?: true
   assignedAt?: true
+  createdAt?: true
+  updatedAt?: true
 }
 
 export type ClassTeacherCountAggregateInputType = {
@@ -104,6 +114,8 @@ export type ClassTeacherCountAggregateInputType = {
   type?: true
   isDeleted?: true
   assignedAt?: true
+  createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -200,6 +212,8 @@ export type ClassTeacherGroupByOutputType = {
   type: $Enums.TeacherType
   isDeleted: boolean
   assignedAt: Date
+  createdAt: Date
+  updatedAt: Date
   _count: ClassTeacherCountAggregateOutputType | null
   _avg: ClassTeacherAvgAggregateOutputType | null
   _sum: ClassTeacherSumAggregateOutputType | null
@@ -232,6 +246,8 @@ export type ClassTeacherWhereInput = {
   type?: Prisma.EnumTeacherTypeFilter<"ClassTeacher"> | $Enums.TeacherType
   isDeleted?: Prisma.BoolFilter<"ClassTeacher"> | boolean
   assignedAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   teacher?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -243,6 +259,8 @@ export type ClassTeacherOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   class?: Prisma.ClassOrderByWithRelationInput
   teacher?: Prisma.UserOrderByWithRelationInput
 }
@@ -258,6 +276,8 @@ export type ClassTeacherWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.EnumTeacherTypeFilter<"ClassTeacher"> | $Enums.TeacherType
   isDeleted?: Prisma.BoolFilter<"ClassTeacher"> | boolean
   assignedAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   teacher?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "classId_teacherId">
@@ -269,6 +289,8 @@ export type ClassTeacherOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClassTeacherCountOrderByAggregateInput
   _avg?: Prisma.ClassTeacherAvgOrderByAggregateInput
   _max?: Prisma.ClassTeacherMaxOrderByAggregateInput
@@ -286,12 +308,16 @@ export type ClassTeacherScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumTeacherTypeWithAggregatesFilter<"ClassTeacher"> | $Enums.TeacherType
   isDeleted?: Prisma.BoolWithAggregatesFilter<"ClassTeacher"> | boolean
   assignedAt?: Prisma.DateTimeWithAggregatesFilter<"ClassTeacher"> | Date | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"ClassTeacher"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ClassTeacher"> | Date | string
 }
 
 export type ClassTeacherCreateInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutTeachersInput
   teacher: Prisma.UserCreateNestedOneWithoutClassTeachersInput
 }
@@ -303,12 +329,16 @@ export type ClassTeacherUncheckedCreateInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClassTeacherUpdateInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutTeachersNestedInput
   teacher?: Prisma.UserUpdateOneRequiredWithoutClassTeachersNestedInput
 }
@@ -320,6 +350,8 @@ export type ClassTeacherUncheckedUpdateInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassTeacherCreateManyInput = {
@@ -329,12 +361,16 @@ export type ClassTeacherCreateManyInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClassTeacherUpdateManyMutationInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassTeacherUncheckedUpdateManyInput = {
@@ -344,6 +380,8 @@ export type ClassTeacherUncheckedUpdateManyInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassTeacherListRelationFilter = {
@@ -368,6 +406,8 @@ export type ClassTeacherCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClassTeacherAvgOrderByAggregateInput = {
@@ -383,6 +423,8 @@ export type ClassTeacherMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClassTeacherMinOrderByAggregateInput = {
@@ -392,6 +434,8 @@ export type ClassTeacherMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ClassTeacherSumOrderByAggregateInput = {
@@ -492,6 +536,8 @@ export type ClassTeacherCreateWithoutTeacherInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   class: Prisma.ClassCreateNestedOneWithoutTeachersInput
 }
 
@@ -501,6 +547,8 @@ export type ClassTeacherUncheckedCreateWithoutTeacherInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClassTeacherCreateOrConnectWithoutTeacherInput = {
@@ -539,12 +587,16 @@ export type ClassTeacherScalarWhereInput = {
   type?: Prisma.EnumTeacherTypeFilter<"ClassTeacher"> | $Enums.TeacherType
   isDeleted?: Prisma.BoolFilter<"ClassTeacher"> | boolean
   assignedAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ClassTeacher"> | Date | string
 }
 
 export type ClassTeacherCreateWithoutClassInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
   teacher: Prisma.UserCreateNestedOneWithoutClassTeachersInput
 }
 
@@ -554,6 +606,8 @@ export type ClassTeacherUncheckedCreateWithoutClassInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClassTeacherCreateOrConnectWithoutClassInput = {
@@ -588,12 +642,16 @@ export type ClassTeacherCreateManyTeacherInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClassTeacherUpdateWithoutTeacherInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   class?: Prisma.ClassUpdateOneRequiredWithoutTeachersNestedInput
 }
 
@@ -603,6 +661,8 @@ export type ClassTeacherUncheckedUpdateWithoutTeacherInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassTeacherUncheckedUpdateManyWithoutTeacherInput = {
@@ -611,6 +671,8 @@ export type ClassTeacherUncheckedUpdateManyWithoutTeacherInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassTeacherCreateManyClassInput = {
@@ -619,12 +681,16 @@ export type ClassTeacherCreateManyClassInput = {
   type?: $Enums.TeacherType
   isDeleted?: boolean
   assignedAt?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ClassTeacherUpdateWithoutClassInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   teacher?: Prisma.UserUpdateOneRequiredWithoutClassTeachersNestedInput
 }
 
@@ -634,6 +700,8 @@ export type ClassTeacherUncheckedUpdateWithoutClassInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ClassTeacherUncheckedUpdateManyWithoutClassInput = {
@@ -642,6 +710,8 @@ export type ClassTeacherUncheckedUpdateManyWithoutClassInput = {
   type?: Prisma.EnumTeacherTypeFieldUpdateOperationsInput | $Enums.TeacherType
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -653,6 +723,8 @@ export type ClassTeacherSelect<ExtArgs extends runtime.Types.Extensions.Internal
   type?: boolean
   isDeleted?: boolean
   assignedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classTeacher"]>
@@ -664,6 +736,8 @@ export type ClassTeacherSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   isDeleted?: boolean
   assignedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classTeacher"]>
@@ -675,6 +749,8 @@ export type ClassTeacherSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   isDeleted?: boolean
   assignedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["classTeacher"]>
@@ -686,9 +762,11 @@ export type ClassTeacherSelectScalar = {
   type?: boolean
   isDeleted?: boolean
   assignedAt?: boolean
+  createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ClassTeacherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "teacherId" | "type" | "isDeleted" | "assignedAt", ExtArgs["result"]["classTeacher"]>
+export type ClassTeacherOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "classId" | "teacherId" | "type" | "isDeleted" | "assignedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["classTeacher"]>
 export type ClassTeacherInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -715,6 +793,8 @@ export type $ClassTeacherPayload<ExtArgs extends runtime.Types.Extensions.Intern
     type: $Enums.TeacherType
     isDeleted: boolean
     assignedAt: Date
+    createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["classTeacher"]>
   composites: {}
 }
@@ -1146,6 +1226,8 @@ export interface ClassTeacherFieldRefs {
   readonly type: Prisma.FieldRef<"ClassTeacher", 'TeacherType'>
   readonly isDeleted: Prisma.FieldRef<"ClassTeacher", 'Boolean'>
   readonly assignedAt: Prisma.FieldRef<"ClassTeacher", 'DateTime'>
+  readonly createdAt: Prisma.FieldRef<"ClassTeacher", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"ClassTeacher", 'DateTime'>
 }
     
 

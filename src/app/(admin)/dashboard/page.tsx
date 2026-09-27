@@ -36,7 +36,7 @@ export default async function DashboardPage() {
 
   const teacherData = await prisma.user.findMany({
     where: {
-      role: "TEACHER",
+      role: "MENTOR",
       isDeleted: false,
     },
     select: {

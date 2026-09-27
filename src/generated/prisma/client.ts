@@ -47,6 +47,16 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
+ * Model School
+ * 
+ */
+export type School = Prisma.SchoolModel
+/**
+ * Model SchoolUser
+ * 
+ */
+export type SchoolUser = Prisma.SchoolUserModel
+/**
  * Model Class
  * 
  */
@@ -66,3 +76,43 @@ export type StudentEnrollment = Prisma.StudentEnrollmentModel
  * 
  */
 export type ClassMeeting = Prisma.ClassMeetingModel
+/**
+ * Model LearningMaterial
+ * 
+ */
+export type LearningMaterial = Prisma.LearningMaterialModel
+/**
+ * Model Homework
+ * 
+ */
+export type Homework = Prisma.HomeworkModel
+/**
+ * Model HomeworkSubmission
+ * 
+ */
+export type HomeworkSubmission = Prisma.HomeworkSubmissionModel
+/**
+ * Model Quiz
+ * 
+ */
+export type Quiz = Prisma.QuizModel
+/**
+ * Model QuizAttempt
+ * 
+ */
+export type QuizAttempt = Prisma.QuizAttemptModel
+/**
+ * Model Attendance
+ * 
+ */
+export type Attendance = Prisma.AttendanceModel
+/**
+ * Model Certificate
+ * 
+ */
+export type Certificate = Prisma.CertificateModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

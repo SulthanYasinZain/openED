@@ -28,14 +28,20 @@ export default async function ClassDetailPage({ params }: PageProps) {
       name: true,
       code: true,
       meetings: {
+        where: { isDeleted: false },
         orderBy: { scheduledAt: "asc" },
         select: {
           id: true,
           topic: true,
           description: true,
-          fileUrl: true,
           scheduledAt: true,
           status: true,
+          materials: {
+            where: { isDeleted: false, type: "FILE" },
+            orderBy: { id: "asc" },
+            take: 1,
+            select: { fileUrl: true },
+          },
         },
       },
     },
@@ -94,7 +100,10 @@ export default async function ClassDetailPage({ params }: PageProps) {
 
       <MeetingList
         meetings={classData.meetings.map((meeting) => ({
-          ...meeting,
+          id: meeting.id,
+          topic: meeting.topic,
+          description: meeting.description,
+          fileUrl: meeting.materials[0]?.fileUrl ?? null,
           scheduledAt: meeting.scheduledAt.toISOString(),
         }))}
       />
