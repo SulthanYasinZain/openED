@@ -42,8 +42,9 @@ export default function EditUserDialog({ user }: { user: EditableUser }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button type="button" variant="outline" size="sm" aria-label="Edit">
+          <Button type="button" variant="outline" size="sm">
             <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} />
+            Edit
           </Button>
         }
       />

@@ -19,6 +19,7 @@ import {
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/dashboard/users", label: "Users" },
+  { href: "/dashboard/organizations", label: "Organizations" },
   { href: "/dashboard/logs", label: "Logs" },
 ] as const;
 

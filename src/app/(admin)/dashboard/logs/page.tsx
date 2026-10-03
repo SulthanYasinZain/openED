@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { prisma } from "@/lib/prisma";
+import LogsTable from "./logs-table";
 
 export default async function LogsPage() {
   const logs = await prisma.auditLog.findMany({
@@ -41,54 +42,20 @@ export default async function LogsPage() {
         </p>
       </div>
 
-      <ul className="mt-8 space-y-3">
-        {logs.length === 0 && (
-          <li className="border-border rounded-lg border px-4 py-8 text-center">
-            <p className="text-muted-foreground text-sm">No activity yet.</p>
-          </li>
-        )}
-
-        {logs.map((log) => (
-          <li
-            key={log.id}
-            className="border-border flex items-start justify-between gap-4 rounded-lg border px-4 py-3"
-          >
-            <div className="min-w-0 space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border px-2 py-0.5 text-xs font-medium">
-                  {log.action}
-                </span>
-                <span className="text-sm font-medium">
-                  {log.entityType}
-                  {log.entityId ? ` #${log.entityId}` : ""}
-                </span>
-              </div>
-              {log.description && (
-                <p className="text-muted-foreground truncate text-sm">
-                  {log.description}
-                </p>
-              )}
-              <p className="text-muted-foreground text-xs">
-                {log.createdAt.toLocaleString("id-ID", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
-            </div>
-            <div className="shrink-0 text-right">
-              <p className="max-w-40 truncate text-sm font-medium">
-                {log.actor.name ?? "Unnamed"}
-              </p>
-              <p className="text-muted-foreground max-w-40 truncate text-xs">
-                {log.actor.email}
-              </p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-8">
+        <LogsTable
+          data={logs.map((log) => ({
+            id: log.id,
+            action: log.action,
+            entityType: log.entityType,
+            entityId: log.entityId,
+            description: log.description,
+            actorName: log.actor.name ?? "Unnamed",
+            actorEmail: log.actor.email,
+            createdAt: log.createdAt.toISOString(),
+          }))}
+        />
+      </div>
     </main>
   );
 }
