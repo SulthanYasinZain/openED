@@ -16,7 +16,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const NAV_ITEMS = [{ href: "/dashboard", label: "Dashboard" }] as const;
+const NAV_ITEMS = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/dashboard/users", label: "Users" },
+  { href: "/dashboard/logs", label: "Logs" },
+] as const;
 
 export default function AdminSidebar() {
   const pathname = usePathname();

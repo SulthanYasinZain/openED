@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 import { checkSession } from "@/lib/session";
 
@@ -31,11 +32,18 @@ export async function AssignTeacherAction(
   }
 
   try {
-    await prisma.classTeacher.create({
+    const assignment = await prisma.classTeacher.create({
       data: {
         classId,
         teacherId,
       },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entityType: "ClassTeacher",
+      entityId: assignment.id,
+      description: `Assigned teacher #${teacherId} to class #${classId}`,
     });
 
     revalidatePath("/dashboard");

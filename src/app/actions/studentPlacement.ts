@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 import { checkSession } from "@/lib/session";
 
@@ -72,11 +73,18 @@ async function enrollStudentToClass(classId: number, studentId: number) {
   }
 
   try {
-    await prisma.studentEnrollment.create({
+    const enrollment = await prisma.studentEnrollment.create({
       data: {
         classId,
         studentId,
       },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entityType: "StudentEnrollment",
+      entityId: enrollment.id,
+      description: `Student #${studentId} joined class #${classId}`,
     });
   } catch (error) {
     console.error("Enrollment error:", error);

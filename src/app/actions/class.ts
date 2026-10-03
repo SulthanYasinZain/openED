@@ -2,6 +2,7 @@
 
 import crypto from "node:crypto";
 import { revalidatePath } from "next/cache";
+import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 import { checkSession } from "@/lib/session";
 
@@ -70,13 +71,20 @@ export async function createClassAction(
       };
     }
 
-    await prisma.class.create({
+    const newClass = await prisma.class.create({
       data: {
         name: name.trim(),
         code,
         schoolId: school.id,
         imageUrl: imageUrl?.trim() || null,
       },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entityType: "Class",
+      entityId: newClass.id,
+      description: `Created class "${name.trim()}" (${code})`,
     });
 
     revalidatePath("/dashboard");
@@ -95,6 +103,11 @@ export async function deleteClassAction(classId: number, _formData: FormData) {
   await checkSession("ADMIN");
 
   try {
+    const target = await prisma.class.findUnique({
+      where: { id: classId },
+      select: { name: true, code: true },
+    });
+
     await prisma.class.update({
       where: {
         id: classId,
@@ -102,6 +115,13 @@ export async function deleteClassAction(classId: number, _formData: FormData) {
       data: {
         isDeleted: true,
       },
+    });
+
+    await logAudit({
+      action: "DELETE",
+      entityType: "Class",
+      entityId: classId,
+      description: `Deactivated class "${target?.name ?? `#${classId}`}"${target ? ` (${target.code})` : ""}`,
     });
 
     revalidatePath("/dashboard");

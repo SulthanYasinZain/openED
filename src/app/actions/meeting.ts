@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
 import { checkSession } from "@/lib/session";
 
@@ -51,7 +52,7 @@ export async function createMeetingAction(
   }
 
   try {
-    await prisma.classMeeting.create({
+    const meeting = await prisma.classMeeting.create({
       data: {
         classId: classData.id,
         topic,
@@ -66,6 +67,13 @@ export async function createMeetingAction(
           },
         },
       },
+    });
+
+    await logAudit({
+      action: "CREATE",
+      entityType: "ClassMeeting",
+      entityId: meeting.id,
+      description: `Created meeting "${topic}" in class ${input.classCode.trim()}`,
     });
 
     revalidatePath("/dashboard");
