@@ -98,8 +98,9 @@ function pageItems(current: number, total: number): (number | string)[] {
   return items;
 }
 
-function ColumnVisibilityToggle<TData extends RowData>({
+function ColumnVisibilityToggle({
   table,
+  labels,
 }: {
   table: {
     getAllLeafColumns: () => {
@@ -110,6 +111,7 @@ function ColumnVisibilityToggle<TData extends RowData>({
       columnDef: { header?: unknown };
     }[];
   };
+  labels: Record<string, string>;
 }) {
   const [open, setOpen] = useState(false);
   const hideable = table.getAllLeafColumns().filter((column) => {
@@ -137,24 +139,34 @@ function ColumnVisibilityToggle<TData extends RowData>({
         Hide
       </Button>
       {open && (
-        <div className="border-border bg-popover absolute right-0 z-10 mt-2 w-48 rounded-lg border p-2 shadow-lg">
-          {hideable.map((column) => (
-            <label
-              key={column.id}
-              className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
-            >
-              <input
-                type="checkbox"
-                checked={column.getIsVisible()}
-                onChange={(event) =>
-                  column.toggleVisibility(event.target.checked)
-                }
-                className="accent-primary h-4 w-4"
-              />
-              <span className="capitalize">{column.id}</span>
-            </label>
-          ))}
-        </div>
+        <>
+          <button
+            type="button"
+            aria-label="Close column visibility menu"
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-10 cursor-default"
+          />
+          <div className="border-border bg-popover absolute right-0 z-20 mt-2 w-48 rounded-lg border p-2 shadow-lg">
+            {hideable.map((column) => (
+              <label
+                key={column.id}
+                className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted"
+              >
+                <input
+                  type="checkbox"
+                  checked={column.getIsVisible()}
+                  onChange={(event) =>
+                    column.toggleVisibility(event.target.checked)
+                  }
+                  className="accent-primary h-4 w-4"
+                />
+                <span className="capitalize">
+                  {labels[column.id] ?? column.id}
+                </span>
+              </label>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
@@ -169,6 +181,7 @@ interface DataTableProps<TData extends RowData> {
   actions?: React.ReactNode;
   externalSearch?: { value: string; onChange: (value: string) => void };
   showColumnToggle?: boolean;
+  columnLabels?: Record<string, string>;
 }
 
 export default function DataTable<TData extends RowData>({
@@ -180,6 +193,7 @@ export default function DataTable<TData extends RowData>({
   actions,
   externalSearch,
   showColumnToggle = false,
+  columnLabels = {},
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>(initialSorting);
   const [internalFilter, setInternalFilter] = useState("");
@@ -230,7 +244,9 @@ export default function DataTable<TData extends RowData>({
           />
         )}
         <div className="ml-auto flex items-center gap-2">
-          {showColumnToggle && <ColumnVisibilityToggle table={table} />}
+          {showColumnToggle && (
+            <ColumnVisibilityToggle table={table} labels={columnLabels} />
+          )}
           {actions}
         </div>
       </div>

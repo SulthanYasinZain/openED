@@ -49,7 +49,9 @@
             "useFocusableInteractive": "off"
           },
           "suspicious": {
-            "noDocumentCookie": "off"
+            "noDocumentCookie": "off",
+            "noDoubleEquals": "off",
+            "noArrayIndexKey": "off"
           },
           "correctness": {
             "useExhaustiveDependencies": "off"

@@ -186,18 +186,26 @@ export default function UsersManager({ data }: { data: UserRow[] }) {
               Add filter
             </Button>
             {filterMenuOpen && (
-              <div className="border-border bg-popover absolute left-0 z-10 mt-2 w-44 rounded-lg border p-1 shadow-lg">
-                {availableDateFilters.map((filter) => (
-                  <button
-                    key={filter}
-                    type="button"
-                    onClick={() => addDateFilter(filter)}
-                    className="block w-full rounded-md px-3 py-1.5 text-left text-sm hover:bg-muted"
-                  >
-                    Joined {filter}
-                  </button>
-                ))}
-              </div>
+              <>
+                <button
+                  type="button"
+                  aria-label="Close filter menu"
+                  onClick={() => setFilterMenuOpen(false)}
+                  className="fixed inset-0 z-10 cursor-default"
+                />
+                <div className="border-border bg-popover absolute left-0 z-20 mt-2 w-44 rounded-lg border p-1 shadow-lg">
+                  {availableDateFilters.map((filter) => (
+                    <button
+                      key={filter}
+                      type="button"
+                      onClick={() => addDateFilter(filter)}
+                      className="block w-full rounded-md px-3 py-1.5 text-left text-sm hover:bg-muted"
+                    >
+                      Joined {filter}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         )}

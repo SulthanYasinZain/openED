@@ -34,7 +34,7 @@ export default function CreateUserDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button type="button">
+          <Button type="button" size="sm">
             <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
             Create user
           </Button>

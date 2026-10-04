@@ -54,6 +54,10 @@ export function formatJoinedAt(iso: string) {
   });
 }
 
+export function formatRole(role: string) {
+  return role.charAt(0) + role.slice(1).toLowerCase();
+}
+
 const helper = createColumnHelper<typeof appFeatures, UserRow>();
 
 const columns = helper.columns([
@@ -108,7 +112,7 @@ const columns = helper.columns([
         }
       />
     ),
-    cell: (context) => <span>{context.row.original.role}</span>,
+    cell: (context) => <span>{formatRole(context.row.original.role)}</span>,
   }),
   helper.accessor("joinedAt", {
     header: (context) => (
@@ -128,7 +132,7 @@ const columns = helper.columns([
   }),
   helper.display({
     id: "actions",
-    header: "Actions",
+    header: () => <span className="block text-right">Actions</span>,
     enableHiding: false,
     cell: (context) => (
       <div className="flex items-center justify-end gap-2">
@@ -156,6 +160,12 @@ export default function UsersTable({
       searchPlaceholder="Search"
       externalSearch={{ value: query, onChange: onQueryChange }}
       showColumnToggle
+      columnLabels={{
+        name: "Full name",
+        email: "Email",
+        role: "Role",
+        joinedAt: "Joined date",
+      }}
     />
   );
 }

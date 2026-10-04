@@ -2,7 +2,12 @@
 
 import { USER_ROLES } from "./user-form-fields";
 import type { UserRow } from "./users-table";
-import { avatarColor, formatJoinedAt, initials } from "./users-table";
+import {
+  avatarColor,
+  formatJoinedAt,
+  formatRole,
+  initials,
+} from "./users-table";
 
 export default function UsersBoard({ users }: { users: UserRow[] }) {
   if (users.length === 0) {
@@ -24,7 +29,7 @@ export default function UsersBoard({ users }: { users: UserRow[] }) {
             className="border-border w-64 shrink-0 rounded-lg border p-3"
           >
             <header className="flex items-center justify-between px-1 pb-3">
-              <h2 className="text-sm font-medium">{role}</h2>
+              <h2 className="text-sm font-medium">{formatRole(role)}</h2>
               <span className="rounded-full border px-2 py-0.5 text-xs font-medium">
                 {members.length}
               </span>

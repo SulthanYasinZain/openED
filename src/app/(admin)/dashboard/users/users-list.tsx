@@ -3,7 +3,12 @@
 import DeleteUserButton from "./delete-user-button";
 import EditUserDialog from "./edit-user-dialog";
 import type { UserRow } from "./users-table";
-import { avatarColor, formatJoinedAt, initials } from "./users-table";
+import {
+  avatarColor,
+  formatJoinedAt,
+  formatRole,
+  initials,
+} from "./users-table";
 
 export default function UsersList({ users }: { users: UserRow[] }) {
   if (users.length === 0) {
@@ -32,7 +37,9 @@ export default function UsersList({ users }: { users: UserRow[] }) {
               {user.email}
             </span>
           </span>
-          <span className="hidden shrink-0 text-sm sm:block">{user.role}</span>
+          <span className="hidden shrink-0 text-sm sm:block">
+            {formatRole(user.role)}
+          </span>
           <span className="text-muted-foreground hidden shrink-0 text-xs whitespace-nowrap md:block">
             {formatJoinedAt(user.joinedAt)}
           </span>
