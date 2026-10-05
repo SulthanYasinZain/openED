@@ -9,6 +9,7 @@ import {
   ArrowRightDoubleIcon,
   Briefcase01Icon,
   Calendar01Icon,
+  Cancel01Icon,
   Delete01Icon,
   Download01Icon,
   KanbanIcon,
@@ -214,6 +215,13 @@ function userInitials(name: string) {
     .join("");
 }
 
+function joinedDay(dateStr: string) {
+  const date = new Date(dateStr);
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
 export default function Page() {
   const [role, setRole] = useState<string | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
@@ -225,6 +233,29 @@ export default function Page() {
   const [density, setDensity] = useState<"comfortable" | "compact">(
     "comfortable",
   );
+  const [dateFilters, setDateFilters] = useState<("after" | "before")[]>([]);
+  const [joinedAfter, setJoinedAfter] = useState("");
+  const [joinedBefore, setJoinedBefore] = useState("");
+
+  const visibleUsers = users.filter((user) => {
+    const day = joinedDay(user[4]);
+    if (joinedAfter && day < joinedAfter) {
+      return false;
+    }
+    if (joinedBefore && day > joinedBefore) {
+      return false;
+    }
+    return true;
+  });
+
+  function removeDateFilter(filter: "after" | "before") {
+    setDateFilters((current) => current.filter((item) => item !== filter));
+    if (filter === "after") {
+      setJoinedAfter("");
+    } else {
+      setJoinedBefore("");
+    }
+  }
 
   const toggle = (id: number) =>
     setSelected((items) =>
@@ -347,20 +378,27 @@ export default function Page() {
                   }
                 />
                 <DropdownMenuContent align="end">
-                  {["Email", "Role", "Joined date"].map((column) => (
+                  {(
+                    [
+                      { label: "Email", icon: Mail01Icon },
+                      { label: "Role", icon: Briefcase01Icon },
+                      { label: "Joined date", icon: Calendar01Icon },
+                    ] as const
+                  ).map((column) => (
                     <DropdownMenuCheckboxItem
-                      key={column}
-                      className="px-4 py-2.5"
-                      checked={hiddenColumns.includes(column)}
+                      key={column.label}
+                      className="px-3 py-2"
+                      checked={hiddenColumns.includes(column.label)}
                       onCheckedChange={(value) =>
                         setHiddenColumns((items) =>
                           value
-                            ? [...items, column]
-                            : items.filter((item) => item !== column),
+                            ? [...items, column.label]
+                            : items.filter((item) => item !== column.label),
                         )
                       }
                     >
-                      {column}
+                      <HugeiconsIcon icon={column.icon} strokeWidth={2} />
+                      {column.label}
                     </DropdownMenuCheckboxItem>
                   ))}
                 </DropdownMenuContent>
@@ -387,25 +425,28 @@ export default function Page() {
                   >
                     <DropdownMenuRadioItem
                       value="compact"
-                      className="px-4 py-2.5"
+                      className="px-3 py-2"
                     >
+                      <HugeiconsIcon icon={ListViewIcon} strokeWidth={2} />
                       Compact density
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem
                       value="comfortable"
-                      className="px-4 py-2.5"
+                      className="px-3 py-2"
                     >
+                      <HugeiconsIcon icon={Table01Icon} strokeWidth={2} />
                       Comfortable density
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    className="px-4 py-2.5"
+                    className="px-3 py-2"
                     onClick={() => {
                       setDensity("comfortable");
                       setHiddenColumns([]);
                     }}
                   >
+                    <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
                     Reset view
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -432,13 +473,16 @@ export default function Page() {
                   }
                 />
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="px-4 py-2.5">
+                  <DropdownMenuItem className="px-3 py-2">
+                    <HugeiconsIcon icon={Mail01Icon} strokeWidth={2} />
                     Invite by email
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="px-4 py-2.5">
+                  <DropdownMenuItem className="px-3 py-2">
+                    <HugeiconsIcon icon={Download01Icon} strokeWidth={2} />
                     Import users
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="px-4 py-2.5">
+                  <DropdownMenuItem className="px-3 py-2">
+                    <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
                     Create manually
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -456,27 +500,85 @@ export default function Page() {
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent align="start" alignItemWithTrigger={false}>
-                {["All roles", "Project Manager", "UX Designer"].map(
-                  (option) => (
-                    <SelectItem
-                      key={option}
-                      value={option}
-                      className="px-4 py-2.5"
-                    >
-                      {option}
-                    </SelectItem>
-                  ),
-                )}
+                {(
+                  [
+                    { label: "All roles", icon: UserGroupIcon },
+                    { label: "Project Manager", icon: Briefcase01Icon },
+                    { label: "UX Designer", icon: Briefcase01Icon },
+                  ] as const
+                ).map((option) => (
+                  <SelectItem
+                    key={option.label}
+                    value={option.label}
+                    className="px-3 py-2"
+                  >
+                    <HugeiconsIcon icon={option.icon} strokeWidth={2} />
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-            <Button type="button" variant="ghost" size="sm">
-              <HugeiconsIcon
-                icon={PlusSignIcon}
-                strokeWidth={2}
-                data-icon="inline-start"
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button type="button" variant="ghost" size="sm">
+                    <HugeiconsIcon
+                      icon={PlusSignIcon}
+                      strokeWidth={2}
+                      data-icon="inline-start"
+                    />
+                    Add filter
+                  </Button>
+                }
               />
-              Add filter
-            </Button>
+              <DropdownMenuContent align="start">
+                {(["after", "before"] as const)
+                  .filter((filter) => !dateFilters.includes(filter))
+                  .map((filter) => (
+                    <DropdownMenuItem
+                      key={filter}
+                      className="px-3 py-2"
+                      onClick={() =>
+                        setDateFilters((current) => [...current, filter])
+                      }
+                    >
+                      <HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} />
+                      Joined {filter}
+                    </DropdownMenuItem>
+                  ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {dateFilters.map((filter) => (
+              <span
+                key={filter}
+                className="flex items-center gap-1.5 rounded-full border border-stone-200 px-3 py-1 text-xs"
+              >
+                Joined {filter}
+                <input
+                  type="date"
+                  aria-label={`Joined ${filter}`}
+                  value={filter === "after" ? joinedAfter : joinedBefore}
+                  onChange={(event) =>
+                    filter === "after"
+                      ? setJoinedAfter(event.target.value)
+                      : setJoinedBefore(event.target.value)
+                  }
+                  className="bg-transparent text-xs outline-none"
+                />
+                <button
+                  type="button"
+                  aria-label={`Remove joined ${filter} filter`}
+                  onClick={() => removeDateFilter(filter)}
+                  className="text-stone-500 hover:text-stone-900"
+                >
+                  <HugeiconsIcon
+                    icon={Cancel01Icon}
+                    size={14}
+                    strokeWidth={2}
+                  />
+                </button>
+              </span>
+            ))}
           </div>
           {activeView === "Table" && (
             <div className="border-border mt-3 overflow-hidden rounded-lg border">
@@ -486,12 +588,15 @@ export default function Page() {
                     <TableHead className="w-10">
                       <Checkbox
                         aria-label="Select all"
-                        checked={selected.length === users.length}
+                        checked={selected.length === visibleUsers.length}
                         indeterminate={
-                          selected.length > 0 && selected.length < users.length
+                          selected.length > 0 &&
+                          selected.length < visibleUsers.length
                         }
                         onCheckedChange={(value) =>
-                          setSelected(value ? users.map((_, i) => i) : [])
+                          setSelected(
+                            value ? visibleUsers.map((_, i) => i) : [],
+                          )
                         }
                       />
                     </TableHead>
@@ -554,7 +659,7 @@ export default function Page() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map((user, i) => (
+                  {visibleUsers.map((user, i) => (
                     <TableRow key={user[0]}>
                       <TableCell>
                         <Checkbox
@@ -629,11 +734,11 @@ export default function Page() {
                 <div className="flex items-center justify-between px-1 pb-2">
                   <h3 className="text-[13px] font-semibold">Team</h3>
                   <span className="text-xs text-stone-500">
-                    {users.length} users
+                    {visibleUsers.length} users
                   </span>
                 </div>
-                {users.map((user) => {
-                  const index = users.indexOf(user);
+                {visibleUsers.map((user) => {
+                  const index = visibleUsers.indexOf(user);
                   return (
                     <article
                       className={`mb-2 rounded-lg border bg-white p-2.5 ${selected.includes(index) ? "border-stone-900" : "border-stone-200"}`}
@@ -700,7 +805,7 @@ export default function Page() {
           )}
           {activeView === "List" && (
             <div className="mt-3 divide-y divide-stone-100 rounded-lg border border-stone-200">
-              {users.map((user, i) => (
+              {visibleUsers.map((user, i) => (
                 <div
                   className={`flex items-center gap-2.5 px-3 py-2 ${selected.includes(i) ? "bg-stone-100" : ""}`}
                   key={user[0]}

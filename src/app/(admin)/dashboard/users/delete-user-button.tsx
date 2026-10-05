@@ -16,22 +16,38 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-export default function DeleteUserButton({ userId }: { userId: number }) {
+export default function DeleteUserButton({
+  userId,
+  compact = false,
+}: {
+  userId: number;
+  compact?: boolean;
+}) {
   const actionWithUserId = deleteUserAction.bind(null, userId);
 
   return (
     <AlertDialog>
       <AlertDialogTrigger
         render={
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="text-red-500"
-          >
-            <HugeiconsIcon icon={Delete01Icon} strokeWidth={2} />
-            Delete
-          </Button>
+          compact ? (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-md border border-stone-200 bg-white px-2 py-1 text-xs hover:bg-stone-100"
+            >
+              <HugeiconsIcon icon={Delete01Icon} size={12} strokeWidth={2} />
+              Delete
+            </button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="text-red-500"
+            >
+              <HugeiconsIcon icon={Delete01Icon} strokeWidth={2} />
+              Delete
+            </Button>
+          )
         }
       />
       <AlertDialogContent>

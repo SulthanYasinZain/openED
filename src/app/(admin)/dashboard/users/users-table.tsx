@@ -1,8 +1,22 @@
 "use client";
 
-import { createColumnHelper } from "@tanstack/react-table";
-import type { appFeatures } from "@/components/data-table";
-import DataTable, { SortButton } from "@/components/data-table";
+import {
+  Briefcase01Icon,
+  Calendar01Icon,
+  Mail01Icon,
+  Settings02Icon,
+  UserIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import DeleteUserButton from "./delete-user-button";
 import EditUserDialog from "./edit-user-dialog";
 import type { UserRole } from "./user-form-fields";
@@ -32,7 +46,8 @@ export function avatarColor(seed: string) {
   for (let index = 0; index < seed.length; index++) {
     hash = (hash * 31 + seed.charCodeAt(index)) % 997;
   }
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+  const color = AVATAR_COLORS[hash % AVATAR_COLORS.length];
+  return `inline-flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${color}`;
 }
 
 export function initials(name: string | null, email: string) {
@@ -58,114 +73,142 @@ export function formatRole(role: string) {
   return role.charAt(0) + role.slice(1).toLowerCase();
 }
 
-const helper = createColumnHelper<typeof appFeatures, UserRow>();
-
-const columns = helper.columns([
-  helper.accessor("name", {
-    header: (context) => (
-      <SortButton
-        label="Full name"
-        sorted={context.column.getIsSorted()}
-        onToggle={() =>
-          context.column.toggleSorting(context.column.getIsSorted() === "asc")
-        }
-      />
-    ),
-    cell: (context) => {
-      const user = context.row.original;
-      return (
-        <span className="flex items-center gap-3">
-          <span
-            aria-hidden="true"
-            className={`flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${avatarColor(user.email)}`}
-          >
-            {initials(user.name, user.email)}
-          </span>
-          <span className="font-medium">{user.name ?? "Unnamed"}</span>
-        </span>
-      );
-    },
-  }),
-  helper.accessor("email", {
-    header: (context) => (
-      <SortButton
-        label="Email"
-        sorted={context.column.getIsSorted()}
-        onToggle={() =>
-          context.column.toggleSorting(context.column.getIsSorted() === "asc")
-        }
-      />
-    ),
-    cell: (context) => (
-      <span className="text-muted-foreground">
-        {context.row.original.email}
-      </span>
-    ),
-  }),
-  helper.accessor("role", {
-    header: (context) => (
-      <SortButton
-        label="Role"
-        sorted={context.column.getIsSorted()}
-        onToggle={() =>
-          context.column.toggleSorting(context.column.getIsSorted() === "asc")
-        }
-      />
-    ),
-    cell: (context) => <span>{formatRole(context.row.original.role)}</span>,
-  }),
-  helper.accessor("joinedAt", {
-    header: (context) => (
-      <SortButton
-        label="Joined date"
-        sorted={context.column.getIsSorted()}
-        onToggle={() =>
-          context.column.toggleSorting(context.column.getIsSorted() === "asc")
-        }
-      />
-    ),
-    cell: (context) => (
-      <span className="text-muted-foreground whitespace-nowrap">
-        {formatJoinedAt(context.row.original.joinedAt)}
-      </span>
-    ),
-  }),
-  helper.display({
-    id: "actions",
-    header: () => <span className="block text-right">Actions</span>,
-    enableHiding: false,
-    cell: (context) => (
-      <div className="flex items-center justify-end gap-2">
-        <EditUserDialog user={context.row.original} />
-        <DeleteUserButton userId={context.row.original.id} />
-      </div>
-    ),
-  }),
-]);
-
 export default function UsersTable({
-  data,
-  query,
-  onQueryChange,
+  users,
+  selectedIds,
+  onToggle,
+  onToggleAll,
+  hiddenColumns,
 }: {
-  data: UserRow[];
-  query: string;
-  onQueryChange: (value: string) => void;
+  users: UserRow[];
+  selectedIds: number[];
+  onToggle: (id: number) => void;
+  onToggleAll: (checked: boolean) => void;
+  hiddenColumns: string[];
 }) {
+  const allSelected =
+    users.length > 0 && users.every((user) => selectedIds.includes(user.id));
+  const someSelected = users.some((user) => selectedIds.includes(user.id));
+
   return (
-    <DataTable
-      columns={columns}
-      data={data}
-      searchKeys={["name", "email", "role"]}
-      searchPlaceholder="Search"
-      externalSearch={{ value: query, onChange: onQueryChange }}
-      showColumnToggle
-      columnLabels={{
-        name: "Full name",
-        email: "Email",
-        role: "Role",
-        joinedAt: "Joined date",
-      }}
-    />
+    <div className="border-border overflow-hidden rounded-lg border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-10">
+              <Checkbox
+                aria-label="Select all"
+                checked={allSelected}
+                indeterminate={someSelected && !allSelected}
+                onCheckedChange={(value) => onToggleAll(value === true)}
+              />
+            </TableHead>
+            <TableHead>
+              <span className="inline-flex items-center gap-1.5">
+                <HugeiconsIcon icon={UserIcon} size={14} strokeWidth={2} />
+                Full name
+              </span>
+            </TableHead>
+            {!hiddenColumns.includes("Email") && (
+              <TableHead>
+                <span className="inline-flex items-center gap-1.5">
+                  <HugeiconsIcon icon={Mail01Icon} size={14} strokeWidth={2} />
+                  Email
+                </span>
+              </TableHead>
+            )}
+            {!hiddenColumns.includes("Role") && (
+              <TableHead>
+                <span className="inline-flex items-center gap-1.5">
+                  <HugeiconsIcon
+                    icon={Briefcase01Icon}
+                    size={14}
+                    strokeWidth={2}
+                  />
+                  Role
+                </span>
+              </TableHead>
+            )}
+            {!hiddenColumns.includes("Joined date") && (
+              <TableHead>
+                <span className="inline-flex items-center gap-1.5">
+                  <HugeiconsIcon
+                    icon={Calendar01Icon}
+                    size={14}
+                    strokeWidth={2}
+                  />
+                  Joined date
+                </span>
+              </TableHead>
+            )}
+            <TableHead className="text-right">
+              <span className="inline-flex items-center justify-end gap-1.5">
+                <HugeiconsIcon
+                  icon={Settings02Icon}
+                  size={14}
+                  strokeWidth={2}
+                />
+                Actions
+              </span>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>
+                <Checkbox
+                  aria-label={`Select ${user.name ?? user.email}`}
+                  checked={selectedIds.includes(user.id)}
+                  onCheckedChange={() => onToggle(user.id)}
+                />
+              </TableCell>
+              <TableCell>
+                <span className="flex items-center gap-2.5">
+                  <span className={avatarColor(user.email)} aria-hidden="true">
+                    {initials(user.name, user.email)}
+                  </span>
+                  <span className="font-medium">{user.name ?? "Unnamed"}</span>
+                </span>
+              </TableCell>
+              {!hiddenColumns.includes("Email") && (
+                <TableCell>
+                  <a
+                    href={`mailto:${user.email}`}
+                    className="text-muted-foreground"
+                  >
+                    {user.email}
+                  </a>
+                </TableCell>
+              )}
+              {!hiddenColumns.includes("Role") && (
+                <TableCell>{formatRole(user.role)}</TableCell>
+              )}
+              {!hiddenColumns.includes("Joined date") && (
+                <TableCell className="whitespace-nowrap">
+                  {formatJoinedAt(user.joinedAt)}
+                </TableCell>
+              )}
+              <TableCell className="text-right">
+                <div className="flex justify-end gap-2">
+                  <EditUserDialog user={user} />
+                  <DeleteUserButton userId={user.id} />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+          {users.length === 0 && (
+            <TableRow>
+              <TableCell
+                colSpan={6}
+                className="text-muted-foreground h-24 text-center text-sm"
+              >
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

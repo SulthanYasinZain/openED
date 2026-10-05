@@ -1,7 +1,5 @@
 "use client";
 
-import { PlusSignIcon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { createUserAction } from "@/app/actions/user";
 import { Button } from "@/components/ui/button";
@@ -16,8 +14,18 @@ import {
 } from "@/components/ui/dialog";
 import UserFormFields from "./user-form-fields";
 
-export default function CreateUserDialog() {
-  const [open, setOpen] = useState(false);
+export default function CreateUserDialog({
+  open: controlledOpen,
+  onOpenChange,
+  trigger,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactElement;
+} = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
   const [state, formAction, isPending] = useActionState(createUserAction, {
     error: "",
   });
@@ -28,18 +36,11 @@ export default function CreateUserDialog() {
       submittedRef.current = false;
       setOpen(false);
     }
-  }, [isPending, state.error]);
+  }, [isPending, state.error, setOpen]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <Button type="button" size="sm">
-            <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
-            Create user
-          </Button>
-        }
-      />
+      {trigger ? <DialogTrigger render={trigger} /> : null}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create user</DialogTitle>

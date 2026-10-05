@@ -8,7 +8,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { prisma } from "@/lib/prisma";
-import UsersManager from "./users-manager";
+import UsersDataTable from "./data-table";
 
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
@@ -18,7 +18,7 @@ export default async function UsersPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10 text-[13px] text-stone-900">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -45,7 +45,7 @@ export default async function UsersPage() {
         </p>
       </div>
 
-      <UsersManager
+      <UsersDataTable
         data={users.map((user) => ({
           ...user,
           joinedAt: user.createdAt.toISOString(),

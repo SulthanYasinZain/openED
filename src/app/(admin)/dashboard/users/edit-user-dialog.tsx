@@ -23,7 +23,13 @@ export type EditableUser = {
   role: UserRole;
 };
 
-export default function EditUserDialog({ user }: { user: EditableUser }) {
+export default function EditUserDialog({
+  user,
+  compact = false,
+}: {
+  user: EditableUser;
+  compact?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [state, formAction, isPending] = useActionState(
     updateUserAction.bind(null, user.id),
@@ -42,10 +48,24 @@ export default function EditUserDialog({ user }: { user: EditableUser }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button type="button" variant="outline" size="sm">
-            <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} />
-            Edit
-          </Button>
+          compact ? (
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-md border border-stone-200 bg-white px-2 py-1 text-xs hover:bg-stone-100"
+            >
+              <HugeiconsIcon
+                icon={PencilEdit01Icon}
+                size={12}
+                strokeWidth={2}
+              />
+              Edit
+            </button>
+          ) : (
+            <Button type="button" variant="outline" size="sm">
+              <HugeiconsIcon icon={PencilEdit01Icon} strokeWidth={2} />
+              Edit
+            </Button>
+          )
         }
       />
       <DialogContent>
