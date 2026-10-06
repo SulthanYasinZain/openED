@@ -100,6 +100,13 @@ export async function createUserAction(
         entityType: "User",
         entityId: user.id,
         description: `Created ${parsed.data.role} account ${parsed.data.email}`,
+        metadata: {
+          changes: [
+            { field: "name", previous: "—", next: parsed.data.name },
+            { field: "email", previous: "—", next: parsed.data.email },
+            { field: "role", previous: "—", next: parsed.data.role },
+          ],
+        },
       });
     }
 
@@ -151,6 +158,11 @@ export async function updateUserAction(
   }
 
   try {
+    const before = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true, role: true },
+    });
+
     await prisma.user.update({
       where: { id: userId },
       data: {
@@ -170,6 +182,25 @@ export async function updateUserAction(
       entityType: "User",
       entityId: userId,
       description: `Updated account ${parsed.data.email}`,
+      metadata: {
+        changes: [
+          {
+            field: "name",
+            previous: before?.name ?? "—",
+            next: parsed.data.name,
+          },
+          {
+            field: "email",
+            previous: before?.email ?? "—",
+            next: parsed.data.email,
+          },
+          {
+            field: "role",
+            previous: before?.role ?? "—",
+            next: parsed.data.role,
+          },
+        ].filter((change) => change.previous !== change.next),
+      },
     });
 
     return { error: "" };
@@ -207,6 +238,9 @@ export async function deleteUserAction(userId: number, _formData: FormData) {
       entityType: "User",
       entityId: userId,
       description: `Deactivated account ${target?.email ?? `#${userId}`}`,
+      metadata: {
+        changes: [{ field: "isDeleted", previous: "false", next: "true" }],
+      },
     });
 
     revalidatePath("/dashboard/users");
@@ -216,5 +250,50 @@ export async function deleteUserAction(userId: number, _formData: FormData) {
     console.error("Delete user error:", error);
 
     return { error: "Failed to delete user" };
+  }
+}
+
+export async function deleteUsersAction(userIds: number[]) {
+  const session = await checkSession("ADMIN");
+
+  const ids = [...new Set(userIds)].filter(
+    (id) => Number.isInteger(id) && id > 0,
+  );
+
+  if (ids.length === 0) {
+    return { error: "No users selected" };
+  }
+
+  if (ids.includes(session.userId)) {
+    return { error: "You cannot delete your own account" };
+  }
+
+  try {
+    const targets = await prisma.user.findMany({
+      where: { id: { in: ids }, isDeleted: false },
+      select: { id: true, email: true },
+    });
+
+    await prisma.user.updateMany({
+      where: { id: { in: ids } },
+      data: { isDeleted: true },
+    });
+
+    for (const target of targets) {
+      await logAudit({
+        action: "DELETE",
+        entityType: "User",
+        entityId: target.id,
+        description: `Deactivated account ${target.email}`,
+      });
+    }
+
+    revalidatePath("/dashboard/users");
+
+    return { error: "" };
+  } catch (error) {
+    console.error("Delete users error:", error);
+
+    return { error: "Failed to delete users" };
   }
 }

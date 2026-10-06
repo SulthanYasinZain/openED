@@ -31,7 +31,6 @@ import {
   DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -43,6 +42,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import BulkActionsBar from "./bulk-actions-bar";
 import CreateUserDialog from "./create-user-dialog";
 import ExportUsersButton from "./export-users-button";
 import { USER_ROLES } from "./user-form-fields";
@@ -250,7 +250,7 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                   </Button>
                 }
               />
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-fit">
                 {HIDEABLE_COLUMNS.map((column) => (
                   <DropdownMenuCheckboxItem
                     key={column.label}
@@ -283,7 +283,7 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                   </Button>
                 }
               />
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-fit">
                 <DropdownMenuRadioGroup
                   value={density}
                   onValueChange={(value) =>
@@ -302,24 +302,13 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                     Comfortable density
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="px-3 py-2"
-                  onClick={() => {
-                    setDensity("comfortable");
-                    setHiddenColumns([]);
-                  }}
-                >
-                  <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
-                  Reset view
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <ExportUsersButton rows={visible} />
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
-                  <Button type="button" variant="outline" size="sm">
+                  <Button type="button" variant="default" size="sm">
                     Add User{" "}
                     <HugeiconsIcon
                       icon={ArrowDown01Icon}
@@ -329,7 +318,7 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                   </Button>
                 }
               />
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-fit">
                 <DropdownMenuItem className="px-3 py-2">
                   <HugeiconsIcon icon={Mail01Icon} strokeWidth={2} />
                   Invite by email
@@ -386,7 +375,7 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                 </Button>
               }
             />
-            <DropdownMenuContent align="start">
+            <DropdownMenuContent align="start" className="w-fit">
               {availableDateFilters.map((filter) => (
                 <DropdownMenuItem
                   key={filter}
@@ -538,6 +527,12 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
         </div>
       </footer>
       <CreateUserDialog open={createOpen} onOpenChange={setCreateOpen} />
+      <BulkActionsBar
+        selected={data.filter((user) => selectedIds.includes(user.id))}
+        totalVisible={visible.length}
+        onSelectAll={() => setSelectedIds(visible.map((user) => user.id))}
+        onClear={() => setSelectedIds([])}
+      />
     </div>
   );
 }

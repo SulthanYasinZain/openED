@@ -1,4 +1,7 @@
+import { UserGroupIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
+import BackForwardButtons from "@/components/back-forward-buttons";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,19 +22,31 @@ export default async function UsersPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10 text-[13px] text-stone-900">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink render={<Link href="/dashboard" />}>
-              Dashboard
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Users</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+      <div className="flex items-center gap-0.5">
+        <BackForwardButtons />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink render={<Link href="/dashboard" />}>
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>
+                <span className="inline-flex items-center gap-1.5">
+                  <HugeiconsIcon
+                    icon={UserGroupIcon}
+                    size={12}
+                    strokeWidth={2}
+                  />
+                  User management
+                </span>
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
       <div className="mt-6">
         <h1 className="text-2xl font-semibold tracking-tight">
