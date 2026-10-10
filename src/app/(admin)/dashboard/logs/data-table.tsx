@@ -11,7 +11,8 @@ import {
   Search01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -29,9 +30,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { DEFAULT_PAGE_SIZE, PAGE_SIZES } from "./constants";
 import LogsFeed, { type LogRow } from "./logs-feed";
 
 type DateFilter = "after" | "before";
+
+type Filters = {
+  q: string;
+  action: string;
+  after: string;
+  before: string;
+  page: number;
+  size: number;
+};
 
 function pageItems(current: number, total: number): (number | string)[] {
   if (total <= 7) {
@@ -58,86 +69,109 @@ function pageItems(current: number, total: number): (number | string)[] {
   return items;
 }
 
-export default function LogsDataTable({ data }: { data: LogRow[] }) {
-  const [search, setSearch] = useState("");
-  const [action, setAction] = useState("All actions");
-  const [dateFilters, setDateFilters] = useState<DateFilter[]>([]);
-  const [loggedAfter, setLoggedAfter] = useState("");
-  const [loggedBefore, setLoggedBefore] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+export default function LogsDataTable({
+  data,
+  total,
+  page,
+  pageSize,
+  totalPages,
+  initialSearch,
+  currentAction,
+  actions,
+  after,
+  before,
+}: {
+  data: LogRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  initialSearch: string;
+  currentAction: string;
+  actions: string[];
+  after: string;
+  before: string;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [search, setSearch] = useState(initialSearch);
+  const [pendingFilters, setPendingFilters] = useState<DateFilter[]>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
 
-  const actions = useMemo(
-    () => [
-      "All actions",
-      ...Array.from(new Set(data.map((log) => log.action))),
-    ],
-    [data],
-  );
-
-  const visible = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return data.filter((log) => {
-      if (action !== "All actions" && log.action !== action) {
-        return false;
-      }
-      if (loggedAfter && log.loggedDay < loggedAfter) {
-        return false;
-      }
-      if (loggedBefore && log.loggedDay > loggedBefore) {
-        return false;
-      }
-      if (!query) {
-        return true;
-      }
-      const haystack =
-        `${log.title} ${log.description} ${log.action} ${log.tables} ${log.actorName} ${log.actorEmail}`.toLowerCase();
-      return haystack.includes(query);
-    });
-  }, [data, search, action, loggedAfter, loggedBefore]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset to first page whenever filters change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: sync input on back/forward navigation and clear
   useEffect(() => {
-    setPage(1);
-  }, [search, action, loggedAfter, loggedBefore]);
+    setSearch(initialSearch);
+  }, [initialSearch]);
 
-  const availableDateFilters: DateFilter[] = (
-    ["after", "before"] as const
-  ).filter((filter) => !dateFilters.includes(filter));
-
-  function removeDateFilter(filter: DateFilter) {
-    setDateFilters((current) => current.filter((item) => item !== filter));
-    if (filter === "after") {
-      setLoggedAfter("");
-    } else {
-      setLoggedBefore("");
-    }
+  function navigate(values: Filters) {
+    const params = new URLSearchParams();
+    if (values.q.trim()) params.set("q", values.q.trim());
+    if (values.action !== "All actions") params.set("action", values.action);
+    if (values.after) params.set("after", values.after);
+    if (values.before) params.set("before", values.before);
+    if (values.page > 1) params.set("page", String(values.page));
+    if (values.size !== DEFAULT_PAGE_SIZE)
+      params.set("size", String(values.size));
+    const query = params.toString();
+    router.replace(`${pathname}${query ? `?${query}` : ""}`, {
+      scroll: false,
+    });
   }
 
-  const totalPages = Math.max(1, Math.ceil(visible.length / pageSize));
-  const currentPage = Math.min(page, totalPages);
-  const paged = visible.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
+  function currentFilters(overrides: Partial<Filters> = {}): Filters {
+    return {
+      q: search,
+      action: currentAction,
+      after,
+      before,
+      page,
+      size: pageSize,
+      ...overrides,
+    };
+  }
+
+  // Debounced server search.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: navigation intentionally follows only the input value
+  useEffect(() => {
+    if (search === initialSearch) return;
+    const timer = setTimeout(() => {
+      navigate(currentFilters({ page: 1 }));
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const activeFilters = [
+    after ? ("after" as const) : null,
+    before ? ("before" as const) : null,
+  ].filter((filter): filter is DateFilter => filter !== null);
+  const dateFilters = [
+    ...activeFilters,
+    ...pendingFilters.filter((filter) => !activeFilters.includes(filter)),
+  ];
+  const availableDateFilters: DateFilter[] = (
+    ["after", "before"] as const
+  ).filter(
+    (filter) =>
+      (filter === "after" ? after : before) === "" &&
+      !dateFilters.includes(filter),
   );
-  const rangeStart =
-    visible.length === 0 ? 0 : (currentPage - 1) * pageSize + 1;
-  const rangeEnd = Math.min(currentPage * pageSize, visible.length);
 
   const hasFilters =
-    search !== "" || action !== "All actions" || dateFilters.length > 0;
+    search !== "" ||
+    currentAction !== "All actions" ||
+    after !== "" ||
+    before !== "";
 
   function clearFilters() {
     setSearch("");
-    setAction("All actions");
-    setDateFilters([]);
-    setLoggedAfter("");
-    setLoggedBefore("");
+    router.replace(pathname, { scroll: false });
   }
 
+  const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const rangeEnd = Math.min(page * pageSize, total);
+
   return (
-    <div className="flex flex-col gap-4 text-[13px]">
+    <div className="mt-8 flex flex-col gap-4 text-[13px]">
       <Separator />
 
       <div className="flex flex-wrap items-center gap-2">
@@ -156,8 +190,12 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
           />
         </div>
         <Select
-          value={action}
-          onValueChange={(value) => setAction(value ?? "All actions")}
+          value={currentAction}
+          onValueChange={(value) =>
+            navigate(
+              currentFilters({ action: value ?? "All actions", page: 1 }),
+            )
+          }
         >
           <SelectTrigger className="w-fit gap-1.5" aria-label="Action">
             <span className="text-muted-foreground">Action:</span>
@@ -193,7 +231,9 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
                   key={filter}
                   className="px-3 py-2"
                   onClick={() =>
-                    setDateFilters((current) => [...current, filter])
+                    setPendingFilters((current) =>
+                      current.includes(filter) ? current : [...current, filter],
+                    )
                   }
                 >
                   <HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} />
@@ -221,18 +261,23 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
             <input
               type="date"
               aria-label={`Logged ${filter}`}
-              value={filter === "after" ? loggedAfter : loggedBefore}
+              value={filter === "after" ? after : before}
               onChange={(event) =>
-                filter === "after"
-                  ? setLoggedAfter(event.target.value)
-                  : setLoggedBefore(event.target.value)
+                navigate(
+                  currentFilters({ [filter]: event.target.value, page: 1 }),
+                )
               }
               className="w-32 bg-transparent text-xs outline-none"
             />
             <button
               type="button"
               aria-label={`Remove logged ${filter} filter`}
-              onClick={() => removeDateFilter(filter)}
+              onClick={() => {
+                setPendingFilters((current) =>
+                  current.filter((item) => item !== filter),
+                );
+                navigate(currentFilters({ [filter]: "", page: 1 }));
+              }}
               className="text-stone-500 hover:text-stone-900"
             >
               <HugeiconsIcon icon={Cancel01Icon} size={14} strokeWidth={2} />
@@ -252,7 +297,7 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
       </div>
 
       <LogsFeed
-        logs={paged}
+        logs={data}
         expanded={expanded}
         onExpandedChange={setExpanded}
       />
@@ -262,17 +307,21 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
           Rows per page
           <Select
             value={String(pageSize)}
-            onValueChange={(value) => {
-              setPageSize(Number(value ?? 5));
-              setPage(1);
-            }}
+            onValueChange={(value) =>
+              navigate(
+                currentFilters({
+                  size: Number(value ?? DEFAULT_PAGE_SIZE),
+                  page: 1,
+                }),
+              )
+            }
           >
             <SelectTrigger className="w-fit" aria-label="Rows per page">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {[5, 10, 15].map((size) => (
+                {PAGE_SIZES.map((size) => (
                   <SelectItem key={size} value={String(size)}>
                     {size}
                   </SelectItem>
@@ -281,7 +330,7 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
             </SelectContent>
           </Select>
           <span>
-            {rangeStart}-{rangeEnd} of {visible.length} <strong>rows</strong>
+            {rangeStart}-{rangeEnd} of {total} <strong>rows</strong>
           </span>
         </div>
         <div className="flex items-center gap-1">
@@ -290,8 +339,8 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
             variant="outline"
             size="icon-sm"
             aria-label="First page"
-            disabled={currentPage === 1}
-            onClick={() => setPage(1)}
+            disabled={page === 1}
+            onClick={() => navigate(currentFilters({ page: 1 }))}
           >
             <HugeiconsIcon icon={ChevronsLeftIcon} strokeWidth={2} />
           </Button>
@@ -300,19 +349,19 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
             variant="outline"
             size="icon-sm"
             aria-label="Previous page"
-            disabled={currentPage === 1}
-            onClick={() => setPage(currentPage - 1)}
+            disabled={page === 1}
+            onClick={() => navigate(currentFilters({ page: page - 1 }))}
           >
             <HugeiconsIcon icon={ChevronLeftIcon} strokeWidth={2} />
           </Button>
-          {pageItems(currentPage - 1, totalPages).map((item) =>
+          {pageItems(page - 1, totalPages).map((item) =>
             typeof item === "number" ? (
               <Button
                 key={item}
                 type="button"
-                variant={item + 1 === currentPage ? "default" : "outline"}
+                variant={item + 1 === page ? "default" : "outline"}
                 size="icon-sm"
-                onClick={() => setPage(item + 1)}
+                onClick={() => navigate(currentFilters({ page: item + 1 }))}
               >
                 {item + 1}
               </Button>
@@ -327,8 +376,8 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
             variant="outline"
             size="icon-sm"
             aria-label="Next page"
-            disabled={currentPage === totalPages}
-            onClick={() => setPage(currentPage + 1)}
+            disabled={page === totalPages}
+            onClick={() => navigate(currentFilters({ page: page + 1 }))}
           >
             <HugeiconsIcon icon={ChevronRightIcon} strokeWidth={2} />
           </Button>
@@ -337,8 +386,8 @@ export default function LogsDataTable({ data }: { data: LogRow[] }) {
             variant="outline"
             size="icon-sm"
             aria-label="Last page"
-            disabled={currentPage === totalPages}
-            onClick={() => setPage(totalPages)}
+            disabled={page === totalPages}
+            onClick={() => navigate(currentFilters({ page: totalPages }))}
           >
             <HugeiconsIcon icon={ChevronsRightIcon} strokeWidth={2} />
           </Button>

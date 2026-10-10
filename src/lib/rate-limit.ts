@@ -1,5 +1,6 @@
-import { Redis } from "ioredis";
+import type { Redis } from "ioredis";
 import { headers } from "next/headers";
+import { getRedisClient } from "./redis";
 
 export type RateLimitResult =
   | { limited: false }
@@ -15,15 +16,11 @@ let redis: Redis | null | undefined;
 function getRedis(): Redis | null {
   if (redis !== undefined) return redis;
 
-  const url = process.env.REDIS_URL ?? "redis://localhost:6379";
-
-  redis = new Redis(url, {
-    lazyConnect: true,
-    maxRetriesPerRequest: 1,
-  });
-  redis.on("error", () => {
-    // Fail-open is handled per request; keep the noise down after the first log.
-  });
+  try {
+    redis = getRedisClient();
+  } catch {
+    redis = null;
+  }
   return redis;
 }
 
