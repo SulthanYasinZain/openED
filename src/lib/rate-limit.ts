@@ -1,5 +1,4 @@
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { Redis } from "ioredis";
 import { headers } from "next/headers";
 
 export type RateLimitResult =
@@ -16,10 +15,15 @@ let redis: Redis | null | undefined;
 function getRedis(): Redis | null {
   if (redis !== undefined) return redis;
 
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.REDIS_URL ?? "redis://localhost:6379";
 
-  redis = url && token ? new Redis({ url, token }) : null;
+  redis = new Redis(url, {
+    lazyConnect: true,
+    maxRetriesPerRequest: 1,
+  });
+  redis.on("error", () => {
+    // Fail-open is handled per request; keep the noise down after the first log.
+  });
   return redis;
 }
 
@@ -69,6 +73,35 @@ function checkMemoryRateLimit(
   return { limited: false };
 }
 
+async function checkRedisRateLimit(
+  client: Redis,
+  key: string,
+  preset: keyof typeof RATE_LIMITS,
+  requests: number,
+  windowMs: number,
+): Promise<RateLimitResult> {
+  const now = Date.now();
+  const redisKey = `ratelimit:${preset}:${key}`;
+  const member = `${now}:${Math.random().toString(36).slice(2)}`;
+
+  const results = await client
+    .pipeline()
+    .zremrangebyscore(redisKey, 0, now - windowMs)
+    .zadd(redisKey, now, member)
+    .zcard(redisKey)
+    .pexpire(redisKey, windowMs)
+    .exec();
+
+  const count = (results?.[2]?.[1] as number | null) ?? requests + 1;
+
+  if (count <= requests) return { limited: false };
+
+  return {
+    limited: true,
+    retryAfterSec: Math.max(1, Math.ceil(windowMs / 1000)),
+  };
+}
+
 export async function checkRateLimit(
   key: string,
   preset: keyof typeof RATE_LIMITS,
@@ -77,34 +110,20 @@ export async function checkRateLimit(
   const client = getRedis();
 
   if (!client) {
-    if (process.env.NODE_ENV === "production") {
-      console.error(
-        "Upstash Redis is not configured — rate limiting is per-instance only.",
-      );
-    }
-
     return checkMemoryRateLimit(key, requests, window);
   }
 
   try {
-    const limiter = new Ratelimit({
-      redis: client,
-      limiter: Ratelimit.slidingWindow(requests, window),
-      analytics: true,
-      prefix: `ratelimit:${preset}`,
-    });
-
-    const { success, reset } = await limiter.limit(key);
-
-    if (success) return { limited: false };
-
-    return {
-      limited: true,
-      retryAfterSec: Math.max(1, Math.ceil((reset - Date.now()) / 1000)),
-    };
+    return await checkRedisRateLimit(
+      client,
+      key,
+      preset,
+      requests,
+      windowToMs(window),
+    );
   } catch (error) {
     console.error("Rate limiter error, allowing request:", error);
-    return { limited: false };
+    return checkMemoryRateLimit(key, requests, window);
   }
 }
 
