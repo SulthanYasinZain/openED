@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
+import { invalidateCachePattern } from "@/lib/redis";
 import { checkSession } from "@/lib/session";
 
 const saltRounds = 10;
@@ -111,6 +112,7 @@ export async function createUserAction(
     }
 
     revalidatePath("/dashboard/users");
+    await invalidateCachePattern("users:v1:*");
 
     return { error: "" };
   } catch (error) {
@@ -176,6 +178,7 @@ export async function updateUserAction(
     });
 
     revalidatePath("/dashboard/users");
+    await invalidateCachePattern("users:v1:*");
 
     await logAudit({
       action: "UPDATE",
@@ -244,6 +247,7 @@ export async function deleteUserAction(userId: number, _formData: FormData) {
     });
 
     revalidatePath("/dashboard/users");
+    await invalidateCachePattern("users:v1:*");
 
     return { error: "" };
   } catch (error) {
@@ -289,6 +293,7 @@ export async function deleteUsersAction(userIds: number[]) {
     }
 
     revalidatePath("/dashboard/users");
+    await invalidateCachePattern("users:v1:*");
 
     return { error: "" };
   } catch (error) {

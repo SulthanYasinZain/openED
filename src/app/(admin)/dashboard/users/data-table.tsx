@@ -22,7 +22,8 @@ import {
   UserGroupIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -42,7 +43,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { Role } from "@/generated/prisma/client";
 import BulkActionsBar from "./bulk-actions-bar";
+import { PAGE_SIZE } from "./constants";
 import CreateUserDialog from "./create-user-dialog";
 import ExportUsersButton from "./export-users-button";
 import { USER_ROLES } from "./user-form-fields";
@@ -54,19 +57,19 @@ import UsersTable, { formatRole } from "./users-table";
 type View = "table" | "board" | "list";
 type DateFilter = "after" | "before";
 
-const PAGE_SIZE = 15;
+type Filters = {
+  q: string;
+  role: Role | null;
+  after: string;
+  before: string;
+  page: number;
+};
 
 const HIDEABLE_COLUMNS = [
   { label: "Email", icon: Mail01Icon },
   { label: "Role", icon: Briefcase01Icon },
   { label: "Joined date", icon: Calendar01Icon },
 ] as const;
-
-function matchesQuery(user: UserRow, query: string) {
-  const haystack =
-    `${user.name ?? ""} ${user.email} ${user.role}`.toLowerCase();
-  return haystack.includes(query.trim().toLowerCase());
-}
 
 function pageItems(current: number, total: number): (number | string)[] {
   if (total <= 7) {
@@ -93,54 +96,78 @@ function pageItems(current: number, total: number): (number | string)[] {
   return items;
 }
 
-export default function UsersDataTable({ data }: { data: UserRow[] }) {
+export default function UsersDataTable({
+  rows,
+  allRows,
+  total,
+  page,
+  totalPages,
+  initialSearch,
+  currentRole,
+  after,
+  before,
+}: {
+  rows: UserRow[];
+  allRows: UserRow[];
+  total: number;
+  page: number;
+  totalPages: number;
+  initialSearch: string;
+  currentRole: Role | null;
+  after: string;
+  before: string;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [view, setView] = useState<View>("table");
-  const [query, setQuery] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [role, setRole] = useState<string | null>(null);
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [density, setDensity] = useState<"comfortable" | "compact">(
     "comfortable",
   );
-  const [dateFilters, setDateFilters] = useState<DateFilter[]>([]);
-  const [joinedAfter, setJoinedAfter] = useState("");
-  const [joinedBefore, setJoinedBefore] = useState("");
+  const [pendingFilters, setPendingFilters] = useState<DateFilter[]>([]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const [page, setPage] = useState(1);
   const [createOpen, setCreateOpen] = useState(false);
 
-  const visible = useMemo(() => {
-    return data.filter((user) => {
-      if (role && role !== "All roles" && user.role !== role) {
-        return false;
-      }
-      if (query.trim() && !matchesQuery(user, query)) {
-        return false;
-      }
-      const joinedDay = user.joinedAt.slice(0, 10);
-      if (joinedAfter && joinedDay < joinedAfter) {
-        return false;
-      }
-      if (joinedBefore && joinedDay > joinedBefore) {
-        return false;
-      }
-      return true;
-    });
-  }, [data, role, query, joinedAfter, joinedBefore]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset to first page whenever filters change
+  // biome-ignore lint/correctness/useExhaustiveDependencies: sync input on back/forward navigation
   useEffect(() => {
-    setPage(1);
-  }, [query, role, joinedAfter, joinedBefore]);
+    setSearch(initialSearch);
+  }, [initialSearch]);
 
-  function removeDateFilter(filter: DateFilter) {
-    setDateFilters((current) => current.filter((item) => item !== filter));
-    if (filter === "after") {
-      setJoinedAfter("");
-    } else {
-      setJoinedBefore("");
-    }
+  function navigate(values: Filters) {
+    const params = new URLSearchParams();
+    if (values.q.trim()) params.set("q", values.q.trim());
+    if (values.role) params.set("role", values.role);
+    if (values.after) params.set("after", values.after);
+    if (values.before) params.set("before", values.before);
+    if (values.page > 1) params.set("page", String(values.page));
+    const query = params.toString();
+    router.replace(`${pathname}${query ? `?${query}` : ""}`, {
+      scroll: false,
+    });
   }
+
+  function currentFilters(overrides: Partial<Filters> = {}): Filters {
+    return {
+      q: search,
+      role: currentRole,
+      after,
+      before,
+      page,
+      ...overrides,
+    };
+  }
+
+  // Debounced server search.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: navigation intentionally follows only the input value
+  useEffect(() => {
+    if (search === initialSearch) return;
+    const timer = setTimeout(() => {
+      navigate(currentFilters({ page: 1 }));
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   function toggleSelected(id: number) {
     setSelectedIds((items) =>
@@ -156,18 +183,29 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
     );
   }
 
+  const activeFilters = [
+    after ? ("after" as const) : null,
+    before ? ("before" as const) : null,
+  ].filter((filter): filter is DateFilter => filter !== null);
+  const shownFilters = [
+    ...activeFilters,
+    ...pendingFilters.filter((filter) => !activeFilters.includes(filter)),
+  ];
   const availableDateFilters: DateFilter[] = (
     ["after", "before"] as const
-  ).filter((filter) => !dateFilters.includes(filter));
-
-  const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
-  const safePage = Math.min(page, pageCount);
-  const pagedUsers = visible.slice(
-    (safePage - 1) * PAGE_SIZE,
-    safePage * PAGE_SIZE,
+  ).filter(
+    (filter) =>
+      (filter === "after" ? after : before) === "" &&
+      !shownFilters.includes(filter),
   );
-  const rangeStart = visible.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
-  const rangeEnd = Math.min(rangeStart + PAGE_SIZE - 1, visible.length);
+
+  function removeDateFilter(filter: DateFilter) {
+    setPendingFilters((current) => current.filter((item) => item !== filter));
+    navigate(currentFilters({ [filter]: "", page: 1 }));
+  }
+
+  const rangeStart = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const rangeEnd = Math.min(page * PAGE_SIZE, total);
 
   return (
     <div className="mt-8">
@@ -205,8 +243,8 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                 <Input
                   autoFocus
                   placeholder="Search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
                   className="h-8 w-56"
                 />
                 <Button
@@ -216,7 +254,7 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                   aria-label="Close search"
                   onClick={() => {
                     setSearchOpen(false);
-                    setQuery("");
+                    setSearch("");
                   }}
                 >
                   <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
@@ -304,7 +342,7 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-            <ExportUsersButton rows={visible} />
+            <ExportUsersButton rows={allRows} />
             <DropdownMenu>
               <DropdownMenuTrigger
                 render={
@@ -339,7 +377,15 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
           </div>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          <Select value={role} onValueChange={setRole}>
+          <Select
+            value={currentRole ?? "All roles"}
+            onValueChange={(value) =>
+              navigate({
+                ...currentFilters({ page: 1 }),
+                role: !value || value === "All roles" ? null : (value as Role),
+              })
+            }
+          >
             <SelectTrigger size="sm" className="rounded-full!">
               <HugeiconsIcon
                 icon={Shield01Icon}
@@ -362,50 +408,65 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
               ))}
             </SelectContent>
           </Select>
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              render={
-                <Button type="button" variant="ghost" size="sm">
-                  <HugeiconsIcon
-                    icon={PlusSignIcon}
-                    strokeWidth={2}
-                    data-icon="inline-start"
-                  />
-                  Add filter
-                </Button>
-              }
-            />
-            <DropdownMenuContent align="start" className="w-fit">
-              {availableDateFilters.map((filter) => (
-                <DropdownMenuItem
-                  key={filter}
-                  className="px-3 py-2"
-                  onClick={() =>
-                    setDateFilters((current) => [...current, filter])
-                  }
-                >
-                  <HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} />
-                  Joined {filter}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          {dateFilters.map((filter) => (
+          {availableDateFilters.length > 0 ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button type="button" variant="ghost" size="sm">
+                    <HugeiconsIcon
+                      icon={PlusSignIcon}
+                      strokeWidth={2}
+                      data-icon="inline-start"
+                    />
+                    Add filter
+                  </Button>
+                }
+              />
+              <DropdownMenuContent align="start" className="w-fit">
+                {availableDateFilters.map((filter) => (
+                  <DropdownMenuItem
+                    key={filter}
+                    className="px-3 py-2"
+                    onClick={() =>
+                      setPendingFilters((current) =>
+                        current.includes(filter)
+                          ? current
+                          : [...current, filter],
+                      )
+                    }
+                  >
+                    <HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} />
+                    Joined {filter}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button type="button" variant="ghost" size="sm" disabled>
+              <HugeiconsIcon
+                icon={PlusSignIcon}
+                strokeWidth={2}
+                data-icon="inline-start"
+              />
+              Add filter
+            </Button>
+          )}
+          {shownFilters.map((filter) => (
             <span
               key={filter}
-              className="flex items-center gap-1.5 rounded-full border border-stone-200 px-3 py-1 text-xs"
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-stone-200 px-3 py-1 text-xs whitespace-nowrap"
             >
               Joined {filter}
               <input
                 type="date"
                 aria-label={`Joined ${filter}`}
-                value={filter === "after" ? joinedAfter : joinedBefore}
+                value={filter === "after" ? after : before}
                 onChange={(event) =>
-                  filter === "after"
-                    ? setJoinedAfter(event.target.value)
-                    : setJoinedBefore(event.target.value)
+                  navigate(
+                    currentFilters({ [filter]: event.target.value, page: 1 }),
+                  )
                 }
-                className="bg-transparent text-xs outline-none"
+                className="w-32 bg-transparent text-xs outline-none"
               />
               <button
                 type="button"
@@ -421,12 +482,12 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
         <div className="mt-3">
           {view === "table" && (
             <UsersTable
-              users={pagedUsers}
+              users={rows}
               selectedIds={selectedIds}
               onToggle={toggleSelected}
               onToggleAll={(checked) =>
                 toggleAll(
-                  pagedUsers.map((user) => user.id),
+                  rows.map((user) => user.id),
                   checked,
                 )
               }
@@ -435,14 +496,14 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
           )}
           {view === "board" && (
             <UsersBoard
-              users={visible}
+              users={rows}
               selectedIds={selectedIds}
               onToggle={toggleSelected}
             />
           )}
           {view === "list" && (
             <UsersList
-              users={visible}
+              users={rows}
               selectedIds={selectedIds}
               onToggle={toggleSelected}
             />
@@ -456,19 +517,19 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
             type="button"
             className="ml-1 inline-flex items-center gap-1 rounded-md border border-stone-200 bg-white px-2 py-0.5"
           >
-            15{" "}
+            {PAGE_SIZE}{" "}
             <HugeiconsIcon icon={ArrowDown01Icon} size={12} strokeWidth={2} />
           </button>
           <span className="ml-2">
-            {rangeStart}-{rangeEnd} of {visible.length} rows
+            {rangeStart}-{rangeEnd} of {total} rows
           </span>
         </div>
         <div className="ml-auto flex items-center gap-1">
           <button
             type="button"
             aria-label="First page"
-            disabled={safePage === 1}
-            onClick={() => setPage(1)}
+            disabled={page === 1}
+            onClick={() => navigate(currentFilters({ page: 1 }))}
             className="inline-flex h-6 min-w-6 items-center justify-center rounded-md text-stone-600 hover:bg-stone-100 disabled:opacity-40"
           >
             <HugeiconsIcon
@@ -480,19 +541,19 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
           <button
             type="button"
             aria-label="Previous page"
-            disabled={safePage === 1}
-            onClick={() => setPage(safePage - 1)}
+            disabled={page === 1}
+            onClick={() => navigate(currentFilters({ page: page - 1 }))}
             className="inline-flex h-6 min-w-6 items-center justify-center rounded-md text-stone-600 hover:bg-stone-100 disabled:opacity-40"
           >
             <HugeiconsIcon icon={ArrowLeft01Icon} size={13} strokeWidth={2} />
           </button>
-          {pageItems(safePage - 1, pageCount).map((item) =>
+          {pageItems(page - 1, totalPages).map((item) =>
             typeof item === "number" ? (
               <button
                 key={item}
                 type="button"
-                onClick={() => setPage(item + 1)}
-                className={`inline-flex h-6 min-w-6 items-center justify-center rounded-md ${item + 1 === safePage ? "bg-stone-900 text-white" : "text-stone-600 hover:bg-stone-100"}`}
+                onClick={() => navigate(currentFilters({ page: item + 1 }))}
+                className={`inline-flex h-6 min-w-6 items-center justify-center rounded-md ${item + 1 === page ? "bg-stone-900 text-white" : "text-stone-600 hover:bg-stone-100"}`}
               >
                 {item + 1}
               </button>
@@ -505,8 +566,8 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
           <button
             type="button"
             aria-label="Next page"
-            disabled={safePage === pageCount}
-            onClick={() => setPage(safePage + 1)}
+            disabled={page === totalPages}
+            onClick={() => navigate(currentFilters({ page: page + 1 }))}
             className="inline-flex h-6 min-w-6 items-center justify-center rounded-md text-stone-600 hover:bg-stone-100 disabled:opacity-40"
           >
             <HugeiconsIcon icon={ArrowRight01Icon} size={13} strokeWidth={2} />
@@ -514,8 +575,8 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
           <button
             type="button"
             aria-label="Last page"
-            disabled={safePage === pageCount}
-            onClick={() => setPage(pageCount)}
+            disabled={page === totalPages}
+            onClick={() => navigate(currentFilters({ page: totalPages }))}
             className="inline-flex h-6 min-w-6 items-center justify-center rounded-md text-stone-600 hover:bg-stone-100 disabled:opacity-40"
           >
             <HugeiconsIcon
@@ -528,9 +589,9 @@ export default function UsersDataTable({ data }: { data: UserRow[] }) {
       </footer>
       <CreateUserDialog open={createOpen} onOpenChange={setCreateOpen} />
       <BulkActionsBar
-        selected={data.filter((user) => selectedIds.includes(user.id))}
-        totalVisible={visible.length}
-        onSelectAll={() => setSelectedIds(visible.map((user) => user.id))}
+        selected={allRows.filter((user) => selectedIds.includes(user.id))}
+        totalVisible={total}
+        onSelectAll={() => setSelectedIds(allRows.map((user) => user.id))}
         onClear={() => setSelectedIds([])}
       />
     </div>
