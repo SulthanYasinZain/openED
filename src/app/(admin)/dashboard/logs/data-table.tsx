@@ -98,7 +98,6 @@ export default function LogsDataTable({
   const [pendingFilters, setPendingFilters] = useState<DateFilter[]>([]);
   const [expanded, setExpanded] = useState<string[]>([]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: sync input on back/forward navigation and clear
   useEffect(() => {
     setSearch(initialSearch);
   }, [initialSearch]);

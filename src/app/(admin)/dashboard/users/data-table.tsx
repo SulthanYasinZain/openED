@@ -130,7 +130,6 @@ export default function UsersDataTable({
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: sync input on back/forward navigation
   useEffect(() => {
     setSearch(initialSearch);
   }, [initialSearch]);

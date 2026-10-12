@@ -56,6 +56,69 @@ export async function StudentJoinClassAction(
   await enrollStudentToClass(classId, sessionData.userId);
 }
 
+export async function EnrollStudentAction(
+  _previousState: PreviousState,
+  formData: FormData,
+): Promise<PreviousState> {
+  await checkSession("ADMIN");
+
+  const studentId = Number(formData.get("studentId"));
+  const classId = Number(formData.get("classId"));
+
+  if (
+    !Number.isInteger(studentId) ||
+    !Number.isInteger(classId) ||
+    studentId <= 0 ||
+    classId <= 0
+  ) {
+    return { error: "Invalid student or class ID" };
+  }
+
+  const existing = await prisma.studentEnrollment.findUnique({
+    where: {
+      classId_studentId: {
+        classId,
+        studentId,
+      },
+    },
+  });
+
+  if (existing && !existing.isDeleted) {
+    return { error: "Student is already in this class" };
+  }
+
+  try {
+    const enrollment = existing
+      ? await prisma.studentEnrollment.update({
+          where: { id: existing.id },
+          data: { isDeleted: false },
+        })
+      : await prisma.studentEnrollment.create({
+          data: {
+            classId,
+            studentId,
+          },
+        });
+
+    await logAudit({
+      action: "CREATE",
+      entityType: "StudentEnrollment",
+      entityId: enrollment.id,
+      description: `Student #${studentId} enrolled in class #${classId}`,
+    });
+
+    revalidatePath("/dashboard");
+
+    return { error: "" };
+  } catch (error) {
+    console.error("Enrollment error:", error);
+
+    return {
+      error: "Failed to enroll student",
+    };
+  }
+}
+
 async function enrollStudentToClass(classId: number, studentId: number) {
   const isStudentAlreadyEnroll = await prisma.studentEnrollment.findUnique({
     where: {

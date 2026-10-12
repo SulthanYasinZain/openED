@@ -37,6 +37,15 @@ export const MeetingStatus = {
 export type MeetingStatus = (typeof MeetingStatus)[keyof typeof MeetingStatus]
 
 
+export const ClassStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type ClassStatus = (typeof ClassStatus)[keyof typeof ClassStatus]
+
+
 export const MaterialType = {
   FILE: 'FILE',
   VIDEO: 'VIDEO',

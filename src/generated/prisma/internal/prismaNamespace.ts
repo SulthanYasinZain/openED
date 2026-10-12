@@ -1624,6 +1624,7 @@ export const ClassScalarFieldEnum = {
   code: 'code',
   name: 'name',
   imageUrl: 'imageUrl',
+  status: 'status',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1912,6 +1913,20 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'DateTime[]'
  */
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClassStatus'
+ */
+export type EnumClassStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ClassStatus[]'
+ */
+export type ListEnumClassStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClassStatus[]'>
     
 
 

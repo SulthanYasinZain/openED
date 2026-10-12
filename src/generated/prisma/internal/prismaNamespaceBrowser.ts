@@ -128,6 +128,7 @@ export const ClassScalarFieldEnum = {
   code: 'code',
   name: 'name',
   imageUrl: 'imageUrl',
+  status: 'status',
   isDeleted: 'isDeleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -167,6 +167,23 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumClassStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassStatus | Prisma.EnumClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClassStatusFilter<$PrismaModel> | $Enums.ClassStatus
+}
+
+export type EnumClassStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassStatus | Prisma.EnumClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClassStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClassStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClassStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClassStatusFilter<$PrismaModel>
+}
+
 export type EnumTeacherTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.TeacherType | Prisma.EnumTeacherTypeFieldRefInput<$PrismaModel>
   in?: $Enums.TeacherType[] | Prisma.ListEnumTeacherTypeFieldRefInput<$PrismaModel>
@@ -624,6 +641,23 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+}
+
+export type NestedEnumClassStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassStatus | Prisma.EnumClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClassStatusFilter<$PrismaModel> | $Enums.ClassStatus
+}
+
+export type NestedEnumClassStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClassStatus | Prisma.EnumClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClassStatus[] | Prisma.ListEnumClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClassStatusWithAggregatesFilter<$PrismaModel> | $Enums.ClassStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClassStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClassStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumTeacherTypeFilter<$PrismaModel = never> = {

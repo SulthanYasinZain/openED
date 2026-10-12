@@ -1,124 +1,162 @@
-import Link from "next/link";
-import AssignTeacherDialog from "@/components/assign-teacher-dialog";
-import DeleteClassButton from "@/components/class-delete-button";
-import CreateClassDialog from "@/components/create-class-dialog";
-import { Button } from "@/components/ui/button";
 import { prisma } from "@/lib/prisma";
+import ClassesDataTable from "./classes-data-table";
+import ScheduleCalendar from "./schedule-calendar";
+import ScheduleGantt from "./schedule-gantt";
 
 export default async function DashboardPage() {
-  const classData = await prisma.class.findMany({
-    where: {
-      isDeleted: false,
-    },
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      code: true,
-      school: { select: { name: true } },
-      teachers: {
-        where: { isDeleted: false },
-        select: {
-          teacher: {
-            select: {
-              id: true,
-              name: true,
+  const now = new Date();
+  const [classData, teacherData, studentData, meetingData] = await Promise.all([
+    prisma.class.findMany({
+      where: {
+        isDeleted: false,
+      },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        code: true,
+        status: true,
+        school: { select: { name: true } },
+        teachers: {
+          where: { isDeleted: false },
+          select: {
+            teacher: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
             },
           },
         },
+        studentEnrollments: {
+          where: { isDeleted: false },
+          select: {
+            student: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: { meetings: { where: { isDeleted: false } } },
+        },
       },
-      _count: {
-        select: { meetings: { where: { isDeleted: false } } },
+    }),
+    prisma.user.findMany({
+      where: {
+        role: "MENTOR",
+        isDeleted: false,
       },
-    },
-  });
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    }),
+    prisma.user.findMany({
+      where: {
+        role: "STUDENT",
+        isDeleted: false,
+      },
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    }),
+    prisma.classMeeting.findMany({
+      where: { isDeleted: false },
+      orderBy: { scheduledAt: "asc" },
+      select: {
+        id: true,
+        topic: true,
+        scheduledAt: true,
+        classId: true,
+        class: { select: { name: true } },
+      },
+    }),
+  ]);
+
+  const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const todayCount = meetingData.filter((item) => {
+    const date = item.scheduledAt;
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    return key === todayKey;
+  }).length;
+
+  const weekActivity = new Map<number, number[]>();
+  for (const item of meetingData) {
+    const weekday = (item.scheduledAt.getDay() + 6) % 7;
+    const days = weekActivity.get(item.classId) ?? [];
+    if (!days.includes(weekday)) {
+      days.push(weekday);
+      days.sort((a, b) => a - b);
+    }
+    weekActivity.set(item.classId, days);
+  }
 
   const classes = classData.map((item) => ({
     id: item.id,
     name: item.name,
     code: item.code,
     schoolName: item.school.name,
+    status: item.status,
     teachers: item.teachers.map((item) => item.teacher),
+    students: item.studentEnrollments.map((item) => item.student),
     meetingCount: item._count.meetings,
   }));
 
-  const teacherData = await prisma.user.findMany({
-    where: {
-      role: "MENTOR",
-      isDeleted: false,
-    },
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-    },
-  });
+  const meetings = meetingData.map((item) => ({
+    id: item.id,
+    topic: item.topic,
+    className: item.class.name,
+    scheduledAt: item.scheduledAt.toISOString(),
+  }));
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10 text-[13px] text-stone-900">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1 text-sm">
-            {classes.length} {classes.length === 1 ? "class" : "classes"} ·{" "}
-            {teacherData.length}{" "}
-            {teacherData.length === 1 ? "mentor" : "mentors"}
+            {now.toLocaleDateString("en-GB", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}{" "}
+            · {todayCount} {todayCount === 1 ? "meeting" : "meetings"} today ·{" "}
+            {classes.length} {classes.length === 1 ? "class" : "classes"}
           </p>
         </div>
-        <CreateClassDialog />
       </div>
 
-      <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {classes.length === 0 && (
-          <li className="border-border rounded-lg border px-4 py-8 text-center sm:col-span-2 lg:col-span-3">
-            <p className="text-muted-foreground text-sm">
-              No classes yet. Create the first one.
-            </p>
-          </li>
-        )}
+      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <ScheduleGantt meetings={meetings} />
+        </div>
+        <ScheduleCalendar meetings={meetings} />
+      </div>
 
-        {classes.map((classItem) => (
-          <li
-            key={classItem.id}
-            className="border-border flex flex-col gap-2 rounded-lg border px-4 py-3"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium">{classItem.name}</p>
-                <p className="text-muted-foreground truncate text-sm">
-                  {classItem.code} · {classItem.schoolName}
-                </p>
-              </div>
-              <DeleteClassButton classId={classItem.id} />
-            </div>
-            <p className="text-muted-foreground text-xs">
-              {classItem.teachers[0]?.name ?? "No teacher"}
-              {classItem.teachers.length > 1 &&
-                ` +${classItem.teachers.length - 1}`}
-              {" · "}
-              {classItem.meetingCount}{" "}
-              {classItem.meetingCount === 1 ? "meeting" : "meetings"}
-            </p>
-            <div className="mt-1 flex items-center gap-1">
-              <AssignTeacherDialog
-                classId={classItem.id}
-                className={classItem.name}
-                teacherList={teacherData}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                nativeButton={false}
-                render={<Link href={`/dashboard/class/${classItem.code}`} />}
-              >
-                View
-              </Button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-10">
+        <h2 className="text-lg font-semibold tracking-tight">
+          Classes{" "}
+          <span className="text-muted-foreground font-normal">
+            {classes.length}
+          </span>
+        </h2>
+        <ClassesDataTable
+          classes={classes}
+          teachers={teacherData}
+          students={studentData}
+          weekActivity={Object.fromEntries(weekActivity)}
+        />
+      </div>
     </main>
   );
 }

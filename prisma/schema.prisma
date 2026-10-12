@@ -31,6 +31,12 @@ enum MeetingStatus {
   CANCELLED
 }
 
+enum ClassStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
 enum MaterialType {
   FILE
   VIDEO
@@ -123,14 +129,15 @@ model SchoolUser {
 }
 
 model Class {
-  id        Int      @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   schoolId  Int
-  code      String   @unique
+  code      String      @unique
   name      String
   imageUrl  String?
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status    ClassStatus @default(ACTIVE)
+  isDeleted Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   school School @relation(fields: [schoolId], references: [id])
 

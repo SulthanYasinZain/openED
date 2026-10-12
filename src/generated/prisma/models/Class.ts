@@ -42,6 +42,7 @@ export type ClassMinAggregateOutputType = {
   code: string | null
   name: string | null
   imageUrl: string | null
+  status: $Enums.ClassStatus | null
   isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +54,7 @@ export type ClassMaxAggregateOutputType = {
   code: string | null
   name: string | null
   imageUrl: string | null
+  status: $Enums.ClassStatus | null
   isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -64,6 +66,7 @@ export type ClassCountAggregateOutputType = {
   code: number
   name: number
   imageUrl: number
+  status: number
   isDeleted: number
   createdAt: number
   updatedAt: number
@@ -87,6 +90,7 @@ export type ClassMinAggregateInputType = {
   code?: true
   name?: true
   imageUrl?: true
+  status?: true
   isDeleted?: true
   createdAt?: true
   updatedAt?: true
@@ -98,6 +102,7 @@ export type ClassMaxAggregateInputType = {
   code?: true
   name?: true
   imageUrl?: true
+  status?: true
   isDeleted?: true
   createdAt?: true
   updatedAt?: true
@@ -109,6 +114,7 @@ export type ClassCountAggregateInputType = {
   code?: true
   name?: true
   imageUrl?: true
+  status?: true
   isDeleted?: true
   createdAt?: true
   updatedAt?: true
@@ -207,6 +213,7 @@ export type ClassGroupByOutputType = {
   code: string
   name: string
   imageUrl: string | null
+  status: $Enums.ClassStatus
   isDeleted: boolean
   createdAt: Date
   updatedAt: Date
@@ -241,6 +248,7 @@ export type ClassWhereInput = {
   code?: Prisma.StringFilter<"Class"> | string
   name?: Prisma.StringFilter<"Class"> | string
   imageUrl?: Prisma.StringNullableFilter<"Class"> | string | null
+  status?: Prisma.EnumClassStatusFilter<"Class"> | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFilter<"Class"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Class"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string
@@ -257,6 +265,7 @@ export type ClassOrderByWithRelationInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -276,6 +285,7 @@ export type ClassWhereUniqueInput = Prisma.AtLeast<{
   schoolId?: Prisma.IntFilter<"Class"> | number
   name?: Prisma.StringFilter<"Class"> | string
   imageUrl?: Prisma.StringNullableFilter<"Class"> | string | null
+  status?: Prisma.EnumClassStatusFilter<"Class"> | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFilter<"Class"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Class"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string
@@ -292,6 +302,7 @@ export type ClassOrderByWithAggregationInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -311,6 +322,7 @@ export type ClassScalarWhereWithAggregatesInput = {
   code?: Prisma.StringWithAggregatesFilter<"Class"> | string
   name?: Prisma.StringWithAggregatesFilter<"Class"> | string
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null
+  status?: Prisma.EnumClassStatusWithAggregatesFilter<"Class"> | $Enums.ClassStatus
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Class"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Class"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Class"> | Date | string
@@ -320,6 +332,7 @@ export type ClassCreateInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -336,6 +349,7 @@ export type ClassUncheckedCreateInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -349,6 +363,7 @@ export type ClassUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -365,6 +380,7 @@ export type ClassUncheckedUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +396,7 @@ export type ClassCreateManyInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -389,6 +406,7 @@ export type ClassUpdateManyMutationInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -400,6 +418,7 @@ export type ClassUncheckedUpdateManyInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -421,6 +440,7 @@ export type ClassCountOrderByAggregateInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -437,6 +457,7 @@ export type ClassMaxOrderByAggregateInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -448,6 +469,7 @@ export type ClassMinOrderByAggregateInput = {
   code?: Prisma.SortOrder
   name?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -503,6 +525,10 @@ export type ClassUncheckedUpdateManyWithoutSchoolNestedInput = {
   update?: Prisma.ClassUpdateWithWhereUniqueWithoutSchoolInput | Prisma.ClassUpdateWithWhereUniqueWithoutSchoolInput[]
   updateMany?: Prisma.ClassUpdateManyWithWhereWithoutSchoolInput | Prisma.ClassUpdateManyWithWhereWithoutSchoolInput[]
   deleteMany?: Prisma.ClassScalarWhereInput | Prisma.ClassScalarWhereInput[]
+}
+
+export type EnumClassStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ClassStatus
 }
 
 export type ClassCreateNestedOneWithoutTeachersInput = {
@@ -565,6 +591,7 @@ export type ClassCreateWithoutSchoolInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -579,6 +606,7 @@ export type ClassUncheckedCreateWithoutSchoolInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -623,6 +651,7 @@ export type ClassScalarWhereInput = {
   code?: Prisma.StringFilter<"Class"> | string
   name?: Prisma.StringFilter<"Class"> | string
   imageUrl?: Prisma.StringNullableFilter<"Class"> | string | null
+  status?: Prisma.EnumClassStatusFilter<"Class"> | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFilter<"Class"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Class"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string
@@ -632,6 +661,7 @@ export type ClassCreateWithoutTeachersInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -647,6 +677,7 @@ export type ClassUncheckedCreateWithoutTeachersInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -675,6 +706,7 @@ export type ClassUpdateWithoutTeachersInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -690,6 +722,7 @@ export type ClassUncheckedUpdateWithoutTeachersInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -702,6 +735,7 @@ export type ClassCreateWithoutStudentEnrollmentsInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -717,6 +751,7 @@ export type ClassUncheckedCreateWithoutStudentEnrollmentsInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -745,6 +780,7 @@ export type ClassUpdateWithoutStudentEnrollmentsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -760,6 +796,7 @@ export type ClassUncheckedUpdateWithoutStudentEnrollmentsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -772,6 +809,7 @@ export type ClassCreateWithoutMeetingsInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -787,6 +825,7 @@ export type ClassUncheckedCreateWithoutMeetingsInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -815,6 +854,7 @@ export type ClassUpdateWithoutMeetingsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -830,6 +870,7 @@ export type ClassUncheckedUpdateWithoutMeetingsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -842,6 +883,7 @@ export type ClassCreateWithoutCertificatesInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -857,6 +899,7 @@ export type ClassUncheckedCreateWithoutCertificatesInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -885,6 +928,7 @@ export type ClassUpdateWithoutCertificatesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -900,6 +944,7 @@ export type ClassUncheckedUpdateWithoutCertificatesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -913,6 +958,7 @@ export type ClassCreateManySchoolInput = {
   code: string
   name: string
   imageUrl?: string | null
+  status?: $Enums.ClassStatus
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -922,6 +968,7 @@ export type ClassUpdateWithoutSchoolInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -936,6 +983,7 @@ export type ClassUncheckedUpdateWithoutSchoolInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -950,6 +998,7 @@ export type ClassUncheckedUpdateManyWithoutSchoolInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumClassStatusFieldUpdateOperationsInput | $Enums.ClassStatus
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1019,6 +1068,7 @@ export type ClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   code?: boolean
   name?: boolean
   imageUrl?: boolean
+  status?: boolean
   isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1036,6 +1086,7 @@ export type ClassSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   code?: boolean
   name?: boolean
   imageUrl?: boolean
+  status?: boolean
   isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1048,6 +1099,7 @@ export type ClassSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   code?: boolean
   name?: boolean
   imageUrl?: boolean
+  status?: boolean
   isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1060,12 +1112,13 @@ export type ClassSelectScalar = {
   code?: boolean
   name?: boolean
   imageUrl?: boolean
+  status?: boolean
   isDeleted?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "schoolId" | "code" | "name" | "imageUrl" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["class"]>
+export type ClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "schoolId" | "code" | "name" | "imageUrl" | "status" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["class"]>
 export type ClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   school?: boolean | Prisma.SchoolDefaultArgs<ExtArgs>
   teachers?: boolean | Prisma.Class$teachersArgs<ExtArgs>
@@ -1096,6 +1149,7 @@ export type $ClassPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     code: string
     name: string
     imageUrl: string | null
+    status: $Enums.ClassStatus
     isDeleted: boolean
     createdAt: Date
     updatedAt: Date
@@ -1532,6 +1586,7 @@ export interface ClassFieldRefs {
   readonly code: Prisma.FieldRef<"Class", 'String'>
   readonly name: Prisma.FieldRef<"Class", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Class", 'String'>
+  readonly status: Prisma.FieldRef<"Class", 'ClassStatus'>
   readonly isDeleted: Prisma.FieldRef<"Class", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Class", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Class", 'DateTime'>
