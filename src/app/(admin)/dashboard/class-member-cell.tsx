@@ -3,8 +3,14 @@
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useState, useTransition } from "react";
-import { AssignTeacherAction } from "@/app/actions/classTeacher";
-import { EnrollStudentAction } from "@/app/actions/studentPlacement";
+import {
+  AssignTeacherAction,
+  RemoveTeacherAction,
+} from "@/app/actions/classTeacher";
+import {
+  EnrollStudentAction,
+  RemoveStudentAction,
+} from "@/app/actions/studentPlacement";
 import {
   Avatar,
   AvatarFallback,
@@ -34,6 +40,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { avatarColorClass } from "./avatar-color";
 
 export type Member = {
   id: number;
@@ -77,100 +84,139 @@ export default function ClassMemberCell({
 
   const visible = members.slice(0, MAX_VISIBLE);
   const overflow = members.length - visible.length;
+
+  const singular = kind === "teacher" ? "teacher" : "student";
+  const plural = kind === "teacher" ? "teachers" : "students";
+
   const memberIds = new Set(members.map((member) => member.id));
-  const available: PersonOption[] = options
+  const existingOptions: PersonOption[] = members.map((member) => ({
+    id: member.id,
+    label: member.name ?? member.email,
+  }));
+  const addableOptions: PersonOption[] = options
     .filter((person) => !memberIds.has(person.id))
     .map((person) => ({
       id: person.id,
       label: person.name ?? person.email,
     }));
+  const allOptions = [...existingOptions, ...addableOptions];
 
-  const singular = kind === "teacher" ? "teacher" : "student";
-  const plural = kind === "teacher" ? "teachers" : "students";
+  const selectedIds = new Set(selected.map((person) => person.id));
+  const toAdd = selected.filter((person) => !memberIds.has(person.id));
+  const toRemove = members.filter((member) => !selectedIds.has(member.id));
+  const hasChanges = toAdd.length > 0 || toRemove.length > 0;
 
   function handleSubmit() {
-    const formBase = new FormData();
-    formBase.set("classId", String(classId));
-    const action =
-      kind === "teacher" ? AssignTeacherAction : EnrollStudentAction;
     const field = kind === "teacher" ? "teacherId" : "studentId";
+    const addAction =
+      kind === "teacher" ? AssignTeacherAction : EnrollStudentAction;
+    const removeAction =
+      kind === "teacher" ? RemoveTeacherAction : RemoveStudentAction;
+
     startTransition(async () => {
-      for (const person of selected) {
+      for (const person of toAdd) {
         const formData = new FormData();
         formData.set("classId", String(classId));
         formData.set(field, String(person.id));
-        const result = await action({ error: "" }, formData);
+        const result = await addAction({ error: "" }, formData);
         if (result.error) {
           setError(`${person.label}: ${result.error}`);
           return;
         }
       }
+      for (const member of toRemove) {
+        const formData = new FormData();
+        formData.set("classId", String(classId));
+        formData.set(field, String(member.id));
+        const result = await removeAction({ error: "" }, formData);
+        if (result.error) {
+          setError(`${member.name ?? member.email}: ${result.error}`);
+          return;
+        }
+      }
       setError("");
-      setSelected([]);
+      setSelected(existingOptions);
       setOpen(false);
     });
   }
 
   return (
-    <div className="flex items-center gap-1.5">
-      {members.length > 0 ? (
-        <AvatarGroup>
-          {visible.map((member) => (
-            <Avatar
-              key={member.id}
-              size="sm"
-              title={member.name ?? member.email}
-            >
-              <AvatarFallback>
-                {initials(member.name, member.email)}
-              </AvatarFallback>
-            </Avatar>
-          ))}
-          {overflow > 0 && (
-            <AvatarGroupCount title={`${overflow} more ${plural}`}>
-              +{overflow}
-            </AvatarGroupCount>
-          )}
-        </AvatarGroup>
-      ) : (
-        <span className="text-muted-foreground text-xs">No {singular}</span>
-      )}
+    <div className="inline-flex items-center gap-1.5">
       <Dialog
         open={open}
         onOpenChange={(value) => {
           setOpen(value);
           if (value) {
             setError("");
-            setSelected([]);
+            setSelected(existingOptions);
           }
         }}
       >
-        <DialogTrigger
-          render={
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              aria-label={`Add ${singular}`}
-              title={`Add ${singular}`}
-            >
-              <HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
-            </Button>
-          }
-        />
+        {members.length > 0 ? (
+          <AvatarGroup>
+            {visible.map((member) => (
+              <Avatar
+                key={member.id}
+                size="sm"
+                title={member.name ?? member.email}
+              >
+                <AvatarFallback
+                  className={avatarColorClass(member.name ?? member.email)}
+                >
+                  {initials(member.name, member.email)}
+                </AvatarFallback>
+              </Avatar>
+            ))}
+            {overflow > 0 && (
+              <AvatarGroupCount title={`${overflow} more ${plural}`}>
+                +{overflow}
+              </AvatarGroupCount>
+            )}
+            <DialogTrigger
+              render={
+                <button
+                  type="button"
+                  aria-label={`Manage ${plural}`}
+                  title={`Manage ${plural}`}
+                  className="relative z-10 ml-1 inline-flex size-6 shrink-0 items-center justify-center rounded-full border border-dashed border-stone-300 bg-white text-stone-500 ring-2 ring-background transition-colors hover:border-stone-500 hover:text-stone-900"
+                >
+                  <HugeiconsIcon
+                    icon={PlusSignIcon}
+                    size={12}
+                    strokeWidth={2}
+                  />
+                </button>
+              }
+            />
+          </AvatarGroup>
+        ) : (
+          <DialogTrigger
+            render={
+              <button
+                type="button"
+                aria-label={`Manage ${plural}`}
+                title={`Manage ${plural}`}
+                className="inline-flex size-6 shrink-0 items-center justify-center rounded-full border border-dashed border-stone-300 bg-white text-stone-500 transition-colors hover:border-stone-500 hover:text-stone-900"
+              >
+                <HugeiconsIcon icon={PlusSignIcon} size={12} strokeWidth={2} />
+              </button>
+            }
+          />
+        )}
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Add {plural} to {className}
+              Manage {plural} in {className}
             </DialogTitle>
             <DialogDescription>
-              Search and pick one or more {plural} to add to this class.
+              Remove an existing {singular} or search to add a new one.
             </DialogDescription>
           </DialogHeader>
           <Combobox
             multiple
-            items={available}
+            items={allOptions}
             itemToStringValue={(person) => person.label}
+            isItemEqualToValue={(itemValue, value) => itemValue.id === value.id}
             value={selected}
             onValueChange={(value) => setSelected(value)}
           >
@@ -192,8 +238,8 @@ export default function ClassMemberCell({
             </ComboboxChips>
             <ComboboxContent anchor={anchor}>
               <ComboboxEmpty>
-                {available.length === 0
-                  ? "Everyone is already added."
+                {options.length === 0
+                  ? `No ${plural} available.`
                   : `No ${singular} found.`}
               </ComboboxEmpty>
               <ComboboxList>
@@ -216,12 +262,10 @@ export default function ClassMemberCell({
             />
             <Button
               type="button"
-              disabled={selected.length === 0 || isPending}
+              disabled={!hasChanges || isPending}
               onClick={handleSubmit}
             >
-              {isPending
-                ? "Adding..."
-                : `Add ${selected.length > 0 ? `${selected.length} ` : ""}${selected.length === 1 ? singular : plural}`}
+              {isPending ? "Saving..." : "Save changes"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -119,6 +119,62 @@ export async function EnrollStudentAction(
   }
 }
 
+export async function RemoveStudentAction(
+  _previousState: PreviousState,
+  formData: FormData,
+): Promise<PreviousState> {
+  await checkSession("ADMIN");
+
+  const studentId = Number(formData.get("studentId"));
+  const classId = Number(formData.get("classId"));
+
+  if (
+    !Number.isInteger(studentId) ||
+    !Number.isInteger(classId) ||
+    studentId <= 0 ||
+    classId <= 0
+  ) {
+    return { error: "Invalid student or class ID" };
+  }
+
+  try {
+    const existing = await prisma.studentEnrollment.findUnique({
+      where: {
+        classId_studentId: {
+          classId,
+          studentId,
+        },
+      },
+    });
+
+    if (!existing || existing.isDeleted) {
+      return { error: "Student is not in this class" };
+    }
+
+    await prisma.studentEnrollment.update({
+      where: { id: existing.id },
+      data: { isDeleted: true },
+    });
+
+    await logAudit({
+      action: "DELETE",
+      entityType: "StudentEnrollment",
+      entityId: existing.id,
+      description: `Removed student #${studentId} from class #${classId}`,
+    });
+
+    revalidatePath("/dashboard");
+
+    return { error: "" };
+  } catch (error) {
+    console.error("removing student error:", error);
+
+    return {
+      error: "Failed to remove student",
+    };
+  }
+}
+
 async function enrollStudentToClass(classId: number, studentId: number) {
   const isStudentAlreadyEnroll = await prisma.studentEnrollment.findUnique({
     where: {

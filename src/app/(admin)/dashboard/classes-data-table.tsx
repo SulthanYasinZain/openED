@@ -13,17 +13,26 @@ import {
   Cancel01Icon,
   Search01Icon,
   Settings02Icon,
+  SlidersHorizontalIcon,
   Tag01Icon,
   UserGroupIcon,
   Video01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
-import { useState } from "react";
-import CreateClassDialog from "@/components/create-class-dialog";
+import { useEffect, useState } from "react";
+import CreateClassDialog, {
+  type SchoolOption,
+} from "@/components/create-class-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -42,6 +51,7 @@ export type ClassRow = {
   id: number;
   name: string;
   code: string;
+  schoolId: number;
   schoolName: string;
   status: ClassStatus;
   teachers: Member[];
@@ -69,12 +79,17 @@ const STATUS_BADGE: Record<ClassStatus, "default" | "secondary" | "outline"> = {
   ARCHIVED: "outline",
 };
 
-function initials(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  const first = parts[0]?.[0] ?? "?";
-  const second = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "";
-  return `${first}${second}`.toUpperCase();
-}
+const HIDEABLE_COLUMNS = [
+  { label: "School", icon: Building02Icon },
+  { label: "Teachers", icon: Briefcase01Icon },
+  { label: "Students", icon: UserGroupIcon },
+  { label: "Status", icon: Tag01Icon },
+  { label: "Meetings", icon: Video01Icon },
+  { label: "Week", icon: Calendar01Icon },
+] as const;
+
+// Columns that are hidden by default on narrow screens (below the xl breakpoint).
+const RESPONSIVE_COLUMNS = ["Meetings", "Week"] as const;
 
 function pageItems(current: number, total: number): (number | string)[] {
   if (total <= 7) {
@@ -105,17 +120,63 @@ export default function ClassesDataTable({
   classes,
   teachers,
   students,
+  schools,
   weekActivity,
 }: {
   classes: ClassRow[];
   teachers: TeacherOption[];
   students: Member[];
+  schools: SchoolOption[];
   weekActivity: Record<number, number[]>;
 }) {
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
+  // Columns the user toggled explicitly, so responsive defaults don't override them.
+  const [touchedColumns, setTouchedColumns] = useState<string[]>([]);
+  const [isXl, setIsXl] = useState(true);
+
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 1280px)");
+    const update = () => setIsXl(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    setHiddenColumns((items) => {
+      let next = items;
+      for (const label of RESPONSIVE_COLUMNS) {
+        if (touchedColumns.includes(label)) {
+          continue;
+        }
+        const currentlyHidden = next.includes(label);
+        if (isXl && currentlyHidden) {
+          next = next.filter((item) => item !== label);
+        } else if (!isXl && !currentlyHidden) {
+          next = [...next, label];
+        }
+      }
+      return next;
+    });
+  }, [isXl, touchedColumns]);
+
+  const isHidden = (label: string) => hiddenColumns.includes(label);
+  const toggleColumn = (label: string, hidden: boolean) => {
+    setTouchedColumns((items) =>
+      items.includes(label) ? items : [...items, label],
+    );
+    setHiddenColumns((items) =>
+      hidden ? [...items, label] : items.filter((item) => item !== label),
+    );
+  };
+  const columnCount =
+    3 +
+    HIDEABLE_COLUMNS.filter((column) => !hiddenColumns.includes(column.label))
+      .length;
 
   const query = search.trim().toLowerCase();
   const filtered = query
@@ -199,11 +260,38 @@ export default function ClassesDataTable({
               Search
             </Button>
           )}
-          <CreateClassDialog />
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={
+                <Button type="button" variant="ghost" size="sm">
+                  <HugeiconsIcon
+                    icon={SlidersHorizontalIcon}
+                    strokeWidth={2}
+                    data-icon="inline-start"
+                  />
+                  Hide
+                </Button>
+              }
+            />
+            <DropdownMenuContent align="end" className="w-fit">
+              {HIDEABLE_COLUMNS.map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.label}
+                  className="px-3 py-2"
+                  checked={hiddenColumns.includes(column.label)}
+                  onCheckedChange={(value) => toggleColumn(column.label, value)}
+                >
+                  <HugeiconsIcon icon={column.icon} strokeWidth={2} />
+                  {column.label}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <CreateClassDialog schools={schools} />
         </div>
       </div>
 
-      <div className="border-border mt-3 overflow-hidden rounded-lg border">
+      <div className="border-border mt-3 overflow-x-auto rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -232,69 +320,85 @@ export default function ClassesDataTable({
                   }
                 />
               </TableHead>
-              <TableHead>
+              <TableHead className="w-full">
                 <span className="inline-flex items-center gap-1.5">
                   <HugeiconsIcon icon={Book01Icon} size={14} strokeWidth={2} />
                   Class
                 </span>
               </TableHead>
-              <TableHead>
-                <span className="inline-flex items-center gap-1.5">
-                  <HugeiconsIcon
-                    icon={Building02Icon}
-                    size={14}
-                    strokeWidth={2}
-                  />
-                  School
-                </span>
-              </TableHead>
-              <TableHead>
-                <span className="inline-flex items-center gap-1.5">
-                  <HugeiconsIcon
-                    icon={Briefcase01Icon}
-                    size={14}
-                    strokeWidth={2}
-                  />
-                  Teachers
-                </span>
-              </TableHead>
-              <TableHead>
-                <span className="inline-flex items-center gap-1.5">
-                  <HugeiconsIcon
-                    icon={UserGroupIcon}
-                    size={14}
-                    strokeWidth={2}
-                  />
-                  Students
-                </span>
-              </TableHead>
-              <TableHead>
-                <span className="inline-flex items-center gap-1.5">
-                  <HugeiconsIcon icon={Tag01Icon} size={14} strokeWidth={2} />
-                  Status
-                </span>
-              </TableHead>
-              <TableHead>
-                <span className="inline-flex items-center gap-1.5">
-                  <HugeiconsIcon icon={Video01Icon} size={14} strokeWidth={2} />
-                  Meetings
-                </span>
-              </TableHead>
-              <TableHead>
-                <span
-                  className="inline-flex items-center gap-1"
-                  title="Weekdays this class meets"
-                >
-                  {WEEKDAYS.map((day) => (
-                    <span
-                      key={day.short}
-                      className="w-3 text-center text-[10px] font-semibold"
-                    >
-                      {day.letter}
-                    </span>
-                  ))}
-                </span>
-              </TableHead>
+              {!isHidden("School") && (
+                <TableHead>
+                  <span className="inline-flex items-center gap-1.5">
+                    <HugeiconsIcon
+                      icon={Building02Icon}
+                      size={14}
+                      strokeWidth={2}
+                    />
+                    School
+                  </span>
+                </TableHead>
+              )}
+              {!isHidden("Teachers") && (
+                <TableHead>
+                  <span className="inline-flex items-center gap-1.5">
+                    <HugeiconsIcon
+                      icon={Briefcase01Icon}
+                      size={14}
+                      strokeWidth={2}
+                    />
+                    Teachers
+                  </span>
+                </TableHead>
+              )}
+              {!isHidden("Students") && (
+                <TableHead>
+                  <span className="inline-flex items-center gap-1.5">
+                    <HugeiconsIcon
+                      icon={UserGroupIcon}
+                      size={14}
+                      strokeWidth={2}
+                    />
+                    Students
+                  </span>
+                </TableHead>
+              )}
+              {!isHidden("Status") && (
+                <TableHead>
+                  <span className="inline-flex items-center gap-1.5">
+                    <HugeiconsIcon icon={Tag01Icon} size={14} strokeWidth={2} />
+                    Status
+                  </span>
+                </TableHead>
+              )}
+              {!isHidden("Meetings") && (
+                <TableHead>
+                  <span className="inline-flex items-center gap-1.5">
+                    <HugeiconsIcon
+                      icon={Video01Icon}
+                      size={14}
+                      strokeWidth={2}
+                    />
+                    Meetings
+                  </span>
+                </TableHead>
+              )}
+              {!isHidden("Week") && (
+                <TableHead>
+                  <span
+                    className="inline-flex items-center gap-1"
+                    title="Weekdays this class meets"
+                  >
+                    {WEEKDAYS.map((day) => (
+                      <span
+                        key={day.short}
+                        className="w-3 text-center text-[10px] font-semibold"
+                      >
+                        {day.letter}
+                      </span>
+                    ))}
+                  </span>
+                </TableHead>
+              )}
               <TableHead className="text-right">
                 <span className="inline-flex items-center justify-end gap-1.5">
                   <HugeiconsIcon
@@ -317,74 +421,89 @@ export default function ClassesDataTable({
                     onCheckedChange={() => toggleSelected(classItem.id)}
                   />
                 </TableCell>
-                <TableCell>
-                  <span className="flex items-center gap-2.5">
-                    <span
-                      aria-hidden="true"
-                      className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-stone-900 text-xs font-semibold text-white"
-                    >
-                      {initials(classItem.name)}
-                    </span>
-                    <span className="font-medium">{classItem.name}</span>
-                  </span>
-                </TableCell>
-                <TableCell>{classItem.schoolName}</TableCell>
-                <TableCell>
-                  <ClassMemberCell
-                    classId={classItem.id}
-                    className={classItem.name}
-                    kind="teacher"
-                    members={classItem.teachers}
-                    options={teachers}
-                  />
-                </TableCell>
-                <TableCell>
-                  <ClassMemberCell
-                    classId={classItem.id}
-                    className={classItem.name}
-                    kind="student"
-                    members={classItem.students}
-                    options={students}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Badge variant={STATUS_BADGE[classItem.status]}>
-                    {formatStatus(classItem.status)}
-                  </Badge>
-                </TableCell>
-                <TableCell className="whitespace-nowrap">
-                  <span className="inline-flex items-center gap-1.5">
-                    <HugeiconsIcon
-                      icon={Calendar01Icon}
-                      size={14}
-                      strokeWidth={2}
-                    />
-                    {classItem.meetingCount}{" "}
-                    {classItem.meetingCount === 1 ? "meeting" : "meetings"}
-                  </span>
-                </TableCell>
-                <TableCell>
+                <TableCell className="w-full max-w-0">
                   <span
-                    className="inline-flex items-center gap-1"
-                    title={
-                      (weekActivity[classItem.id] ?? []).length > 0
-                        ? `Meets ${WEEKDAYS.filter((_, index) =>
-                            (weekActivity[classItem.id] ?? []).includes(index),
-                          )
-                            .map((day) => day.short)
-                            .join(", ")}`
-                        : "No recurring weekdays"
-                    }
+                    className="block truncate font-medium"
+                    title={classItem.name}
                   >
-                    {WEEKDAYS.map((day, index) => (
-                      <span
-                        key={day.short}
-                        aria-hidden="true"
-                        className={`size-1.5 rounded-full ${(weekActivity[classItem.id] ?? []).includes(index) ? "bg-foreground" : "bg-border"}`}
-                      />
-                    ))}
+                    {classItem.name}
                   </span>
                 </TableCell>
+                {!isHidden("School") && (
+                  <TableCell>{classItem.schoolName}</TableCell>
+                )}
+                {!isHidden("Teachers") && (
+                  <TableCell>
+                    <ClassMemberCell
+                      classId={classItem.id}
+                      className={classItem.name}
+                      kind="teacher"
+                      members={classItem.teachers}
+                      options={teachers}
+                    />
+                  </TableCell>
+                )}
+                {!isHidden("Students") && (
+                  <TableCell>
+                    <ClassMemberCell
+                      classId={classItem.id}
+                      className={classItem.name}
+                      kind="student"
+                      members={classItem.students}
+                      options={students}
+                    />
+                  </TableCell>
+                )}
+                {!isHidden("Status") && (
+                  <TableCell>
+                    <Badge variant={STATUS_BADGE[classItem.status]}>
+                      {formatStatus(classItem.status)}
+                    </Badge>
+                  </TableCell>
+                )}
+                {!isHidden("Meetings") && (
+                  <TableCell className="whitespace-nowrap">
+                    <span className="inline-flex items-center gap-1.5">
+                      <HugeiconsIcon
+                        icon={Calendar01Icon}
+                        size={14}
+                        strokeWidth={2}
+                      />
+                      {classItem.meetingCount}{" "}
+                      {classItem.meetingCount === 1 ? "meeting" : "meetings"}
+                    </span>
+                  </TableCell>
+                )}
+                {!isHidden("Week") && (
+                  <TableCell>
+                    <span
+                      className="inline-flex items-center gap-1"
+                      title={
+                        (weekActivity[classItem.id] ?? []).length > 0
+                          ? `Meets ${WEEKDAYS.filter((_, index) =>
+                              (weekActivity[classItem.id] ?? []).includes(
+                                index,
+                              ),
+                            )
+                              .map((day) => day.short)
+                              .join(", ")}`
+                          : "No recurring weekdays"
+                      }
+                    >
+                      {WEEKDAYS.map((day, index) => (
+                        <span
+                          key={day.short}
+                          aria-hidden="true"
+                          className="flex w-3 justify-center"
+                        >
+                          <span
+                            className={`size-1.5 rounded-full ${(weekActivity[classItem.id] ?? []).includes(index) ? "bg-primary" : "bg-border"}`}
+                          />
+                        </span>
+                      ))}
+                    </span>
+                  </TableCell>
+                )}
                 <TableCell className="text-right">
                   <div className="flex items-center justify-end gap-1">
                     <Button
@@ -399,9 +518,10 @@ export default function ClassesDataTable({
                       View
                     </Button>
                     <ClassRowActions
-                      classId={classItem.id}
-                      className={classItem.name}
-                      status={classItem.status}
+                      classItem={classItem}
+                      schools={schools}
+                      teachers={teachers}
+                      students={students}
                     />
                   </div>
                 </TableCell>
@@ -410,7 +530,7 @@ export default function ClassesDataTable({
             {rows.length === 0 && (
               <TableRow>
                 <TableCell
-                  colSpan={9}
+                  colSpan={columnCount}
                   className="text-muted-foreground h-24 text-center text-sm"
                 >
                   No results.
@@ -464,7 +584,7 @@ export default function ClassesDataTable({
                 key={item}
                 type="button"
                 onClick={() => setPage(item + 1)}
-                className={`inline-flex h-6 min-w-6 items-center justify-center rounded-md ${item + 1 === safePage ? "bg-stone-900 text-white" : "text-stone-600 hover:bg-stone-100"}`}
+                className={`inline-flex h-6 min-w-6 items-center justify-center rounded-md ${item + 1 === safePage ? "bg-primary text-primary-foreground" : "text-stone-600 hover:bg-stone-100"}`}
               >
                 {item + 1}
               </button>

@@ -263,7 +263,7 @@ export default function Page() {
     );
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10 text-[13px] text-stone-900">
+    <main className="w-full px-6 py-10 text-[13px] text-stone-900">
       <section>
         <header className="mb-4 flex items-start justify-between gap-3">
           <div className="flex items-center gap-0.5">

@@ -197,70 +197,74 @@ export default function ScheduleGantt({
             })}
           </div>
 
-          <div className="mt-1 grid grid-cols-[2.75rem_repeat(7,minmax(0,1fr))]">
-            <div className="relative" style={{ height: gridHeight }}>
-              {hours.map((hour) => (
-                <span
-                  key={hour}
-                  style={{ top: (hour - startHour) * HOUR_PX }}
-                  className="text-muted-foreground absolute right-1.5 -translate-y-1/2 text-[10px] tabular-nums"
-                >
-                  {new Date(2026, 0, 1, hour).toLocaleTimeString("en-GB", {
-                    hour: "numeric",
-                    hour12: true,
-                  })}
-                </span>
-              ))}
+          {totalCount > 0 ? (
+            <div className="mt-1 grid grid-cols-[2.75rem_repeat(7,minmax(0,1fr))]">
+              <div className="relative" style={{ height: gridHeight }}>
+                {hours.map((hour) => (
+                  <span
+                    key={hour}
+                    style={{ top: (hour - startHour) * HOUR_PX }}
+                    className="text-muted-foreground absolute right-1.5 -translate-y-1/2 text-[10px] tabular-nums"
+                  >
+                    {new Date(2026, 0, 1, hour).toLocaleTimeString("en-GB", {
+                      hour: "numeric",
+                      hour12: true,
+                    })}
+                  </span>
+                ))}
+              </div>
+              {days.map((day) => {
+                const key = dayKey(day);
+                const isToday = key === today;
+                const blocks = blocksByDay.get(key) ?? [];
+                return (
+                  <div
+                    key={key}
+                    style={{ height: gridHeight }}
+                    className={`relative rounded-md ${isToday ? "bg-stone-100" : ""}`}
+                  >
+                    {hours.map((hour) => (
+                      <div
+                        key={hour}
+                        style={{ top: (hour - startHour) * HOUR_PX }}
+                        className="border-border absolute right-0 left-0 border-t"
+                      />
+                    ))}
+                    {isToday && (
+                      <div className="bg-foreground absolute right-0 left-0 top-0 h-0.5 rounded-full" />
+                    )}
+                    {blocks.map((block) => (
+                      <div
+                        key={block.meeting.id}
+                        title={`${block.meeting.topic} · ${block.meeting.className} · ${new Date(block.meeting.scheduledAt).toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })}`}
+                        style={{
+                          top: block.top,
+                          height: Math.max(block.height, 20),
+                          left: `calc(${(block.lane / block.lanes) * 100}% + 2px)`,
+                          width: `calc(${100 / block.lanes}% - 4px)`,
+                        }}
+                        className={`absolute overflow-hidden rounded px-1.5 py-1 text-white ${classColor(block.meeting.className)}`}
+                      >
+                        <p className="truncate text-[11px] leading-4 font-semibold">
+                          {new Date(
+                            block.meeting.scheduledAt,
+                          ).toLocaleTimeString("en-GB", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </p>
+                        <p className="truncate text-[11px] leading-4 opacity-90">
+                          {block.meeting.topic}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
             </div>
-            {days.map((day) => {
-              const key = dayKey(day);
-              const isToday = key === today;
-              const blocks = blocksByDay.get(key) ?? [];
-              return (
-                <div
-                  key={key}
-                  style={{ height: gridHeight }}
-                  className={`relative rounded-md ${isToday ? "bg-foreground/[0.07]" : ""}`}
-                >
-                  {hours.map((hour) => (
-                    <div
-                      key={hour}
-                      style={{ top: (hour - startHour) * HOUR_PX }}
-                      className="border-border absolute right-0 left-0 border-t"
-                    />
-                  ))}
-                  {isToday && (
-                    <div className="bg-foreground absolute right-0 left-0 top-0 h-0.5 rounded-full" />
-                  )}
-                  {blocks.map((block) => (
-                    <div
-                      key={block.meeting.id}
-                      title={`${block.meeting.topic} · ${block.meeting.className} · ${new Date(block.meeting.scheduledAt).toLocaleTimeString("en-GB", { hour: "numeric", minute: "2-digit", hour12: true })}`}
-                      style={{
-                        top: block.top,
-                        height: Math.max(block.height, 20),
-                        left: `calc(${(block.lane / block.lanes) * 100}% + 2px)`,
-                        width: `calc(${100 / block.lanes}% - 4px)`,
-                      }}
-                      className={`absolute overflow-hidden rounded px-1.5 py-1 text-white ${classColor(block.meeting.className)}`}
-                    >
-                      <p className="truncate text-[11px] leading-4 font-semibold">
-                        {new Date(block.meeting.scheduledAt).toLocaleTimeString(
-                          "en-GB",
-                          { hour: "numeric", minute: "2-digit", hour12: true },
-                        )}
-                      </p>
-                      <p className="truncate text-[11px] leading-4 opacity-90">
-                        {block.meeting.topic}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              );
-            })}
-          </div>
-          {totalCount === 0 && (
-            <p className="text-muted-foreground py-4 text-center text-xs">
+          ) : (
+            <p className="border-border text-muted-foreground mt-1 rounded-md border border-dashed py-8 text-center text-xs">
               Nothing scheduled this week.
             </p>
           )}

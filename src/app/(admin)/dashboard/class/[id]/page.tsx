@@ -52,7 +52,7 @@ export default async function ClassDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-6 py-10">
+    <main className="w-full px-6 py-10 text-[13px] text-stone-900">
       <div className="flex items-center justify-between gap-4">
         <Breadcrumb>
           <BreadcrumbList>
@@ -98,15 +98,22 @@ export default async function ClassDetailPage({ params }: PageProps) {
         </Button>
       </div>
 
-      <MeetingList
-        meetings={classData.meetings.map((meeting) => ({
-          id: meeting.id,
-          topic: meeting.topic,
-          description: meeting.description,
-          fileUrl: meeting.materials[0]?.fileUrl ?? null,
-          scheduledAt: meeting.scheduledAt.toISOString(),
-        }))}
-      />
+      <div className="mt-10">
+        <h2 className="text-lg font-semibold tracking-tight">Meetings</h2>
+        <p className="text-muted-foreground mt-1 text-sm">
+          Course sessions, materials, attendance, and grading.
+        </p>
+        <MeetingList
+          meetings={classData.meetings.map((meeting) => ({
+            id: meeting.id,
+            topic: meeting.topic,
+            description: meeting.description,
+            fileUrl: meeting.materials[0]?.fileUrl ?? null,
+            scheduledAt: meeting.scheduledAt.toISOString(),
+            status: meeting.status,
+          }))}
+        />
+      </div>
     </main>
   );
 }

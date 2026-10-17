@@ -5,83 +5,93 @@ import ScheduleGantt from "./schedule-gantt";
 
 export default async function DashboardPage() {
   const now = new Date();
-  const [classData, teacherData, studentData, meetingData] = await Promise.all([
-    prisma.class.findMany({
-      where: {
-        isDeleted: false,
-      },
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        code: true,
-        status: true,
-        school: { select: { name: true } },
-        teachers: {
-          where: { isDeleted: false },
-          select: {
-            teacher: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
+  const [classData, teacherData, studentData, schoolData, meetingData] =
+    await Promise.all([
+      prisma.class.findMany({
+        where: {
+          isDeleted: false,
+        },
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+          code: true,
+          status: true,
+          schoolId: true,
+          school: { select: { name: true } },
+          teachers: {
+            where: { isDeleted: false },
+            select: {
+              teacher: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
               },
             },
           },
-        },
-        studentEnrollments: {
-          where: { isDeleted: false },
-          select: {
-            student: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
+          studentEnrollments: {
+            where: { isDeleted: false },
+            select: {
+              student: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
               },
             },
           },
+          _count: {
+            select: { meetings: { where: { isDeleted: false } } },
+          },
         },
-        _count: {
-          select: { meetings: { where: { isDeleted: false } } },
+      }),
+      prisma.user.findMany({
+        where: {
+          role: "MENTOR",
+          isDeleted: false,
         },
-      },
-    }),
-    prisma.user.findMany({
-      where: {
-        role: "MENTOR",
-        isDeleted: false,
-      },
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-    }),
-    prisma.user.findMany({
-      where: {
-        role: "STUDENT",
-        isDeleted: false,
-      },
-      orderBy: { name: "asc" },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-      },
-    }),
-    prisma.classMeeting.findMany({
-      where: { isDeleted: false },
-      orderBy: { scheduledAt: "asc" },
-      select: {
-        id: true,
-        topic: true,
-        scheduledAt: true,
-        classId: true,
-        class: { select: { name: true } },
-      },
-    }),
-  ]);
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      }),
+      prisma.user.findMany({
+        where: {
+          role: "STUDENT",
+          isDeleted: false,
+        },
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      }),
+      prisma.school.findMany({
+        where: { isDeleted: false },
+        orderBy: { name: "asc" },
+        select: {
+          id: true,
+          name: true,
+        },
+      }),
+      prisma.classMeeting.findMany({
+        where: { isDeleted: false },
+        orderBy: { scheduledAt: "asc" },
+        select: {
+          id: true,
+          topic: true,
+          scheduledAt: true,
+          classId: true,
+          class: { select: { name: true } },
+        },
+      }),
+    ]);
 
   const todayKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   const todayCount = meetingData.filter((item) => {
@@ -105,6 +115,7 @@ export default async function DashboardPage() {
     id: item.id,
     name: item.name,
     code: item.code,
+    schoolId: item.schoolId,
     schoolName: item.school.name,
     status: item.status,
     teachers: item.teachers.map((item) => item.teacher),
@@ -120,7 +131,7 @@ export default async function DashboardPage() {
   }));
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10 text-[13px] text-stone-900">
+    <main className="w-full px-6 py-10 text-[13px] text-stone-900">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
@@ -154,6 +165,7 @@ export default async function DashboardPage() {
           classes={classes}
           teachers={teacherData}
           students={studentData}
+          schools={schoolData}
           weekActivity={Object.fromEntries(weekActivity)}
         />
       </div>
