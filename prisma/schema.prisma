@@ -93,6 +93,8 @@ model User {
 
   auditLogs AuditLog[]
 
+  meetingGrades MeetingGrade[]
+
   @@index([role])
   @@index([isDeleted])
 }
@@ -211,10 +213,30 @@ model ClassMeeting {
 
   attendances Attendance[]
 
+  grades MeetingGrade[]
+
   @@index([classId])
   @@index([scheduledAt])
   @@index([status])
   @@index([isDeleted])
+}
+
+model MeetingGrade {
+  id           Int      @id @default(autoincrement())
+  meetingId    Int
+  studentId    Int
+  programming  Int?
+  creativity   Int?
+  design       Int?
+  finalAverage Decimal? @db.Decimal(5, 2)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  meeting ClassMeeting @relation(fields: [meetingId], references: [id])
+  student User         @relation(fields: [studentId], references: [id])
+
+  @@unique([meetingId, studentId])
+  @@index([studentId])
 }
 
 model LearningMaterial {
@@ -236,16 +258,16 @@ model LearningMaterial {
 }
 
 model Homework {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   meetingId    Int
   title        String
   description  String?
   instructions String?
   dueDate      DateTime?
-  maxScore     Decimal  @db.Decimal(5, 2)
-  isDeleted    Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  maxScore     Decimal   @db.Decimal(5, 2)
+  isDeleted    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   meeting ClassMeeting @relation(fields: [meetingId], references: [id])
 
@@ -269,7 +291,7 @@ model HomeworkSubmission {
   updatedAt   DateTime  @updatedAt
 
   homework Homework @relation(fields: [homeworkId], references: [id])
-  student User     @relation(fields: [studentId], references: [id])
+  student  User     @relation(fields: [studentId], references: [id])
 
   @@unique([homeworkId, studentId])
   @@index([studentId])
@@ -278,7 +300,7 @@ model HomeworkSubmission {
 }
 
 model Quiz {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   meetingId   Int
   title       String
   description String?
@@ -288,7 +310,7 @@ model Quiz {
 
   timeLimit Int?
 
-  maxScore  Decimal @db.Decimal(5, 2)
+  maxScore Decimal @db.Decimal(5, 2)
 
   isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -303,9 +325,9 @@ model Quiz {
 }
 
 model QuizAttempt {
-  id          Int       @id @default(autoincrement())
-  quizId      Int
-  studentId   Int
+  id        Int @id @default(autoincrement())
+  quizId    Int
+  studentId Int
 
   // PostgreSQL JSONB
   answers Json

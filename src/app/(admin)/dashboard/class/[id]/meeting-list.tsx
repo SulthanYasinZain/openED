@@ -9,6 +9,7 @@ import {
   Video01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
 import Markdown from "react-markdown";
 import {
   Accordion,
@@ -35,8 +36,10 @@ function formatStatus(status: MeetingStatus) {
 
 export default function MeetingList({
   meetings,
+  classCode,
 }: {
   meetings: MeetingListItem[];
+  classCode: string;
 }) {
   if (meetings.length === 0) {
     return (
@@ -148,7 +151,17 @@ export default function MeetingList({
                       }
                     />
                   )}
-                  <Button type="button" variant="outline" size="sm">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    nativeButton={false}
+                    render={
+                      <Link
+                        href={`/dashboard/class/${classCode}/meeting/${meeting.id}/grade`}
+                      />
+                    }
+                  >
                     <HugeiconsIcon
                       icon={BookOpen01Icon}
                       strokeWidth={2}

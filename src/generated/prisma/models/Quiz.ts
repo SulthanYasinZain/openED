@@ -534,14 +534,6 @@ export type QuizUncheckedUpdateManyWithoutMeetingNestedInput = {
   deleteMany?: Prisma.QuizScalarWhereInput | Prisma.QuizScalarWhereInput[]
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type QuizCreateNestedOneWithoutAttemptsInput = {
   create?: Prisma.XOR<Prisma.QuizCreateWithoutAttemptsInput, Prisma.QuizUncheckedCreateWithoutAttemptsInput>
   connectOrCreate?: Prisma.QuizCreateOrConnectWithoutAttemptsInput

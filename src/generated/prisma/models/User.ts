@@ -249,6 +249,7 @@ export type UserWhereInput = {
   markedAttendances?: Prisma.AttendanceListRelationFilter
   certificates?: Prisma.CertificateListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  meetingGrades?: Prisma.MeetingGradeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -269,6 +270,7 @@ export type UserOrderByWithRelationInput = {
   markedAttendances?: Prisma.AttendanceOrderByRelationAggregateInput
   certificates?: Prisma.CertificateOrderByRelationAggregateInput
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
+  meetingGrades?: Prisma.MeetingGradeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -292,6 +294,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   markedAttendances?: Prisma.AttendanceListRelationFilter
   certificates?: Prisma.CertificateListRelationFilter
   auditLogs?: Prisma.AuditLogListRelationFilter
+  meetingGrades?: Prisma.MeetingGradeListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -341,6 +344,7 @@ export type UserCreateInput = {
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -361,6 +365,7 @@ export type UserUncheckedCreateInput = {
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserUpdateInput = {
@@ -380,6 +385,7 @@ export type UserUpdateInput = {
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -400,6 +406,7 @@ export type UserUncheckedUpdateInput = {
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -550,6 +557,20 @@ export type UserUpdateOneRequiredWithoutStudentEnrollmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStudentEnrollmentsInput, Prisma.UserUpdateWithoutStudentEnrollmentsInput>, Prisma.UserUncheckedUpdateWithoutStudentEnrollmentsInput>
 }
 
+export type UserCreateNestedOneWithoutMeetingGradesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMeetingGradesInput, Prisma.UserUncheckedCreateWithoutMeetingGradesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMeetingGradesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutMeetingGradesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutMeetingGradesInput, Prisma.UserUncheckedCreateWithoutMeetingGradesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMeetingGradesInput
+  upsert?: Prisma.UserUpsertWithoutMeetingGradesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMeetingGradesInput, Prisma.UserUpdateWithoutMeetingGradesInput>, Prisma.UserUncheckedUpdateWithoutMeetingGradesInput>
+}
+
 export type UserCreateNestedOneWithoutHomeworkSubmissionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutHomeworkSubmissionsInput, Prisma.UserUncheckedCreateWithoutHomeworkSubmissionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutHomeworkSubmissionsInput
@@ -650,6 +671,7 @@ export type UserCreateWithoutSchoolMembershipsInput = {
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutSchoolMembershipsInput = {
@@ -669,6 +691,7 @@ export type UserUncheckedCreateWithoutSchoolMembershipsInput = {
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutSchoolMembershipsInput = {
@@ -703,6 +726,7 @@ export type UserUpdateWithoutSchoolMembershipsInput = {
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSchoolMembershipsInput = {
@@ -722,6 +746,7 @@ export type UserUncheckedUpdateWithoutSchoolMembershipsInput = {
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserCreateWithoutClassTeachersInput = {
@@ -740,6 +765,7 @@ export type UserCreateWithoutClassTeachersInput = {
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutClassTeachersInput = {
@@ -759,6 +785,7 @@ export type UserUncheckedCreateWithoutClassTeachersInput = {
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutClassTeachersInput = {
@@ -793,6 +820,7 @@ export type UserUpdateWithoutClassTeachersInput = {
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClassTeachersInput = {
@@ -812,6 +840,7 @@ export type UserUncheckedUpdateWithoutClassTeachersInput = {
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserCreateWithoutStudentEnrollmentsInput = {
@@ -830,6 +859,7 @@ export type UserCreateWithoutStudentEnrollmentsInput = {
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutStudentEnrollmentsInput = {
@@ -849,6 +879,7 @@ export type UserUncheckedCreateWithoutStudentEnrollmentsInput = {
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutStudentEnrollmentsInput = {
@@ -883,6 +914,7 @@ export type UserUpdateWithoutStudentEnrollmentsInput = {
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentEnrollmentsInput = {
@@ -896,6 +928,101 @@ export type UserUncheckedUpdateWithoutStudentEnrollmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolMemberships?: Prisma.SchoolUserUncheckedUpdateManyWithoutUserNestedInput
   classTeachers?: Prisma.ClassTeacherUncheckedUpdateManyWithoutTeacherNestedInput
+  homeworkSubmissions?: Prisma.HomeworkSubmissionUncheckedUpdateManyWithoutStudentNestedInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutStudentNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
+  certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
+}
+
+export type UserCreateWithoutMeetingGradesInput = {
+  email: string
+  password: string
+  role: $Enums.Role
+  name?: string | null
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schoolMemberships?: Prisma.SchoolUserCreateNestedManyWithoutUserInput
+  classTeachers?: Prisma.ClassTeacherCreateNestedManyWithoutTeacherInput
+  studentEnrollments?: Prisma.StudentEnrollmentCreateNestedManyWithoutStudentInput
+  homeworkSubmissions?: Prisma.HomeworkSubmissionCreateNestedManyWithoutStudentInput
+  quizAttempts?: Prisma.QuizAttemptCreateNestedManyWithoutStudentInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
+  certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutMeetingGradesInput = {
+  id?: number
+  email: string
+  password: string
+  role: $Enums.Role
+  name?: string | null
+  isDeleted?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schoolMemberships?: Prisma.SchoolUserUncheckedCreateNestedManyWithoutUserInput
+  classTeachers?: Prisma.ClassTeacherUncheckedCreateNestedManyWithoutTeacherInput
+  studentEnrollments?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutStudentInput
+  homeworkSubmissions?: Prisma.HomeworkSubmissionUncheckedCreateNestedManyWithoutStudentInput
+  quizAttempts?: Prisma.QuizAttemptUncheckedCreateNestedManyWithoutStudentInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
+  markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
+  certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutMeetingGradesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutMeetingGradesInput, Prisma.UserUncheckedCreateWithoutMeetingGradesInput>
+}
+
+export type UserUpsertWithoutMeetingGradesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutMeetingGradesInput, Prisma.UserUncheckedUpdateWithoutMeetingGradesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutMeetingGradesInput, Prisma.UserUncheckedCreateWithoutMeetingGradesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutMeetingGradesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutMeetingGradesInput, Prisma.UserUncheckedUpdateWithoutMeetingGradesInput>
+}
+
+export type UserUpdateWithoutMeetingGradesInput = {
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schoolMemberships?: Prisma.SchoolUserUpdateManyWithoutUserNestedInput
+  classTeachers?: Prisma.ClassTeacherUpdateManyWithoutTeacherNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentUpdateManyWithoutStudentNestedInput
+  homeworkSubmissions?: Prisma.HomeworkSubmissionUpdateManyWithoutStudentNestedInput
+  quizAttempts?: Prisma.QuizAttemptUpdateManyWithoutStudentNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
+  markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
+  certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutMeetingGradesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schoolMemberships?: Prisma.SchoolUserUncheckedUpdateManyWithoutUserNestedInput
+  classTeachers?: Prisma.ClassTeacherUncheckedUpdateManyWithoutTeacherNestedInput
+  studentEnrollments?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutStudentNestedInput
   homeworkSubmissions?: Prisma.HomeworkSubmissionUncheckedUpdateManyWithoutStudentNestedInput
   quizAttempts?: Prisma.QuizAttemptUncheckedUpdateManyWithoutStudentNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
@@ -920,6 +1047,7 @@ export type UserCreateWithoutHomeworkSubmissionsInput = {
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutHomeworkSubmissionsInput = {
@@ -939,6 +1067,7 @@ export type UserUncheckedCreateWithoutHomeworkSubmissionsInput = {
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutHomeworkSubmissionsInput = {
@@ -973,6 +1102,7 @@ export type UserUpdateWithoutHomeworkSubmissionsInput = {
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHomeworkSubmissionsInput = {
@@ -992,6 +1122,7 @@ export type UserUncheckedUpdateWithoutHomeworkSubmissionsInput = {
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserCreateWithoutQuizAttemptsInput = {
@@ -1010,6 +1141,7 @@ export type UserCreateWithoutQuizAttemptsInput = {
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutQuizAttemptsInput = {
@@ -1029,6 +1161,7 @@ export type UserUncheckedCreateWithoutQuizAttemptsInput = {
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutQuizAttemptsInput = {
@@ -1063,6 +1196,7 @@ export type UserUpdateWithoutQuizAttemptsInput = {
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
@@ -1082,6 +1216,7 @@ export type UserUncheckedUpdateWithoutQuizAttemptsInput = {
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserCreateWithoutAttendancesInput = {
@@ -1100,6 +1235,7 @@ export type UserCreateWithoutAttendancesInput = {
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutAttendancesInput = {
@@ -1119,6 +1255,7 @@ export type UserUncheckedCreateWithoutAttendancesInput = {
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutAttendancesInput = {
@@ -1142,6 +1279,7 @@ export type UserCreateWithoutMarkedAttendancesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
@@ -1161,6 +1299,7 @@ export type UserUncheckedCreateWithoutMarkedAttendancesInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutMarkedAttendancesInput = {
@@ -1195,6 +1334,7 @@ export type UserUpdateWithoutAttendancesInput = {
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendancesInput = {
@@ -1214,6 +1354,7 @@ export type UserUncheckedUpdateWithoutAttendancesInput = {
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUpsertWithoutMarkedAttendancesInput = {
@@ -1243,6 +1384,7 @@ export type UserUpdateWithoutMarkedAttendancesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
@@ -1262,6 +1404,7 @@ export type UserUncheckedUpdateWithoutMarkedAttendancesInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserCreateWithoutCertificatesInput = {
@@ -1280,6 +1423,7 @@ export type UserCreateWithoutCertificatesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutCertificatesInput = {
@@ -1299,6 +1443,7 @@ export type UserUncheckedCreateWithoutCertificatesInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutActorInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutCertificatesInput = {
@@ -1333,6 +1478,7 @@ export type UserUpdateWithoutCertificatesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCertificatesInput = {
@@ -1352,6 +1498,7 @@ export type UserUncheckedUpdateWithoutCertificatesInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutActorNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -1370,6 +1517,7 @@ export type UserCreateWithoutAuditLogsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutStudentInput
   markedAttendances?: Prisma.AttendanceCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateCreateNestedManyWithoutStudentInput
+  meetingGrades?: Prisma.MeetingGradeCreateNestedManyWithoutStudentInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -1389,6 +1537,7 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutStudentInput
   markedAttendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkerInput
   certificates?: Prisma.CertificateUncheckedCreateNestedManyWithoutStudentInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedCreateNestedManyWithoutStudentInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -1423,6 +1572,7 @@ export type UserUpdateWithoutAuditLogsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutStudentNestedInput
   markedAttendances?: Prisma.AttendanceUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUpdateManyWithoutStudentNestedInput
+  meetingGrades?: Prisma.MeetingGradeUpdateManyWithoutStudentNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -1442,6 +1592,7 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutStudentNestedInput
   markedAttendances?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkerNestedInput
   certificates?: Prisma.CertificateUncheckedUpdateManyWithoutStudentNestedInput
+  meetingGrades?: Prisma.MeetingGradeUncheckedUpdateManyWithoutStudentNestedInput
 }
 
 
@@ -1459,6 +1610,7 @@ export type UserCountOutputType = {
   markedAttendances: number
   certificates: number
   auditLogs: number
+  meetingGrades: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1471,6 +1623,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   markedAttendances?: boolean | UserCountOutputTypeCountMarkedAttendancesArgs
   certificates?: boolean | UserCountOutputTypeCountCertificatesArgs
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+  meetingGrades?: boolean | UserCountOutputTypeCountMeetingGradesArgs
 }
 
 /**
@@ -1546,6 +1699,13 @@ export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.AuditLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountMeetingGradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MeetingGradeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1565,6 +1725,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   markedAttendances?: boolean | Prisma.User$markedAttendancesArgs<ExtArgs>
   certificates?: boolean | Prisma.User$certificatesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  meetingGrades?: boolean | Prisma.User$meetingGradesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1612,6 +1773,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   markedAttendances?: boolean | Prisma.User$markedAttendancesArgs<ExtArgs>
   certificates?: boolean | Prisma.User$certificatesArgs<ExtArgs>
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
+  meetingGrades?: boolean | Prisma.User$meetingGradesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1629,6 +1791,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     markedAttendances: Prisma.$AttendancePayload<ExtArgs>[]
     certificates: Prisma.$CertificatePayload<ExtArgs>[]
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+    meetingGrades: Prisma.$MeetingGradePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -2042,6 +2205,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   markedAttendances<T extends Prisma.User$markedAttendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$markedAttendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   certificates<T extends Prisma.User$certificatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$certificatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CertificatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  meetingGrades<T extends Prisma.User$meetingGradesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$meetingGradesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MeetingGradePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2685,6 +2849,30 @@ export type User$auditLogsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.AuditLogScalarFieldEnum | Prisma.AuditLogScalarFieldEnum[]
+}
+
+/**
+ * User.meetingGrades
+ */
+export type User$meetingGradesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MeetingGrade
+   */
+  select?: Prisma.MeetingGradeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MeetingGrade
+   */
+  omit?: Prisma.MeetingGradeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MeetingGradeInclude<ExtArgs> | null
+  where?: Prisma.MeetingGradeWhereInput
+  orderBy?: Prisma.MeetingGradeOrderByWithRelationInput | Prisma.MeetingGradeOrderByWithRelationInput[]
+  cursor?: Prisma.MeetingGradeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MeetingGradeScalarFieldEnum | Prisma.MeetingGradeScalarFieldEnum[]
 }
 
 /**

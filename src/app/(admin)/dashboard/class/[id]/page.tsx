@@ -104,6 +104,7 @@ export default async function ClassDetailPage({ params }: PageProps) {
           Course sessions, materials, attendance, and grading.
         </p>
         <MeetingList
+          classCode={classData.code}
           meetings={classData.meetings.map((meeting) => ({
             id: meeting.id,
             topic: meeting.topic,

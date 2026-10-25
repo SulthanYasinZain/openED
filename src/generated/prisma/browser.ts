@@ -53,6 +53,11 @@ export type StudentEnrollment = Prisma.StudentEnrollmentModel
  */
 export type ClassMeeting = Prisma.ClassMeetingModel
 /**
+ * Model MeetingGrade
+ * 
+ */
+export type MeetingGrade = Prisma.MeetingGradeModel
+/**
  * Model LearningMaterial
  * 
  */

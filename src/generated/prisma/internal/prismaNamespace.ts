@@ -404,6 +404,7 @@ export const ModelName = {
   ClassTeacher: 'ClassTeacher',
   StudentEnrollment: 'StudentEnrollment',
   ClassMeeting: 'ClassMeeting',
+  MeetingGrade: 'MeetingGrade',
   LearningMaterial: 'LearningMaterial',
   Homework: 'Homework',
   HomeworkSubmission: 'HomeworkSubmission',
@@ -427,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "school" | "schoolUser" | "class" | "classTeacher" | "studentEnrollment" | "classMeeting" | "learningMaterial" | "homework" | "homeworkSubmission" | "quiz" | "quizAttempt" | "attendance" | "certificate" | "auditLog"
+    modelProps: "user" | "school" | "schoolUser" | "class" | "classTeacher" | "studentEnrollment" | "classMeeting" | "meetingGrade" | "learningMaterial" | "homework" | "homeworkSubmission" | "quiz" | "quizAttempt" | "attendance" | "certificate" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -946,6 +947,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ClassMeetingCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ClassMeetingCountAggregateOutputType> | number
+        }
+      }
+    }
+    MeetingGrade: {
+      payload: Prisma.$MeetingGradePayload<ExtArgs>
+      fields: Prisma.MeetingGradeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MeetingGradeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MeetingGradeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>
+        }
+        findFirst: {
+          args: Prisma.MeetingGradeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MeetingGradeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>
+        }
+        findMany: {
+          args: Prisma.MeetingGradeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>[]
+        }
+        create: {
+          args: Prisma.MeetingGradeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>
+        }
+        createMany: {
+          args: Prisma.MeetingGradeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MeetingGradeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>[]
+        }
+        delete: {
+          args: Prisma.MeetingGradeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>
+        }
+        update: {
+          args: Prisma.MeetingGradeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>
+        }
+        deleteMany: {
+          args: Prisma.MeetingGradeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MeetingGradeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MeetingGradeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>[]
+        }
+        upsert: {
+          args: Prisma.MeetingGradeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MeetingGradePayload>
+        }
+        aggregate: {
+          args: Prisma.MeetingGradeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMeetingGrade>
+        }
+        groupBy: {
+          args: Prisma.MeetingGradeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MeetingGradeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MeetingGradeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MeetingGradeCountAggregateOutputType> | number
         }
       }
     }
@@ -1675,6 +1750,21 @@ export const ClassMeetingScalarFieldEnum = {
 export type ClassMeetingScalarFieldEnum = (typeof ClassMeetingScalarFieldEnum)[keyof typeof ClassMeetingScalarFieldEnum]
 
 
+export const MeetingGradeScalarFieldEnum = {
+  id: 'id',
+  meetingId: 'meetingId',
+  studentId: 'studentId',
+  programming: 'programming',
+  creativity: 'creativity',
+  design: 'design',
+  finalAverage: 'finalAverage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MeetingGradeScalarFieldEnum = (typeof MeetingGradeScalarFieldEnum)[keyof typeof MeetingGradeScalarFieldEnum]
+
+
 export const LearningMaterialScalarFieldEnum = {
   id: 'id',
   meetingId: 'meetingId',
@@ -1959,20 +2049,6 @@ export type ListEnumMeetingStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'MaterialType'
- */
-export type EnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType'>
-    
-
-
-/**
- * Reference to a field of type 'MaterialType[]'
- */
-export type ListEnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType[]'>
-    
-
-
-/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -1983,6 +2059,20 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MaterialType'
+ */
+export type EnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType'>
+    
+
+
+/**
+ * Reference to a field of type 'MaterialType[]'
+ */
+export type ListEnumMaterialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MaterialType[]'>
     
 
 
@@ -2199,6 +2289,7 @@ export type GlobalOmitConfig = {
   classTeacher?: Prisma.ClassTeacherOmit
   studentEnrollment?: Prisma.StudentEnrollmentOmit
   classMeeting?: Prisma.ClassMeetingOmit
+  meetingGrade?: Prisma.MeetingGradeOmit
   learningMaterial?: Prisma.LearningMaterialOmit
   homework?: Prisma.HomeworkOmit
   homeworkSubmission?: Prisma.HomeworkSubmissionOmit

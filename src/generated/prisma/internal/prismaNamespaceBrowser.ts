@@ -58,6 +58,7 @@ export const ModelName = {
   ClassTeacher: 'ClassTeacher',
   StudentEnrollment: 'StudentEnrollment',
   ClassMeeting: 'ClassMeeting',
+  MeetingGrade: 'MeetingGrade',
   LearningMaterial: 'LearningMaterial',
   Homework: 'Homework',
   HomeworkSubmission: 'HomeworkSubmission',
@@ -177,6 +178,21 @@ export const ClassMeetingScalarFieldEnum = {
 } as const
 
 export type ClassMeetingScalarFieldEnum = (typeof ClassMeetingScalarFieldEnum)[keyof typeof ClassMeetingScalarFieldEnum]
+
+
+export const MeetingGradeScalarFieldEnum = {
+  id: 'id',
+  meetingId: 'meetingId',
+  studentId: 'studentId',
+  programming: 'programming',
+  creativity: 'creativity',
+  design: 'design',
+  finalAverage: 'finalAverage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MeetingGradeScalarFieldEnum = (typeof MeetingGradeScalarFieldEnum)[keyof typeof MeetingGradeScalarFieldEnum]
 
 
 export const LearningMaterialScalarFieldEnum = {
