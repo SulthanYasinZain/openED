@@ -169,7 +169,17 @@ export default function MeetingList({
                     />
                     Grade
                   </Button>
-                  <Button type="button" variant="outline" size="sm">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    nativeButton={false}
+                    render={
+                      <Link
+                        href={`/dashboard/class/${classCode}/meeting/${meeting.id}/attendance`}
+                      />
+                    }
+                  >
                     <HugeiconsIcon
                       icon={UserIcon}
                       strokeWidth={2}
