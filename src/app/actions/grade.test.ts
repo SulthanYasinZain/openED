@@ -21,7 +21,7 @@ const input = {
 };
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  jest.resetAllMocks();
   (prisma.$transaction as jest.Mock).mockImplementation((callback) =>
     callback(tx),
   );
@@ -30,6 +30,34 @@ beforeEach(() => {
     topic: "Introduction",
   });
   tx.studentEnrollment.count.mockResolvedValue(1);
+});
+
+it("requires admin access before checking or writing grades", async () => {
+  (checkSession as jest.Mock).mockRejectedValue(new Error("denied"));
+  await expect(saveMeetingGradesAction(input)).rejects.toThrow("denied");
+  expect(prisma.$transaction).not.toHaveBeenCalled();
+});
+
+it.each([{ meetingId: 0 }, { classCode: "" }, { grades: [] }])(
+  "rejects invalid batch %j",
+  async (values) => {
+    expect(
+      (await saveMeetingGradesAction({ ...input, ...values })).error,
+    ).toBeTruthy();
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  },
+);
+
+it("does not audit or revalidate when the transaction fails", async () => {
+  const log = jest.spyOn(console, "error").mockImplementation(() => {});
+  try {
+    (prisma.$transaction as jest.Mock).mockRejectedValue(new Error("offline"));
+    expect((await saveMeetingGradesAction(input)).error).toBeTruthy();
+    expect(logAudit).not.toHaveBeenCalled();
+    expect(revalidatePath).not.toHaveBeenCalled();
+  } finally {
+    log.mockRestore();
+  }
 });
 
 it.each([-1, 101, 50.5, Number.NaN])(

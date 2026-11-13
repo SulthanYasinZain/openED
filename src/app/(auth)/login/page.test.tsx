@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { loginAction } from "@/app/actions/auth";
 import LoginForm from "./login-form";
 
@@ -41,7 +41,9 @@ describe("LoginForm", () => {
     fireEvent.change(passwordInput, {
       target: { value: "secret123" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    });
 
     expect(mockedLoginAction).toHaveBeenCalledTimes(1);
 
@@ -64,7 +66,9 @@ describe("LoginForm", () => {
     fireEvent.change(passwordInput, {
       target: { value: "wrong" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    });
 
     expect(await screen.findByText("Invalid credentials")).toBeInTheDocument();
   });
